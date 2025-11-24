@@ -169,3 +169,46 @@ func GetUnreadCountHandler(mr *repository.MessageRepository) http.HandlerFunc {
 		utils.RespondWithSuccess(w, http.StatusOK, map[string]int{"unread_count": count})
 	}
 }
+
+// GetConversationsHandler returns all conversations for the current user
+// Sorted by last message timestamp (Discord-style), with users without messages alphabetically at the end
+func GetConversationsHandler(mr *repository.MessageRepository, hub interface{ GetOnlineUsers() []models.UserStatusPayload }) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
+		if user == nil {
+			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
+			return
+		}
+
+		// Get conversations from database
+		conversations, err := mr.GetConversations(user.ID)
+		if err != nil {
+			log.Printf("Failed to get conversations: %v", err)
+			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to get conversations")
+			return
+		}
+
+		// Get online users from hub
+		onlineUsers := hub.GetOnlineUsers()
+		onlineMap := make(map[string]bool)
+		for _, u := range onlineUsers {
+			onlineMap[u.UserID] = true
+		}
+
+		// Add online status to each conversation
+		for i := range conversations {
+			conversations[i].IsOnline = onlineMap[conversations[i].UserID]
+		}
+
+		// Return conversations
+		utils.RespondWithSuccess(w, http.StatusOK, map[string]interface{}{
+			"conversations": conversations,
+		})
+	}
+}

@@ -30,3 +30,19 @@ type GetMessagesResponse struct {
 	Messages []Message `json:"messages"`
 	HasMore  bool      `json:"has_more"`
 }
+
+// Conversation represents a chat conversation with another user
+type Conversation struct {
+	UserID      string       `json:"user_id"`
+	Nickname    string       `json:"nickname"`
+	IsOnline    bool         `json:"is_online"`
+	LastMessage *LastMessage `json:"last_message"`
+	UnreadCount int          `json:"unread_count"`
+}
+
+// LastMessage represents the most recent message in a conversation
+type LastMessage struct {
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+	IsFromMe  bool      `json:"is_from_me"`
+}

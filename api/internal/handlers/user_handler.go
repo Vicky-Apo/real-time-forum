@@ -197,3 +197,36 @@ func GetCurrentUser() http.HandlerFunc {
 		utils.RespondWithSuccess(w, http.StatusOK, user)
 	}
 }
+
+// GetOnlineUsersHandler returns a list of currently online users
+func GetOnlineUsersHandler(hub interface{ GetOnlineUsers() []models.UserStatusPayload }) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			utils.RespondWithError(w, http.StatusMethodNotAllowed, errors.New("method not allowed").Error())
+			return
+		}
+
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
+		if user == nil {
+			utils.RespondWithError(w, http.StatusUnauthorized, errors.New("unauthorized access").Error())
+			return
+		}
+
+		// Get online users from hub
+		onlineUsers := hub.GetOnlineUsers()
+
+		// Filter out the current user from the list
+		filtered := []models.UserStatusPayload{}
+		for _, u := range onlineUsers {
+			if u.UserID != user.ID {
+				filtered = append(filtered, u)
+			}
+		}
+
+		// Return the filtered list
+		utils.RespondWithSuccess(w, http.StatusOK, map[string]interface{}{
+			"online_users": filtered,
+		})
+	}
+}

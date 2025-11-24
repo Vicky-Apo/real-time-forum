@@ -61,6 +61,11 @@ func SetupRoutes(db *sql.DB) http.Handler {
 	mux.Handle("/api/messages/send", AuthMiddleware.RequireAuth(handlers.SendMessageHandler(MessageRepo, hub)))
 	mux.Handle("/api/messages/{id}", AuthMiddleware.RequireAuth(handlers.GetMessagesHandler(MessageRepo)))
 	mux.Handle("/api/messages/unread-count", AuthMiddleware.RequireAuth(handlers.GetUnreadCountHandler(MessageRepo)))
+	mux.Handle("/api/conversations", AuthMiddleware.RequireAuth(handlers.GetConversationsHandler(MessageRepo, hub)))
+
+	// ===== USER ROUTES =====
+	// All routes protected - requires authentication
+	mux.Handle("/api/users/online", AuthMiddleware.RequireAuth(handlers.GetOnlineUsersHandler(hub)))
 
 	// ===== WEBSOCKET ROUTES =====
 	// Protected - requires authentication
