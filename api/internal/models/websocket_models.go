@@ -10,6 +10,8 @@ const (
 	EventTypeError          = "error"
 	EventTypeUserOnline     = "user_online"
 	EventTypeUserOffline    = "user_offline"
+	EventTypeTypingStart    = "typing_start"
+	EventTypeTypingStop     = "typing_stop"
 )
 
 // WebSocketMessage represents the generic WebSocket message structure
@@ -44,4 +46,16 @@ type UserStatusPayload struct {
 	UserID   string `json:"user_id"`   // User ID
 	Nickname string `json:"nickname"`  // User nickname
 	Status   string `json:"status"`    // "online" or "offline"
+}
+
+// TypingIndicatorPayload represents a typing indicator event (sent from client)
+type TypingIndicatorPayload struct {
+	RecipientID string `json:"recipient_id"` // User ID of who should see the typing indicator
+}
+
+// TypingNotificationPayload represents a typing notification (sent to recipient)
+type TypingNotificationPayload struct {
+	UserID   string `json:"user_id"`   // User ID of who is typing
+	Nickname string `json:"nickname"`  // Nickname of who is typing
+	IsTyping bool   `json:"is_typing"` // true = started typing, false = stopped typing
 }

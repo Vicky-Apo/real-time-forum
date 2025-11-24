@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"encoding/json"
 	"log"
 
 	"real-time-forum/internal/models"
@@ -53,11 +54,12 @@ func (h *Hub) Run() {
 }
 
 // HandleMessage processes incoming messages from clients based on event type
-// Currently, WebSocket is receive-only for messages. Use HTTP POST /api/messages/send to send messages.
 func (h *Hub) HandleMessage(sender *Client, msg models.WebSocketMessage) {
 	switch msg.Event {
-	// WebSocket is currently receive-only for messages
-	// Future events can be added here (e.g., "typing_indicator", "mark_as_read")
+	case models.EventTypeTypingStart:
+		h.handleTypingIndicator(sender, msg.Payload, true)
+	case models.EventTypeTypingStop:
+		h.handleTypingIndicator(sender, msg.Payload, false)
 	default:
 		log.Printf("Unsupported WebSocket event type from %s: %s", sender.Nickname, msg.Event)
 		sender.SendError("Unsupported event type. Use HTTP POST /api/messages/send to send messages.")
@@ -110,4 +112,57 @@ func (h *Hub) SendMessageToUser(userID string, event string, payload interface{}
 
 	client.SendMessage(event, payload)
 	return true
+}
+
+// handleTypingIndicator handles typing start/stop events
+func (h *Hub) handleTypingIndicator(sender *Client, payload interface{}, isTyping bool) {
+	// Parse the payload
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		sender.SendError("Invalid typing indicator payload")
+		return
+	}
+
+	var typingPayload models.TypingIndicatorPayload
+	err = json.Unmarshal(payloadBytes, &typingPayload)
+	if err != nil {
+		sender.SendError("Invalid typing indicator format")
+		return
+	}
+
+	// Validate recipient ID
+	if typingPayload.RecipientID == "" {
+		sender.SendError("Recipient ID is required")
+		return
+	}
+
+	// Don't allow typing indicator to yourself
+	if typingPayload.RecipientID == sender.UserID {
+		return
+	}
+
+	// Check if recipient is online
+	recipient, ok := h.Clients[typingPayload.RecipientID]
+	if !ok {
+		// Recipient is not online, silently ignore (no error needed)
+		return
+	}
+
+	// Send typing notification to recipient
+	notification := models.TypingNotificationPayload{
+		UserID:   sender.UserID,
+		Nickname: sender.Nickname,
+		IsTyping: isTyping,
+	}
+
+	var eventType string
+	if isTyping {
+		eventType = models.EventTypeTypingStart
+	} else {
+		eventType = models.EventTypeTypingStop
+	}
+
+	recipient.SendMessage(eventType, notification)
+
+	log.Printf("Typing indicator: %s → %s (is_typing: %v)", sender.Nickname, recipient.Nickname, isTyping)
 }
