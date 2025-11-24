@@ -60,9 +60,22 @@ var TableCreationStatements = []string{
 		content TEXT NOT NULL,
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP NULL,
-		
+
 		FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
 		FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+	);`,
+
+	// Messages table - for direct user-to-user messaging
+	`CREATE TABLE IF NOT EXISTS messages (
+		message_id TEXT PRIMARY KEY NOT NULL UNIQUE,
+		sender_id TEXT NOT NULL,
+		recipient_id TEXT NOT NULL,
+		content TEXT NOT NULL,
+		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		is_read BOOLEAN NOT NULL DEFAULT 0,
+
+		FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE,
+		FOREIGN KEY (recipient_id) REFERENCES users(user_id) ON DELETE CASCADE
 	);`,
 }
 
@@ -78,6 +91,10 @@ var IndexCreationStatements = []string{
 
 	// Comment indexes (viewing posts with comments)
 	`CREATE INDEX IF NOT EXISTS idx_comments_post_created ON comments(post_id, created_at ASC);`, // Comments for a post
+
+	// Message indexes (chat functionality)
+	`CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(sender_id, recipient_id, created_at DESC);`, // Messages between two users
+	`CREATE INDEX IF NOT EXISTS idx_messages_recipient_time ON messages(recipient_id, created_at DESC);`,          // Unread messages for a user
 }
 
 // // WALModeStatements contains SQL statements for enabling WAL mode and performance optimization

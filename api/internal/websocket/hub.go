@@ -1,9 +1,7 @@
 package websocket
 
 import (
-	"encoding/json"
 	"log"
-	"time"
 
 	"real-time-forum/internal/models"
 )
@@ -55,62 +53,15 @@ func (h *Hub) Run() {
 }
 
 // HandleMessage processes incoming messages from clients based on event type
+// Currently, WebSocket is receive-only for messages. Use HTTP POST /api/messages/send to send messages.
 func (h *Hub) HandleMessage(sender *Client, msg models.WebSocketMessage) {
 	switch msg.Event {
-	case models.EventTypeSendMessage:
-		h.handleSendMessage(sender, msg.Payload)
+	// WebSocket is currently receive-only for messages
+	// Future events can be added here (e.g., "typing_indicator", "mark_as_read")
 	default:
-		log.Printf("Unknown event type: %s", msg.Event)
-		sender.SendError("Unknown event type")
+		log.Printf("Unsupported WebSocket event type from %s: %s", sender.Nickname, msg.Event)
+		sender.SendError("Unsupported event type. Use HTTP POST /api/messages/send to send messages.")
 	}
-}
-
-// handleSendMessage handles the send_message event
-func (h *Hub) handleSendMessage(sender *Client, payload interface{}) {
-	// Parse the payload
-	payloadBytes, err := json.Marshal(payload)
-	if err != nil {
-		sender.SendError("Invalid message payload")
-		return
-	}
-
-	var sendPayload models.SendMessagePayload
-	err = json.Unmarshal(payloadBytes, &sendPayload)
-	if err != nil {
-		sender.SendError("Invalid message format")
-		return
-	}
-
-	// Validate the message
-	if sendPayload.RecipientID == "" {
-		sender.SendError("Recipient ID is required")
-		return
-	}
-
-	if sendPayload.Content == "" {
-		sender.SendError("Message content is required")
-		return
-	}
-
-	// Check if recipient is online
-	recipient, ok := h.Clients[sendPayload.RecipientID]
-	if !ok {
-		sender.SendError("Recipient is not online")
-		return
-	}
-
-	// Create the receive message payload
-	receivePayload := models.ReceiveMessagePayload{
-		SenderID:   sender.UserID,
-		SenderName: sender.Nickname,
-		Content:    sendPayload.Content,
-		SentAt:     time.Now(),
-	}
-
-	// Send the message to the recipient
-	recipient.SendMessage(models.EventTypeReceiveMessage, receivePayload)
-
-	log.Printf("Message sent from %s to %s: %s", sender.Nickname, recipient.Nickname, sendPayload.Content)
 }
 
 // BroadcastUserStatus broadcasts a user's online/offline status to all connected users
@@ -147,4 +98,16 @@ func (h *Hub) GetOnlineUsers() []models.UserStatusPayload {
 		})
 	}
 	return users
+}
+
+// SendMessageToUser sends a message to a specific user if they are online
+// Returns true if the user is online and message was sent, false otherwise
+func (h *Hub) SendMessageToUser(userID string, event string, payload interface{}) bool {
+	client, ok := h.Clients[userID]
+	if !ok {
+		return false // User is not online
+	}
+
+	client.SendMessage(event, payload)
+	return true
 }

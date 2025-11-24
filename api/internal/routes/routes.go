@@ -21,6 +21,7 @@ func SetupRoutes(db *sql.DB) http.Handler {
 	PostRepo := repository.NewPostsRepository(db)
 	CategoryRepo := repository.NewCategoryRepository(db)
 	CommentRepo := repository.NewCommentRepository(db)
+	MessageRepo := repository.NewMessageRepository(db)
 
 	// ===== WEBSOCKET HUB =====
 	hub := ws.NewHub()
@@ -54,6 +55,12 @@ func SetupRoutes(db *sql.DB) http.Handler {
 	// All routes protected for private forum
 	mux.Handle("/api/comments/for-post/{id}", AuthMiddleware.RequireAuth(handlers.GetCommentsByPostIDHandler(CommentRepo)))
 	mux.Handle("/api/comments/create-on-post/{id}", AuthMiddleware.RequireAuth(handlers.CreateCommentHandler(CommentRepo)))
+
+	// ===== MESSAGE ROUTES =====
+	// All routes protected - requires authentication
+	mux.Handle("/api/messages/send", AuthMiddleware.RequireAuth(handlers.SendMessageHandler(MessageRepo, hub)))
+	mux.Handle("/api/messages/{id}", AuthMiddleware.RequireAuth(handlers.GetMessagesHandler(MessageRepo)))
+	mux.Handle("/api/messages/unread-count", AuthMiddleware.RequireAuth(handlers.GetUnreadCountHandler(MessageRepo)))
 
 	// ===== WEBSOCKET ROUTES =====
 	// Protected - requires authentication
