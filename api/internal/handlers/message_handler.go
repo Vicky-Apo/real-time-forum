@@ -18,10 +18,6 @@ import (
 // After saving to DB, it broadcasts to WebSocket if recipient is online
 func SendMessageHandler(mr *repository.MessageRepository, hub *ws.Hub) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -79,10 +75,6 @@ func SendMessageHandler(mr *repository.MessageRepository, hub *ws.Hub) http.Hand
 // GetMessagesHandler retrieves message history between two users
 func GetMessagesHandler(mr *repository.MessageRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -145,10 +137,6 @@ func GetMessagesHandler(mr *repository.MessageRepository) http.HandlerFunc {
 // GetUnreadCountHandler returns the count of unread messages for the current user
 func GetUnreadCountHandler(mr *repository.MessageRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -174,10 +162,6 @@ func GetUnreadCountHandler(mr *repository.MessageRepository) http.HandlerFunc {
 // Sorted by last message timestamp (Discord-style), with users without messages alphabetically at the end
 func GetConversationsHandler(mr *repository.MessageRepository, hub interface{ GetOnlineUsers() []models.UserStatusPayload }) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)

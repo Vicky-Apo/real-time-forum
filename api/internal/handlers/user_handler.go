@@ -15,10 +15,6 @@ import (
 // Handle user registration logic here
 func RegisterHandler(ur *repository.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		var reg models.UserRegistration
 		err := json.NewDecoder(r.Body).Decode(&reg)
@@ -92,11 +88,6 @@ func RegisterHandler(ur *repository.UserRepository) http.HandlerFunc {
 // LoginHandler handles user login
 func LoginHandler(ur *repository.UserRepository, sr *repository.SessionRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Only allow POST requests
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, errors.New("method not allowed").Error())
-			return
-		}
 
 		// Parse request body
 		var login models.UserLogin
@@ -149,11 +140,6 @@ func LoginHandler(ur *repository.UserRepository, sr *repository.SessionRepositor
 // LogoutHandler handles user logout
 func LogoutHandler(ur *repository.UserRepository, sr *repository.SessionRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Only allow POST requests
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, errors.New("method not allowed").Error())
-			return
-		}
 
 		// Get the session cookie using config session name
 		cookie, err := r.Cookie(config.Config.SessionName) // CHANGED: Use config session name
@@ -180,11 +166,6 @@ func LogoutHandler(ur *repository.UserRepository, sr *repository.SessionReposito
 
 func GetCurrentUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Allow only post method
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, errors.New("method not allowed").Error())
-			return
-		}
 
 		// The user will already be in the context thanks to the RequireAuth middleware
 		user := middleware.GetCurrentUser(r)
@@ -201,10 +182,6 @@ func GetCurrentUser() http.HandlerFunc {
 // GetOnlineUsersHandler returns a list of currently online users
 func GetOnlineUsersHandler(hub interface{ GetOnlineUsers() []models.UserStatusPayload }) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, errors.New("method not allowed").Error())
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)

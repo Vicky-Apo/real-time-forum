@@ -35,37 +35,37 @@ func SetupRoutes(db *sql.DB) http.Handler {
 	)
 
 	// ===== EXISTING AUTH ROUTES =====
-	mux.Handle("/api/auth/register", http.HandlerFunc(handlers.RegisterHandler(UserRepo)))
-	mux.Handle("/api/auth/login", http.HandlerFunc(handlers.LoginHandler(UserRepo, SessionRepo)))
-	mux.Handle("/api/auth/logout", AuthMiddleware.RequireAuth(handlers.LogoutHandler(UserRepo, SessionRepo)))
-	mux.Handle("/api/auth/me", AuthMiddleware.RequireAuth(handlers.GetCurrentUser()))
+	mux.Handle("POST /api/auth/register", http.HandlerFunc(handlers.RegisterHandler(UserRepo)))
+	mux.Handle("POST /api/auth/login", http.HandlerFunc(handlers.LoginHandler(UserRepo, SessionRepo)))
+	mux.Handle("POST /api/auth/logout", AuthMiddleware.RequireAuth(handlers.LogoutHandler(UserRepo, SessionRepo)))
+	mux.Handle("POST /api/auth/me", AuthMiddleware.RequireAuth(handlers.GetCurrentUser()))
 
 	// ===== EXISTING POST ROUTES =====
 	// All routes protected for private forum
-	mux.Handle("/api/posts", AuthMiddleware.RequireAuth(handlers.GetAllPostsHandler(PostRepo)))
-	mux.Handle("/api/posts/view/{id}", AuthMiddleware.RequireAuth(handlers.GetSinglePostHandler(PostRepo)))
-	mux.Handle("/api/posts/by-category/{id}", AuthMiddleware.RequireAuth(handlers.GetPostsByCategoryHandler(PostRepo)))
-	mux.Handle("/api/posts/create", AuthMiddleware.RequireAuth(handlers.CreatePostHandler(PostRepo, CategoryRepo)))
+	mux.Handle("GET /api/posts", AuthMiddleware.RequireAuth(handlers.GetAllPostsHandler(PostRepo)))
+	mux.Handle("GET /api/posts/view/{id}", AuthMiddleware.RequireAuth(handlers.GetSinglePostHandler(PostRepo)))
+	mux.Handle("GET /api/posts/by-category/{id}", AuthMiddleware.RequireAuth(handlers.GetPostsByCategoryHandler(PostRepo)))
+	mux.Handle("POST /api/posts/create", AuthMiddleware.RequireAuth(handlers.CreatePostHandler(PostRepo, CategoryRepo)))
 
 	// ===== EXISTING CATEGORY ROUTES =====
 	// Protected for private forum
-	mux.Handle("/api/categories", AuthMiddleware.RequireAuth(handlers.GetAllCategoriesHandler(CategoryRepo, PostRepo)))
+	mux.Handle("GET /api/categories", AuthMiddleware.RequireAuth(handlers.GetAllCategoriesHandler(CategoryRepo, PostRepo)))
 
 	// ===== EXISTING COMMENT ROUTES =====
 	// All routes protected for private forum
-	mux.Handle("/api/comments/for-post/{id}", AuthMiddleware.RequireAuth(handlers.GetCommentsByPostIDHandler(CommentRepo)))
-	mux.Handle("/api/comments/create-on-post/{id}", AuthMiddleware.RequireAuth(handlers.CreateCommentHandler(CommentRepo)))
+	mux.Handle("GET /api/comments/for-post/{id}", AuthMiddleware.RequireAuth(handlers.GetCommentsByPostIDHandler(CommentRepo)))
+	mux.Handle("POST /api/comments/create-on-post/{id}", AuthMiddleware.RequireAuth(handlers.CreateCommentHandler(CommentRepo)))
 
 	// ===== MESSAGE ROUTES =====
 	// All routes protected - requires authentication
-	mux.Handle("/api/messages/send", AuthMiddleware.RequireAuth(handlers.SendMessageHandler(MessageRepo, hub)))
-	mux.Handle("/api/messages/{id}", AuthMiddleware.RequireAuth(handlers.GetMessagesHandler(MessageRepo)))
-	mux.Handle("/api/messages/unread-count", AuthMiddleware.RequireAuth(handlers.GetUnreadCountHandler(MessageRepo)))
-	mux.Handle("/api/conversations", AuthMiddleware.RequireAuth(handlers.GetConversationsHandler(MessageRepo, hub)))
+	mux.Handle("POST /api/messages/send", AuthMiddleware.RequireAuth(handlers.SendMessageHandler(MessageRepo, hub)))
+	mux.Handle("GET /api/messages/{id}", AuthMiddleware.RequireAuth(handlers.GetMessagesHandler(MessageRepo)))
+	mux.Handle("GET /api/messages/unread-count", AuthMiddleware.RequireAuth(handlers.GetUnreadCountHandler(MessageRepo)))
+	mux.Handle("GET /api/conversations", AuthMiddleware.RequireAuth(handlers.GetConversationsHandler(MessageRepo, hub)))
 
 	// ===== USER ROUTES =====
 	// All routes protected - requires authentication
-	mux.Handle("/api/users/online", AuthMiddleware.RequireAuth(handlers.GetOnlineUsersHandler(hub)))
+	mux.Handle("GET /api/users/online", AuthMiddleware.RequireAuth(handlers.GetOnlineUsersHandler(hub)))
 
 	// ===== WEBSOCKET ROUTES =====
 	// Protected - requires authentication

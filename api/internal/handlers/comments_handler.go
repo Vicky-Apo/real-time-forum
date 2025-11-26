@@ -13,10 +13,6 @@ import (
 // Create comment handler.
 func CreateCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -65,10 +61,6 @@ func CreateCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 // Get ALL comments by post ID handler.
 func GetCommentsByPostIDHandler(cor *repository.CommentRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get user context
 		currentUser := middleware.GetCurrentUser(r)

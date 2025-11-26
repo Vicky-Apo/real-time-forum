@@ -10,10 +10,7 @@ import (
 // GetAllCategoriesHandler retrieves all post categories
 func GetAllCategoriesHandler(cr *repository.CategoryRepository, pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
+
 		// Get all categories
 		categories, err := cr.GetAllCategories()
 		if err != nil {

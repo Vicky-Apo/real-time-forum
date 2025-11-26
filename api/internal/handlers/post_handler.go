@@ -19,10 +19,6 @@ import (
 
 func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -82,10 +78,6 @@ func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 // GetAllPostsHandler retrieves all posts with pagination and sorting
 func GetAllPostsHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		currentUser := middleware.GetCurrentUser(r)
@@ -119,10 +111,6 @@ func GetAllPostsHandler(pr *repository.PostsRepository) http.HandlerFunc {
 // GetPostsByCategoryHandler retrieves posts filtered by category with pagination and sorting
 func GetPostsByCategoryHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Check for authenticated user
 		currentUser := middleware.GetCurrentUser(r)
@@ -161,10 +149,6 @@ func GetPostsByCategoryHandler(pr *repository.PostsRepository) http.HandlerFunc 
 // GetSinglePostHandler retrieves a single post with full details and reactions
 func GetSinglePostHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		//  Check for authenticated user
 		currentUser := middleware.GetCurrentUser(r)
