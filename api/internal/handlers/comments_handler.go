@@ -16,10 +16,6 @@ func CreateCommentHandler(cor repository.CommentRepositoryInterface) http.Handle
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get postID from URL path, not request body
 		postID := r.PathValue("id")
@@ -62,12 +58,8 @@ func CreateCommentHandler(cor repository.CommentRepositoryInterface) http.Handle
 func GetCommentsByPostIDHandler(cor repository.CommentRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		// Get user context
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
 
 		// Get post ID from URL
 		postID := r.PathValue("id")
@@ -89,7 +81,7 @@ func GetCommentsByPostIDHandler(cor repository.CommentRepositoryInterface) http.
 		}
 
 		// Get comments with sorting
-		comments, err := cor.GetCommentsByPostID(postID, limit, offset, userID, sortOptions)
+		comments, err := cor.GetCommentsByPostID(postID, limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve comments")
 			return

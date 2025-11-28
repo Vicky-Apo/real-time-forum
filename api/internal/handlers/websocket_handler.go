@@ -8,7 +8,6 @@ import (
 	"real-time-forum/internal/middleware"
 	"real-time-forum/internal/models"
 	ws "real-time-forum/internal/websocket"
-	"real-time-forum/internal/utils"
 )
 
 var upgrader = websocket.Upgrader{
@@ -23,12 +22,9 @@ var upgrader = websocket.Upgrader{
 // WebSocketHandler handles WebSocket connections
 func WebSocketHandler(hub *ws.Hub) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		// Get authenticated user from context
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Upgrade HTTP connection to WebSocket
 		conn, err := upgrader.Upgrade(w, r, nil)

@@ -56,13 +56,13 @@ type PostsRepositoryInterface interface {
 	DeletePost(postID, userID string) error
 
 	// GetPostByID retrieves a single post by its ID
-	GetPostByID(postID string, userID *string) (*models.Post, error)
+	GetPostByID(postID string, userID string) (*models.Post, error)
 
 	// GetAllPosts retrieves all posts with pagination and sorting
-	GetAllPosts(limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error)
+	GetAllPosts(limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error)
 
 	// GetPostsByCategory retrieves posts by category with pagination and sorting
-	GetPostsByCategory(categoryID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error)
+	GetPostsByCategory(categoryID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error)
 
 	// GetPostsByUser retrieves posts created by a specific user
 	GetPostsByUser(targetUserID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error)
@@ -104,7 +104,7 @@ type CommentRepositoryInterface interface {
 	DeleteComment(commentID, userID string) error
 
 	// GetCommentsByPostID retrieves comments for a specific post with pagination and sorting
-	GetCommentsByPostID(postID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Comment, error)
+	GetCommentsByPostID(postID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Comment, error)
 
 	// GetCommentCountByPost returns the number of comments on a post
 	GetCommentCountByPost(postID string) (int, error)

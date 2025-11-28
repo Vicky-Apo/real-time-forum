@@ -127,7 +127,7 @@ func (pr *PostsRepository) DeletePost(postID, userID string) error {
 
 // GET METHODS - Using Queries Package
 
-func (pr *PostsRepository) GetPostByID(postID string, userID *string) (*models.Post, error) {
+func (pr *PostsRepository) GetPostByID(postID string, userID string) (*models.Post, error) {
 	// Since we removed reactions, we no longer need userIDArg
 	row := pr.db.QueryRow(queries.GetPostByIDQuery, postID)
 	post, err := pr.scanAndParsePost(row)
@@ -142,7 +142,7 @@ func (pr *PostsRepository) GetPostByID(postID string, userID *string) (*models.P
 }
 
 // GetAllPosts retrieves all posts (sorted by newest first by default, or custom sorting)
-func (pr *PostsRepository) GetAllPosts(limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error) {
+func (pr *PostsRepository) GetAllPosts(limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error) {
 	// Build dynamic query with sort options
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypePosts)
 	query := queries.GetAllPostsWithSortQuery(orderClause)
@@ -166,7 +166,7 @@ func (pr *PostsRepository) GetAllPosts(limit, offset int, userID *string, option
 }
 
 // GetPostsByCategory retrieves posts by category (sorted by newest first by default, or custom sorting)
-func (pr *PostsRepository) GetPostsByCategory(categoryID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error) {
+func (pr *PostsRepository) GetPostsByCategory(categoryID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error) {
 	// Build dynamic query with sort options
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypePosts)
 	query := queries.GetPostsByCategoryWithSortQuery(orderClause)

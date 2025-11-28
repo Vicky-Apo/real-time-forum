@@ -21,10 +21,6 @@ func SendMessageHandler(mr repository.MessageRepositoryInterface, hub *ws.Hub) h
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Parse request
 		var req models.SendMessageRequest
@@ -78,10 +74,6 @@ func GetMessagesHandler(mr repository.MessageRepositoryInterface) http.HandlerFu
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get user ID from URL path
 		otherUserID := r.PathValue("id")
@@ -140,10 +132,6 @@ func GetUnreadCountHandler(mr repository.MessageRepositoryInterface) http.Handle
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get unread count
 		count, err := mr.GetUnreadCount(user.ID)
@@ -165,10 +153,6 @@ func GetConversationsHandler(mr repository.MessageRepositoryInterface, hub inter
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get conversations from database
 		conversations, err := mr.GetConversations(user.ID)

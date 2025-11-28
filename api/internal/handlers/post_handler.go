@@ -18,10 +18,6 @@ func CreatePostHandler(pr repository.PostsRepositoryInterface, cr repository.Cat
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		var req models.CreatePostRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
@@ -73,18 +69,14 @@ func GetAllPostsHandler(pr repository.PostsRepositoryInterface) http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Get authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		user := middleware.GetCurrentUser(r)
 
 		// Parse pagination parameters - ONE LINE!
 		limit, offset := utils.ParsePaginationParams(r)
 		// Parse sort options from query parameters
 		sortOptions := utils.ParsePostSortOptions(r)
 		// Get posts and total count
-		posts, err := pr.GetAllPosts(limit, offset, userID, sortOptions)
+		posts, err := pr.GetAllPosts(limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve posts")
 			return
@@ -105,12 +97,8 @@ func GetAllPostsHandler(pr repository.PostsRepositoryInterface) http.HandlerFunc
 func GetPostsByCategoryHandler(pr repository.PostsRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		// Check for authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
 
 		// Extract category ID from URL path
 		categoryID := r.PathValue("id")
@@ -130,7 +118,7 @@ func GetPostsByCategoryHandler(pr repository.PostsRepositoryInterface) http.Hand
 		}
 
 		// Pass userID to repository
-		posts, err := pr.GetPostsByCategory(categoryID, limit, offset, userID, sortOptions)
+		posts, err := pr.GetPostsByCategory(categoryID, limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve posts")
 			return
@@ -143,12 +131,8 @@ func GetPostsByCategoryHandler(pr repository.PostsRepositoryInterface) http.Hand
 func GetSinglePostHandler(pr repository.PostsRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		//  Check for authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
 
 		// Extract post ID from URL path
 		postID := r.PathValue("id")
@@ -158,7 +142,7 @@ func GetSinglePostHandler(pr repository.PostsRepositoryInterface) http.HandlerFu
 		}
 
 		//Pass userID to repository
-		post, err := pr.GetPostByID(postID, userID)
+		post, err := pr.GetPostByID(postID, user.ID)
 		if err != nil {
 			if err.Error() == "post not found" {
 				utils.RespondWithError(w, http.StatusNotFound, "Post not found")

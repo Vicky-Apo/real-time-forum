@@ -115,7 +115,7 @@ func (cor *CommentRepository) DeleteComment(commentID, userID string) error {
 // ...
 
 // Get []*comments for PostID
-func (cor *CommentRepository) GetCommentsByPostID(postID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Comment, error) {
+func (cor *CommentRepository) GetCommentsByPostID(postID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Comment, error) {
 
 	// Build dynamic query with sorting using unified system - UNCHANGED
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypeComments)

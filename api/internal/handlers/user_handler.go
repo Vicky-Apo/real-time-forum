@@ -167,12 +167,8 @@ func LogoutHandler(ur repository.UserRepositoryInterface, sr repository.SessionR
 func GetCurrentUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		// The user will already be in the context thanks to the RequireAuth middleware
+		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, errors.New("unauthorized access").Error())
-			return
-		}
 
 		// Return the user data
 		utils.RespondWithSuccess(w, http.StatusOK, user)
@@ -185,10 +181,6 @@ func GetOnlineUsersHandler(hub interface{ GetOnlineUsers() []models.UserStatusPa
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, errors.New("unauthorized access").Error())
-			return
-		}
 
 		// Get online users from hub
 		onlineUsers := hub.GetOnlineUsers()
