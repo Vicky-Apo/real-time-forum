@@ -10,8 +10,8 @@ import (
 	"real-time-forum/internal/utils"
 )
 
-// Create comment handler.
-func CreateCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
+// CreateCommentHandler handles creating a new comment on a post
+func CreateCommentHandler(cor repository.CommentRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Get authenticated user
@@ -58,8 +58,8 @@ func CreateCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 	}
 }
 
-// Get ALL comments by post ID handler.
-func GetCommentsByPostIDHandler(cor *repository.CommentRepository) http.HandlerFunc {
+// GetCommentsByPostIDHandler retrieves all comments for a specific post
+func GetCommentsByPostIDHandler(cor repository.CommentRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Get user context

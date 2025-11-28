@@ -12,12 +12,8 @@ import (
 	"real-time-forum/internal/utils"
 )
 
-// ...
-// CRUD HANDLERS FOR POSTS
-// ...
-// REPLACE the CreatePostHandler in post_handler.go:
-
-func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRepository) http.HandlerFunc {
+// CreatePostHandler handles creating a new post
+func CreatePostHandler(pr repository.PostsRepositoryInterface, cr repository.CategoryRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Get authenticated user
@@ -72,11 +68,8 @@ func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 	}
 }
 
-// ...
-// GET HANDLERS FOR POSTS - UPDATED WITH USER CONTEXT
-// ...
 // GetAllPostsHandler retrieves all posts with pagination and sorting
-func GetAllPostsHandler(pr *repository.PostsRepository) http.HandlerFunc {
+func GetAllPostsHandler(pr repository.PostsRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Get authenticated user
@@ -109,7 +102,7 @@ func GetAllPostsHandler(pr *repository.PostsRepository) http.HandlerFunc {
 }
 
 // GetPostsByCategoryHandler retrieves posts filtered by category with pagination and sorting
-func GetPostsByCategoryHandler(pr *repository.PostsRepository) http.HandlerFunc {
+func GetPostsByCategoryHandler(pr repository.PostsRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Check for authenticated user
@@ -147,7 +140,7 @@ func GetPostsByCategoryHandler(pr *repository.PostsRepository) http.HandlerFunc 
 }
 
 // GetSinglePostHandler retrieves a single post with full details and reactions
-func GetSinglePostHandler(pr *repository.PostsRepository) http.HandlerFunc {
+func GetSinglePostHandler(pr repository.PostsRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		//  Check for authenticated user

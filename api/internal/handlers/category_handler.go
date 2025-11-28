@@ -8,7 +8,7 @@ import (
 )
 
 // GetAllCategoriesHandler retrieves all post categories
-func GetAllCategoriesHandler(cr *repository.CategoryRepository, pr *repository.PostsRepository) http.HandlerFunc {
+func GetAllCategoriesHandler(cr repository.CategoryRepositoryInterface, pr repository.PostsRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Get all categories

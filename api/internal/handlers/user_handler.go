@@ -13,7 +13,7 @@ import (
 )
 
 // Handle user registration logic here
-func RegisterHandler(ur *repository.UserRepository) http.HandlerFunc {
+func RegisterHandler(ur repository.UserRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var reg models.UserRegistration
@@ -86,7 +86,7 @@ func RegisterHandler(ur *repository.UserRepository) http.HandlerFunc {
 }
 
 // LoginHandler handles user login
-func LoginHandler(ur *repository.UserRepository, sr *repository.SessionRepository) http.HandlerFunc {
+func LoginHandler(ur repository.UserRepositoryInterface, sr repository.SessionRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Parse request body
@@ -138,7 +138,7 @@ func LoginHandler(ur *repository.UserRepository, sr *repository.SessionRepositor
 }
 
 // LogoutHandler handles user logout
-func LogoutHandler(ur *repository.UserRepository, sr *repository.SessionRepository) http.HandlerFunc {
+func LogoutHandler(ur repository.UserRepositoryInterface, sr repository.SessionRepositoryInterface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Get the session cookie using config session name

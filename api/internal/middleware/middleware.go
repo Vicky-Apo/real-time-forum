@@ -15,11 +15,11 @@ import (
 )
 
 type AuthMiddleware struct {
-	userRepo    *repository.UserRepository
-	sessionRepo *repository.SessionRepository
+	userRepo    repository.UserRepositoryInterface
+	sessionRepo repository.SessionRepositoryInterface
 }
 
-func NewMiddleware(userRepo *repository.UserRepository, sessionRepo *repository.SessionRepository) *AuthMiddleware {
+func NewMiddleware(userRepo repository.UserRepositoryInterface, sessionRepo repository.SessionRepositoryInterface) *AuthMiddleware {
 	return &AuthMiddleware{
 		userRepo:    userRepo,
 		sessionRepo: sessionRepo,

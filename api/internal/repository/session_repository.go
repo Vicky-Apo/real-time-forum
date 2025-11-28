@@ -19,8 +19,6 @@ func NewSessionRepository(db *sql.DB) *SessionRepository {
 	return &SessionRepository{DB: db}
 }
 
-// Update your session_repository.go CreateSession method:
-
 func (r *SessionRepository) CreateSession(userID, ipAddress string) (*models.Session, error) {
 	return utils.ExecuteInTransactionWithResult(r.DB, func(tx *sql.Tx) (*models.Session, error) {
 		// First, delete any existing sessions for this user
@@ -38,7 +36,7 @@ func (r *SessionRepository) CreateSession(userID, ipAddress string) (*models.Ses
 		expiresAt := utils.CalculateSessionExpiry()
 		now := time.Now()
 
-		// FIXED: Clean the IP address before storing (remove port if present)
+		//Clean the IP address before storing (remove port if present)
 		cleanIP := cleanIPAddress(ipAddress)
 
 		// Insert the new session with clean IP
@@ -63,7 +61,7 @@ func (r *SessionRepository) CreateSession(userID, ipAddress string) (*models.Ses
 	})
 }
 
-// Add this helper function to session_repository.go:
+// cleanIPAddress removes the port from an IP address if present
 func cleanIPAddress(ipWithPossiblePort string) string {
 	host, _, err := net.SplitHostPort(ipWithPossiblePort)
 	if err != nil {
@@ -96,10 +94,9 @@ func (sr *SessionRepository) GetBySessionID(sessionID string) (*models.Session, 
 	}
 
 	return &session, nil
-
 }
 
-// // DeleteSession deletes a session by its ID
+// DeleteSession deletes a session by its ID
 func (sr *SessionRepository) DeleteSession(sessionID string) error {
 	return utils.ExecuteInTransaction(sr.DB, func(tx *sql.Tx) error {
 		_, err := sr.DB.Exec("DELETE FROM sessions WHERE session_id = ?", sessionID)
@@ -111,8 +108,6 @@ func (sr *SessionRepository) DeleteSession(sessionID string) error {
 		return nil
 	})
 }
-
-// Add this method to your session_repository.go:
 
 // UpdateSessionIP updates the IP address for an existing session
 func (sr *SessionRepository) UpdateSessionIP(sessionID, newIP string) error {
