@@ -140,16 +140,9 @@ func (pr *PostsRepository) DeletePost(postID, userID string) error {
 
 // GET METHODS - Using Queries Package
 
-func (pr *PostsRepository) GetPostByID(postID string, userID *string) (*models.Post, error) {
-	// Prepare arguments
-	var userIDArg interface{}
-	if userID != nil {
-		userIDArg = *userID
-	} else {
-		userIDArg = "" // Won't match any user_id
-	}
+func (pr *PostsRepository) GetPostByID(postID string, userID string) (*models.Post, error) {
 
-	row := pr.db.QueryRow(queries.GetPostByIDQuery, userIDArg, postID)
+	row := pr.db.QueryRow(queries.GetPostByIDQuery, userID, postID)
 	post, err := pr.scanAndParsePost(row, userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -162,20 +155,13 @@ func (pr *PostsRepository) GetPostByID(postID string, userID *string) (*models.P
 }
 
 // GetAllPosts retrieves all posts (sorted by newest first by default, or custom sorting)
-func (pr *PostsRepository) GetAllPosts(limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error) {
-	// Prepare arguments
-	var userIDArg interface{}
-	if userID != nil {
-		userIDArg = *userID
-	} else {
-		userIDArg = "" // Won't match any user_id
-	}
+func (pr *PostsRepository) GetAllPosts(limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error) {
 
 	// Build dynamic query with sort options
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypePosts)
 	query := queries.GetAllPostsWithSortQuery(orderClause)
 
-	rows, err := pr.db.Query(query, userIDArg, limit, offset)
+	rows, err := pr.db.Query(query, userID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -194,20 +180,13 @@ func (pr *PostsRepository) GetAllPosts(limit, offset int, userID *string, option
 }
 
 // GetPostsByCategory retrieves posts by category (sorted by newest first by default, or custom sorting)
-func (pr *PostsRepository) GetPostsByCategory(categoryID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error) {
-	// Prepare arguments
-	var userIDArg interface{}
-	if userID != nil {
-		userIDArg = *userID
-	} else {
-		userIDArg = "" // Won't match any user_id
-	}
+func (pr *PostsRepository) GetPostsByCategory(categoryID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error) {
 
 	// Build dynamic query with sort options
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypePosts)
 	query := queries.GetPostsByCategoryWithSortQuery(orderClause)
 
-	rows, err := pr.db.Query(query, userIDArg, categoryID, limit, offset)
+	rows, err := pr.db.Query(query, userID, categoryID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -229,20 +208,13 @@ func (pr *PostsRepository) GetPostsByCategory(categoryID string, limit, offset i
 // Profiling methods for user-specific posts
 // ...
 // GetPostsByUser retrieves posts by user (sorted by newest first by default, or custom sorting)
-func (pr *PostsRepository) GetPostsByUser(targetUserID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error) {
-	// Prepare arguments
-	var userIDArg interface{}
-	if userID != nil {
-		userIDArg = *userID
-	} else {
-		userIDArg = "" // Won't match any user_id
-	}
+func (pr *PostsRepository) GetPostsByUser(targetUserID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error) {
 
 	// Build dynamic query with sort options
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypePosts)
 	query := queries.GetPostsByUserWithSortQuery(orderClause)
 
-	rows, err := pr.db.Query(query, userIDArg, targetUserID, limit, offset)
+	rows, err := pr.db.Query(query, userID, targetUserID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -261,20 +233,13 @@ func (pr *PostsRepository) GetPostsByUser(targetUserID string, limit, offset int
 }
 
 // GetPostsLikedByUser retrieves posts liked by user (sorted by newest first by default, or custom sorting)
-func (pr *PostsRepository) GetPostsLikedByUser(targetUserID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error) {
-	// Prepare arguments
-	var userIDArg interface{}
-	if userID != nil {
-		userIDArg = *userID
-	} else {
-		userIDArg = "" // Won't match any user_id
-	}
+func (pr *PostsRepository) GetPostsLikedByUser(targetUserID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error) {
 
 	// Build dynamic query with sort options
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypePosts)
 	query := queries.GetPostsLikedByUserWithSortQuery(orderClause)
 
-	rows, err := pr.db.Query(query, userIDArg, targetUserID, limit, offset)
+	rows, err := pr.db.Query(query, userID, targetUserID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -293,20 +258,13 @@ func (pr *PostsRepository) GetPostsLikedByUser(targetUserID string, limit, offse
 }
 
 // GetPostsCommentedByUser retrieves posts commented by user (sorted by newest first by default, or custom sorting)
-func (pr *PostsRepository) GetPostsCommentedByUser(targetUserID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Post, error) {
-	// Prepare arguments
-	var userIDArg interface{}
-	if userID != nil {
-		userIDArg = *userID
-	} else {
-		userIDArg = "" // Won't match any user_id
-	}
+func (pr *PostsRepository) GetPostsCommentedByUser(targetUserID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Post, error) {
 
 	// Build dynamic query with sort options
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypePosts)
 	query := queries.GetPostsCommentedByUserWithSortQuery(orderClause)
 
-	rows, err := pr.db.Query(query, userIDArg, targetUserID, limit, offset)
+	rows, err := pr.db.Query(query, userID, targetUserID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -389,7 +347,7 @@ func (pr *PostsRepository) GetCountLikedPostByUser(userID string) (int, error) {
 //...
 
 // Helper method to scan and parse a single post row
-func (pr *PostsRepository) scanAndParsePost(rows interface{}, userID *string) (*models.Post, error) {
+func (pr *PostsRepository) scanAndParsePost(rows interface{}, userID string) (*models.Post, error) {
 	var post models.Post
 	var categoriesStr sql.NullString
 	var userReaction sql.NullInt64
@@ -465,7 +423,7 @@ func (pr *PostsRepository) scanAndParsePost(rows interface{}, userID *string) (*
 	}
 
 	// Handle IsOwner - NO CHANGE NEEDED
-	post.IsOwner = (userID != nil && post.UserID == *userID)
+	post.IsOwner = (userID != "" && post.UserID == userID)
 
 	// --- NEW: Load images for the post ---
 	imagesRows, err := pr.db.Query("SELECT image_id, post_id, image_url, original_filename, uploaded_at FROM post_images WHERE post_id = ?", post.ID)

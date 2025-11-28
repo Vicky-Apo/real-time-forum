@@ -110,10 +110,6 @@ func (cor *CommentRepository) DeleteComment(commentID, userID string) error {
 	})
 }
 
-// ...
-// GET comment or comments
-// ...
-
 // Get []*comments for PostID
 func (cor *CommentRepository) GetCommentsByPostID(postID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Comment, error) {
 	// Prepare user ID argument - UNCHANGED
@@ -181,9 +177,8 @@ func (cor *CommentRepository) GetCommentsByPostID(postID string, limit, offset i
 	return comments, nil
 }
 
-// ..
+
 // COUNT comments methods
-// ..
 func (cor *CommentRepository) GetCommentCountByPost(postID string) (int, error) {
 	var count int
 	err := cor.db.QueryRow("SELECT COUNT(*) FROM comments WHERE post_id = ?", postID).Scan(&count)
@@ -193,9 +188,6 @@ func (cor *CommentRepository) GetCommentCountByPost(postID string) (int, error) 
 	return count, nil
 }
 
-// ..
-// /  Helper method
-// ..
 // Helper method to scan comment rows (updated to handle both *sql.Rows and *sql.Row)
 func (cor *CommentRepository) scanCommentRow(scanner interface{}, userID *string) (*models.Comment, error) {
 	var comment models.Comment

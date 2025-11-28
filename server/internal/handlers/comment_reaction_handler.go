@@ -13,10 +13,6 @@ import (
 // ToggleCommentReactionHandler handles toggling reactions on comments
 func ToggleCommentReactionHandler(crr *repository.CommentReactionRepository, nr *repository.NotificationRepository, cr *repository.CommentRepository, ur *repository.UserRepository, pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -57,7 +53,7 @@ func ToggleCommentReactionHandler(crr *repository.CommentReactionRepository, nr 
 			comment, err := cr.GetCommentByID(req.CommentID, nil)
 			if err == nil && comment.UserID != user.ID { // Don't notify yourself
 				// Get post content preview
-				post, err := pr.GetPostByID(comment.PostID, nil)
+				post, err := pr.GetPostByID(comment.PostID, user.ID)
 				if err == nil {
 					contentPreview := post.Content
 					if len(contentPreview) > 50 {

@@ -52,8 +52,8 @@ func (ur *UserRepository) CreateUser(reg models.UserRegistration) (*models.User,
 
 		// Insert user record
 		_, err = tx.Exec(
-			"INSERT INTO users (user_id, username, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
-			userID, reg.Username, reg.Email, hashedPassword, createdAt,
+			"INSERT INTO users (user_id, username, age, gender, first_name, last_name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			userID, reg.Username, reg.Age, reg.Gender, reg.FirstName, reg.LastName, reg.Email, hashedPassword, createdAt,
 		)
 		if err != nil {
 			return nil, err
@@ -63,6 +63,10 @@ func (ur *UserRepository) CreateUser(reg models.UserRegistration) (*models.User,
 		return &models.User{
 			ID:        userID,
 			Username:  reg.Username,
+			Age:       reg.Age,
+			Gender:    reg.Gender,
+			FirstName: reg.FirstName,
+			LastName:  reg.LastName,
 			Email:     reg.Email,
 			CreatedAt: createdAt,
 		}, nil
@@ -108,13 +112,13 @@ func (ur *UserRepository) GetAuthByUserID(userID string) (*models.UserPassword, 
 }
 
 // GetUserByEmail retrieves a user by email
-func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
+func (ur *UserRepository) GetUserByEmailOrUsername(identifier string) (*models.User, error) {
 	var user models.User
 
 	err := ur.DB.QueryRow(
-		"SELECT user_id, username, email, created_at FROM users WHERE LOWER(email) = LOWER(?)",
-		email,
-	).Scan(&user.ID, &user.Username, &user.Email, &user.CreatedAt)
+		"SELECT user_id, username, age, gender, first_name, last_name, email, created_at FROM users WHERE LOWER(email) = LOWER(?) OR LOWER(username) = LOWER(?)",
+		identifier, identifier,
+	).Scan(&user.ID, &user.Username, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email, &user.CreatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errors.New("user not found")
@@ -126,10 +130,10 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 
 }
 
-// Authenticate validates a user's login credentials
+// Authenticate validates a user's login credentials (accepts nickname or email)
 func (ur *UserRepository) Authenticate(login models.UserLogin) (*models.User, error) {
 	// Get the user by email
-	user, err := ur.GetUserByEmail(login.Email)
+	user, err := ur.GetUserByEmailOrUsername(login.Identifier)
 	if err != nil {
 		return nil, errors.New("email not found")
 	}

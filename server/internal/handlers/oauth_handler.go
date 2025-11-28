@@ -38,10 +38,6 @@ func NewOAuthHandler(oauthRepo *repository.OAuthRepository, userRepo *repository
 
 // ServeGitHubLogin initiates GitHub OAuth flow (WEB ONLY)
 func (h *OAuthHandler) ServeGitHubLogin(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
 
 	// Create OAuth state for CSRF protection
 	state, err := h.oauthRepo.CreateOAuthState("github")
@@ -59,10 +55,6 @@ func (h *OAuthHandler) ServeGitHubLogin(w http.ResponseWriter, r *http.Request) 
 
 // ServeGitHubCallback handles GitHub OAuth callback (WEB ONLY)
 func (h *OAuthHandler) ServeGitHubCallback(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
 
 	// Get parameters from URL
 	code := r.URL.Query().Get("code")
@@ -393,10 +385,6 @@ func (h *OAuthHandler) generateUniqueUsername(githubLogin string) string {
 
 // ServeGoogleLogin initiates Google OAuth flow
 func (h *OAuthHandler) ServeGoogleLogin(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
 
 	// Create OAuth state for CSRF protection
 	state, err := h.oauthRepo.CreateOAuthState("google")
@@ -414,10 +402,6 @@ func (h *OAuthHandler) ServeGoogleLogin(w http.ResponseWriter, r *http.Request) 
 
 // ServeGoogleCallback handles Google OAuth callback
 func (h *OAuthHandler) ServeGoogleCallback(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
 
 	// Get parameters from URL
 	code := r.URL.Query().Get("code")

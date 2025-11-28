@@ -14,10 +14,6 @@ import (
 // create comment handler.
 func CreateCommentHandler(cor *repository.CommentRepository, nr *repository.NotificationRepository, pr *repository.PostsRepository, ur *repository.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -69,7 +65,7 @@ func CreateCommentHandler(cor *repository.CommentRepository, nr *repository.Noti
 // Helper function to create new comment notifications
 func createNewCommentNotification(pr *repository.PostsRepository, nr *repository.NotificationRepository, postID string, user *models.User) {
 	// Get post details to know who to notify (pass nil for userID since we don't need reaction data)
-	post, err := pr.GetPostByID(postID, nil)
+	post, err := pr.GetPostByID(postID, user.ID)
 	if err != nil {
 		return
 	}
@@ -104,10 +100,6 @@ func createNewCommentNotification(pr *repository.PostsRepository, nr *repository
 // update comment handler.
 func UpdateCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPut {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -159,10 +151,6 @@ func UpdateCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 // delete comment handler.
 func DeleteCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -200,10 +188,6 @@ func DeleteCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 // Get ALL comments by post ID handler.
 func GetCommentsByPostIDHandler(cor *repository.CommentRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get user context
 		currentUser := middleware.GetCurrentUser(r)
@@ -246,10 +230,6 @@ func GetCommentsByPostIDHandler(cor *repository.CommentRepository) http.HandlerF
 // GetSingleCommentHandler retrieves a single comment by ID
 func GetSingleCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get comment ID from URL
 		commentID := r.PathValue("id")

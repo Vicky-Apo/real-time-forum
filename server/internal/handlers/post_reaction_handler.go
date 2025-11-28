@@ -13,17 +13,9 @@ import (
 
 func TogglePostReactionHandler(prr *repository.PostReactionRepository, nr *repository.NotificationRepository, pr *repository.PostsRepository, ur *repository.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Parse request body
 		var req models.PostReactionRequest
@@ -54,7 +46,7 @@ func TogglePostReactionHandler(prr *repository.PostReactionRepository, nr *repos
 		// Create notification only for new reactions
 		if result.Action == models.ActionPostLikeCreated || result.Action == models.ActionPostDislikeCreated {
 			// Get post details to know who to notify
-			post, err := pr.GetPostByID(req.PostID, nil)
+			post, err := pr.GetPostByID(req.PostID, user.ID)
 			if err == nil && post.UserID != user.ID { // Don't notify yourself
 				// Get post content preview (first 50 chars)
 				contentPreview := post.Content

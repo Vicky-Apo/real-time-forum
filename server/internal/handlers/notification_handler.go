@@ -12,10 +12,6 @@ import (
 // GetNotificationsHandler returns all notifications for the authenticated user
 func GetNotificationsHandler(nr *repository.NotificationRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -44,10 +40,6 @@ func GetNotificationsHandler(nr *repository.NotificationRepository) http.Handler
 // MarkAsReadHandler marks a specific notification as read
 func MarkAsReadHandler(nr *repository.NotificationRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)

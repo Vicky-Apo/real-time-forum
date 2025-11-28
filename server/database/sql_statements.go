@@ -5,7 +5,11 @@ var TableCreationStatements = []string{
 	// Users table - unchanged, already optimized
 	`CREATE TABLE IF NOT EXISTS users (
 		user_id TEXT PRIMARY KEY NOT NULL UNIQUE,
-		username TEXT NOT NULL UNIQUE,
+		username VARCHAR(15) NOT NULL UNIQUE,
+		age INTEGER NOT NULL CHECK (age >= 13 AND age <= 120),
+		gender TEXT NOT NULL,
+		first_name VARCHAR(50) NOT NULL,
+		last_name VARCHAR(50) NOT NULL,
 		email TEXT NOT NULL UNIQUE,
 		password_hash TEXT NOT NULL, -- Store hashed password
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -140,6 +144,19 @@ var TableCreationStatements = []string{
 		
 		FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 		-- REMOVED: Restrictive CHECK constraint to allow flexible action text
+	);`,
+
+	// Messages table - for direct user-to-user messaging
+	`CREATE TABLE IF NOT EXISTS messages (
+		message_id TEXT PRIMARY KEY NOT NULL UNIQUE,
+		sender_id TEXT NOT NULL,
+		recipient_id TEXT NOT NULL,
+		content TEXT NOT NULL,
+		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		is_read BOOLEAN NOT NULL DEFAULT 0,
+
+		FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE,
+		FOREIGN KEY (recipient_id) REFERENCES users(user_id) ON DELETE CASCADE
 	);`,
 }
 

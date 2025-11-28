@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"slices"
 	"errors"
 	"net/mail"
 	"regexp"
@@ -65,7 +66,68 @@ func ValidateUsername(username string) error {
 	return nil
 }
 
-func ValidateUserInput(username, email, password string) error {
+func ValidateName(name, fieldName string) error {
+	// Trim whitespace
+	name = strings.TrimSpace(name)
+
+	// Check length
+	if len(name) < 2 {
+		return errors.New(fieldName + " must be at least 2 characters")
+	}
+	if len(name) > 50 {
+		return errors.New(fieldName + " must be 50 characters or less")
+	}
+
+	// Check if name is only spaces or special characters
+	if strings.TrimSpace(name) == "" {
+		return errors.New(fieldName + " cannot be empty or only spaces")
+	}
+
+	// Allow letters (including unicode/accented), spaces, hyphens, and apostrophes
+	// This supports names like: Jean-Pierre, O'Brien, María, François
+	nameRegex := regexp.MustCompile(`^[\p{L}\s'-]+$`)
+	if !nameRegex.MatchString(name) {
+		return errors.New(fieldName + " can only contain letters, spaces, hyphens, and apostrophes")
+	}
+
+	// Prevent starting or ending with special characters (space, hyphen, apostrophe)
+	if matched, _ := regexp.MatchString(`^[\s'-]|[\s'-]$`, name); matched {
+		return errors.New(fieldName + " cannot start or end with spaces, hyphens, or apostrophes")
+	}
+
+	// Prevent multiple consecutive special characters
+	if matched, _ := regexp.MatchString(`[\s'-]{2,}`, name); matched {
+		return errors.New(fieldName + " cannot contain consecutive special characters")
+	}
+
+	return nil
+}
+
+func ValidateAge(age int) error {
+	// Validate age - must be between 13 and 120
+	if age < 13 {
+		return errors.New("age must be at least 13 years old")
+	}
+	if age > 120 {
+		return errors.New("age must be 120 or less")
+	}
+	return nil
+}
+
+func ValidateGender(gender string) error {
+	// Validate gender - must be one of the allowed values
+	allowedGenders := []string{"Male", "Female", "Other"}
+
+	gender = strings.TrimSpace(gender)
+
+	if slices.Contains(allowedGenders, gender) {
+			return nil
+		}
+
+	return errors.New("gender must be one of: Male, Female, or Other")
+}
+
+func ValidateUserInput(username, email, password, gender, firstName, lastName string, age int) error {
 	if err := ValidateUsername(username); err != nil {
 		return err
 	}
@@ -73,6 +135,18 @@ func ValidateUserInput(username, email, password string) error {
 		return err
 	}
 	if err := ValidatePassword(password); err != nil {
+		return err
+	}
+	if err := ValidateGender(gender); err != nil {
+		return err
+	}
+	if err := ValidateAge(age); err != nil {
+		return err
+	}
+	if err := ValidateName(firstName, "first name"); err != nil {
+		return err
+	}
+	if err := ValidateName(lastName, "last name"); err != nil {
 		return err
 	}
 	return nil

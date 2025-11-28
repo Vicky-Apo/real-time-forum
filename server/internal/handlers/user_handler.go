@@ -15,10 +15,6 @@ import (
 // Handle user registration logic here
 func RegisterHandler(ur *repository.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		var reg models.UserRegistration
 		err := json.NewDecoder(r.Body).Decode(&reg)
@@ -33,19 +29,41 @@ func RegisterHandler(ur *repository.UserRepository) http.HandlerFunc {
 			return
 		}
 
-		// NEW: Check if ConfirmPassword field exists and validate
+		// Validate new required fields
+		if reg.Username == "" {
+			utils.RespondWithError(w, http.StatusBadRequest, "Nickname is required")
+			return
+		}
+		if reg.FirstName == "" {
+			utils.RespondWithError(w, http.StatusBadRequest, "First name is required")
+			return
+		}
+		if reg.LastName == "" {
+			utils.RespondWithError(w, http.StatusBadRequest, "Last name is required")
+			return
+		}
+		if reg.Gender == "" {
+			utils.RespondWithError(w, http.StatusBadRequest, "Gender is required")
+			return
+		}
+		if reg.Age <= 0 {
+			utils.RespondWithError(w, http.StatusBadRequest, "Valid age is required")
+			return
+		}
+
+		// Check if ConfirmPassword field exists and validate
 		if reg.ConfirmPassword == "" {
 			utils.RespondWithError(w, http.StatusBadRequest, "Password confirmation is required")
 			return
 		}
 
-		// NEW: Validate that passwords match
+		// Validate that passwords match
 		if reg.Password != reg.ConfirmPassword {
 			utils.RespondWithError(w, http.StatusBadRequest, "Passwords do not match")
 			return
 		}
 
-		err = utils.ValidateUserInput(reg.Username, reg.Email, reg.Password)
+		err = utils.ValidateUserInput(reg.Username, reg.Email, reg.Password, reg.Gender, reg.FirstName, reg.LastName, reg.Age)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
@@ -70,11 +88,6 @@ func RegisterHandler(ur *repository.UserRepository) http.HandlerFunc {
 // LoginHandler handles user login
 func LoginHandler(ur *repository.UserRepository, sr *repository.SessionRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Only allow POST requests
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, errors.New("method not allowed").Error())
-			return
-		}
 
 		// Parse request body
 		var login models.UserLogin
@@ -85,16 +98,11 @@ func LoginHandler(ur *repository.UserRepository, sr *repository.SessionRepositor
 		}
 
 		// Validate request - basic required fields check
-		if login.Email == "" || login.Password == "" {
-			utils.RespondWithError(w, http.StatusBadRequest, errors.New("email and password are required").Error())
+		if login.Identifier == "" || login.Password == "" {
+			utils.RespondWithError(w, http.StatusBadRequest, errors.New("email or username and password are required").Error())
 			return
 		}
 
-		err = utils.ValidateEmail(login.Email)
-		if err != nil {
-			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
-			return
-		}
 		err = utils.ValidatePassword(login.Password)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
@@ -133,11 +141,6 @@ func LoginHandler(ur *repository.UserRepository, sr *repository.SessionRepositor
 // LogoutHandler handles user logout
 func LogoutHandler(ur *repository.UserRepository, sr *repository.SessionRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Only allow POST requests
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, errors.New("method not allowed").Error())
-			return
-		}
 
 		// Get the session cookie using config session name
 		cookie, err := r.Cookie(config.Config.SessionName) // CHANGED: Use config session name
@@ -164,11 +167,6 @@ func LogoutHandler(ur *repository.UserRepository, sr *repository.SessionReposito
 
 func GetCurrentUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Allow only post method
-		if r.Method != http.MethodPost {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, errors.New("method not allowed").Error())
-			return
-		}
 
 		// The user will already be in the context thanks to the RequireAuth middleware
 		user := middleware.GetCurrentUser(r)
@@ -184,10 +182,6 @@ func GetCurrentUser() http.HandlerFunc {
 
 func GetUserProfileHandler(ur *repository.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user (since only users can view their own profile)
 		currentUser := middleware.GetCurrentUser(r)

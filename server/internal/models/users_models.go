@@ -6,6 +6,10 @@ import "time"
 type User struct {
 	ID        string    `json:"id"`
 	Username  string    `json:"username"`
+	Age       int       `json:"age"`
+	Gender    string    `json:"gender"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
 	Email     string    `json:"email"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -19,6 +23,10 @@ type UserPassword struct {
 // UserRegistration - Registration form data 
 type UserRegistration struct {
 	Username        string `json:"username"`
+	Age             int    `json:"age"`
+	Gender          string `json:"gender"`
+	FirstName       string `json:"first_name"`
+	LastName        string `json:"last_name"`
 	Email           string `json:"email"`
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"confirm_password"` 
@@ -26,6 +34,6 @@ type UserRegistration struct {
 
 // UserLogin is used for login requests
 type UserLogin struct {
-	Email    string `json:"email" binding:"required,email"`
+	Identifier    string `json:"identifier" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }

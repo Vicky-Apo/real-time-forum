@@ -18,10 +18,6 @@ import (
 
 func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRepository, pir *repository.PostImagesRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
@@ -148,10 +144,7 @@ func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 // UpdatePostHandler updates an existing post
 func UpdatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRepository, pir *repository.PostImagesRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPut {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
+
 		user := middleware.GetCurrentUser(r)
 		if user == nil {
 			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
@@ -164,7 +157,7 @@ func UpdatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 		}
 
 		// Check ownership
-		post, err := pr.GetPostByID(postID, &user.ID)
+		post, err := pr.GetPostByID(postID, user.ID)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusNotFound, "Post not found")
 			return
@@ -296,10 +289,7 @@ func UpdatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 // DeletePostHandler deletes an existing post
 func DeletePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRepository, pir *repository.PostImagesRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
+
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
 		if user == nil {
@@ -314,7 +304,7 @@ func DeletePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 		}
 
 		// Pass userID to GetPostByID for ownership check
-		post, err := pr.GetPostByID(postID, &user.ID)
+		post, err := pr.GetPostByID(postID, user.ID)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusNotFound, "Post not found")
 			return
@@ -357,30 +347,19 @@ func DeletePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 	}
 }
 
-// ...
-// GET HANDLERS FOR POSTS - UPDATED WITH USER CONTEXT
-// ...
 // GetAllPostsHandler retrieves all posts with pagination and sorting
 func GetAllPostsHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		user := middleware.GetCurrentUser(r)
 
 		// Parse pagination parameters - ONE LINE!
 		limit, offset := utils.ParsePaginationParams(r)
 		// Parse sort options from query parameters
 		sortOptions := utils.ParsePostSortOptions(r)
 		// Get posts and total count
-		posts, err := pr.GetAllPosts(limit, offset, userID, sortOptions)
+		posts, err := pr.GetAllPosts(limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve posts")
 			return
@@ -400,17 +379,9 @@ func GetAllPostsHandler(pr *repository.PostsRepository) http.HandlerFunc {
 // GetPostsByCategoryHandler retrieves posts filtered by category with pagination and sorting
 func GetPostsByCategoryHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
-		// Check for authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
 
 		// Extract category ID from URL path
 		categoryID := r.PathValue("id")
@@ -430,7 +401,7 @@ func GetPostsByCategoryHandler(pr *repository.PostsRepository) http.HandlerFunc 
 		}
 
 		// Pass userID to repository
-		posts, err := pr.GetPostsByCategory(categoryID, limit, offset, userID, sortOptions)
+		posts, err := pr.GetPostsByCategory(categoryID, limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve posts")
 			return
@@ -442,17 +413,9 @@ func GetPostsByCategoryHandler(pr *repository.PostsRepository) http.HandlerFunc 
 // GetSinglePostHandler retrieves a single post with full details and reactions
 func GetSinglePostHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
-		//  Check for authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
 
 		// Extract post ID from URL path
 		postID := r.PathValue("id")
@@ -462,7 +425,7 @@ func GetSinglePostHandler(pr *repository.PostsRepository) http.HandlerFunc {
 		}
 
 		//Pass userID to repository
-		post, err := pr.GetPostByID(postID, userID)
+		post, err := pr.GetPostByID(postID, user.ID)
 		if err != nil {
 			if err.Error() == "post not found" {
 				utils.RespondWithError(w, http.StatusNotFound, "Post not found")
@@ -475,22 +438,13 @@ func GetSinglePostHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	}
 }
 
-// ...
-// PROFILE HANDLERS - UPDATED
-// ...
 // GetUserPostsProfileHandler retrieves all posts by a specific user
 func GetUserPostsProfileHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
+
 		// Get authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		if currentUser == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
+		user := middleware.GetCurrentUser(r)
+
 		// Extract user ID from URL path
 		userID := r.PathValue("id")
 		if userID == "" {
@@ -498,7 +452,7 @@ func GetUserPostsProfileHandler(pr *repository.PostsRepository) http.HandlerFunc
 			return
 		}
 		// Ensure user can only view their own posts
-		if currentUser.ID != userID {
+		if user.ID != userID {
 			utils.RespondWithError(w, http.StatusForbidden, "You can only view your own posts")
 			return
 		}
@@ -510,7 +464,7 @@ func GetUserPostsProfileHandler(pr *repository.PostsRepository) http.HandlerFunc
 		limit, offset := utils.ParsePaginationParams(r)
 		sortOptions := utils.ParsePostSortOptions(r)
 		//Pass both targetUserID and currentUserID to repository
-		posts, err := pr.GetPostsByUser(userID, limit, offset, &currentUser.ID, sortOptions)
+		posts, err := pr.GetPostsByUser(userID, limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve user posts")
 			return
@@ -522,16 +476,10 @@ func GetUserPostsProfileHandler(pr *repository.PostsRepository) http.HandlerFunc
 // GetUserLikedPostsProfileHandler retrieves all posts liked by a specific user
 func GetUserLikedPostsProfileHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
+
 		// Get authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		if currentUser == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
+		user := middleware.GetCurrentUser(r)
+
 		// Extract user ID from URL path
 		userID := r.PathValue("id")
 		if userID == "" {
@@ -539,7 +487,7 @@ func GetUserLikedPostsProfileHandler(pr *repository.PostsRepository) http.Handle
 			return
 		}
 		// Ensure user can only view their own liked posts
-		if currentUser.ID != userID {
+		if user.ID != userID {
 			utils.RespondWithError(w, http.StatusForbidden, "You can only view your own liked posts")
 			return
 		}
@@ -553,7 +501,7 @@ func GetUserLikedPostsProfileHandler(pr *repository.PostsRepository) http.Handle
 			return
 		}
 		// Pass both targetUserID and currentUserID to repository
-		posts, err := pr.GetPostsLikedByUser(userID, limit, offset, &currentUser.ID, sortOptions)
+		posts, err := pr.GetPostsLikedByUser(userID, limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve liked posts")
 			return
@@ -565,17 +513,9 @@ func GetUserLikedPostsProfileHandler(pr *repository.PostsRepository) http.Handle
 // GetUserCommentedPostsProfileHandler retrieves all posts that a specific user has commented on
 func GetUserCommentedPostsProfileHandler(pr *repository.PostsRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			utils.RespondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
-			return
-		}
 
 		// Get authenticated user
-		currentUser := middleware.GetCurrentUser(r)
-		if currentUser == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
+		user := middleware.GetCurrentUser(r)
 
 		// Extract user ID from URL path
 		userID := r.PathValue("id")
@@ -585,7 +525,7 @@ func GetUserCommentedPostsProfileHandler(pr *repository.PostsRepository) http.Ha
 		}
 
 		// Ensure user can only view their own commented posts
-		if currentUser.ID != userID {
+		if user.ID != userID {
 			utils.RespondWithError(w, http.StatusForbidden, "You can only view your own commented posts")
 			return
 		}
@@ -602,7 +542,7 @@ func GetUserCommentedPostsProfileHandler(pr *repository.PostsRepository) http.Ha
 		}
 
 		// Get posts that user has commented on
-		posts, err := pr.GetPostsCommentedByUser(userID, limit, offset, &currentUser.ID, sortOptions)
+		posts, err := pr.GetPostsCommentedByUser(userID, limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve commented posts")
 			return
