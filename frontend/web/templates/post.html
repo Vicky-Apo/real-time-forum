@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Post.Username}}'s Post - Forum</title>
+    <!-- Global CSS first, then post-specific CSS -->
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/post.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/static/js/notifications.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Component (using global CSS) -->
+        <header class="header">
+            <h1>Forum404NotFound</h1>
+            <nav>
+                <a href="/">Home</a>
+                {{if .User}}
+                    <a href="/create-post">Create Post</a>
+                    <a href="/profile">Profile</a>
+                    
+                    <!-- Notification HTML -->
+                    <div class="notification-container">
+                        <a href="#" class="notification-bell" id="notification-bell" onclick="toggleNotificationDropdown(event)">
+                            🔔
+                            <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                        </a>
+                        
+                        <div class="notification-dropdown" id="notification-dropdown">
+                            <div class="notification-dropdown-header">
+                                <h3>Notifications</h3>
+                                <div class="notification-actions">
+                                    <button class="close-dropdown-btn" onclick="closeNotificationDropdown()">×</button>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-dropdown-content" id="notification-list">
+                                <div class="notification-loading" id="notification-loading">
+                                    <div class="loading-spinner"></div>
+                                    <p>Loading notifications...</p>
+                                </div>
+                                
+                                <div class="notification-empty" id="notification-empty" style="display: none;">
+                                    <div class="empty-icon">🔔</div>
+                                    <p>No notifications yet</p>
+                                    <small>You'll see notifications here when someone interacts with your posts</small>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-dropdown-footer">
+                                <a href="/notifications" class="view-all-link">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <span>Welcome, {{.User.Username | html}}!</span>
+                    <form method="POST" action="/logout" style="display: inline;">
+                        <button type="submit">Logout</button>
+                    </form>
+                {{else}}
+                    <a href="/login">Login</a>
+                    <a href="/register">Register</a>
+                {{end}}
+            </nav>
+        </header>
+
+        <!-- Image Lightbox Overlay -->
+        <div id="image-lightbox">
+            <button class="close-btn" onclick="closeLightbox()" aria-label="Close">&times;</button>
+            <img src="" alt="Full size image">
+        </div>
+
+        <!-- Breadcrumb Component (using global CSS) -->
+        <nav class="breadcrumb">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <span class="separator">></span>
+            <span class="current">{{.Post.Username}}'s Post</span>
+        </nav>
+
+        <!-- Main Content Grid (using global CSS) -->
+        <div class="main-content">
+            <!-- Main Post Section -->
+            <section class="info-widget">
+                <!-- Post Card Component (unique main-post-card styling) -->
+                <article class="post-card main-post-card">
+                    <!-- Post Header -->
+                    <div class="post-header">
+                        <div class="post-meta">
+                            <div class="author-info">
+                                <i class="fas fa-user"></i>
+                                <strong>{{.Post.Username | html}}</strong>
+                            </div>
+                            <div class="post-date">
+                                <i class="fas fa-calendar"></i>
+                                <span>{{.Post.CreatedAt.Format "Jan 2, 2006 at 3:04 PM"}}</span>
+                                {{if .Post.UpdatedAt}}
+                                    <span class="updated-indicator">✏️ Updated {{.Post.UpdatedAt.Format "Jan 2, 2006"}}</span>
+                                {{end}}
+                            </div>
+                        </div>
+                        <div class="post-categories">
+                            <i class="fas fa-tags"></i>
+                            {{range $index, $category := .Post.Categories}}
+                                {{if $index}}, {{end}}
+                                <a href="/category/{{$category.ID}}" class="category-tag">{{$category.Name | html}}</a>
+                            {{end}}
+                        </div>
+                    </div>
+
+                    <!-- Post Content -->
+                    <div class="post-content">
+                        {{.Post.Content | html}}
+                    </div>
+
+                    {{if .Post.Images}}
+                    <div class="post-images">
+                        {{range .Post.Images}}
+                            <img src="http://localhost:8080{{.ImageURL}}" alt="post image" class="post-image" onclick="openLightbox(this)">
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    <!-- Post Stats and Actions (using global CSS) -->
+                    <div class="post-stats">
+                        <!-- Reaction Buttons (Only for logged-in users) -->
+                        {{if .User}}
+                            <div class="reaction-buttons">
+                                <!-- Like Button -->
+                                <form method="POST" action="/reactions/posts/toggle" style="display: inline;">
+                                    <input type="hidden" name="post_id" value="{{.Post.ID}}">
+                                    <input type="hidden" name="reaction_type" value="1">
+                                    <input type="hidden" name="redirect_to" value="/post/{{.Post.ID}}">
+                                    <button type="submit" class="reaction-btn like-btn {{if and .Post.UserReaction (eq .Post.UserReaction 1)}}active{{end}}">
+                                        👍 {{.Post.LikeCount}}
+                                    </button>
+                                </form>
+                                <!-- Dislike Button -->
+                                <form method="POST" action="/reactions/posts/toggle" style="display: inline;">
+                                    <input type="hidden" name="post_id" value="{{.Post.ID}}">
+                                    <input type="hidden" name="reaction_type" value="2">
+                                    <input type="hidden" name="redirect_to" value="/post/{{.Post.ID}}">
+                                    <button type="submit" class="reaction-btn dislike-btn {{if and .Post.UserReaction (eq .Post.UserReaction 2)}}active{{end}}">
+                                        👎 {{.Post.DislikeCount}}
+                                    </button>
+                                </form>
+                            </div>
+                        {{else}}
+                            <!-- Read-only reaction counts for non-logged-in users -->
+                            <div class="reaction-display">
+                                <span class="reaction-count">👍 {{.Post.LikeCount}}</span>
+                                <span class="reaction-count">👎 {{.Post.DislikeCount}}</span>
+                            </div>
+                        {{end}}
+                        
+                        <!-- Comment Count -->
+                        <span>💬 {{.Post.CommentCount}}</span>
+
+                        <!-- Edit/Delete buttons (for post owners) -->
+                        {{if .Post.IsOwner}}
+                            <div class="post-actions">
+                                <a href="/edit-post/{{.Post.ID}}" class="edit-btn">✏️ Edit</a>
+                                <form method="POST" action="/delete-post/{{.Post.ID}}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this post?')">
+                                    <input type="hidden" name="redirect_to" value="/">
+                                    <button type="submit" class="delete-btn">🗑️ Delete</button>
+                                </form>
+                            </div>
+                        {{end}}
+                    </div>
+                </article>
+
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <h3>💬 Comments ({{.Post.CommentCount}})</h3>
+                        <div class="sort-controls">
+                            <label for="sort">Sort by:</label>
+                            <select id="sort" onchange="changeSortOrder(this.value)">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="likes">Most Liked</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Add Comment Form (Only for logged-in users) -->
+                    {{if .User}}
+                        <div class="add-comment">
+                            <form class="comment-form" method="POST" action="/api/comments/create/{{.Post.ID}}">
+                                <div class="form-group">
+                                    <textarea name="content" class="form-control" placeholder="Write your comment..." rows="3" required minlength="5" maxlength="150"></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">💬 Post Comment</button>
+                                </div>
+                            </form>
+                        </div>
+                    {{else}}
+                        <div class="add-comment">
+                            <div class="no-comments">
+                                <p><a href="/login">Login to comment</a></p>
+                            </div>
+                        </div>
+                    {{end}}
+
+                    <!-- Comments List -->
+                    <div class="comments-list">
+                        {{if .Comments}}
+                            {{range .Comments}}
+                                <article class="comment-card">
+                                    <div class="post-meta">
+                                        <div class="author-info">
+                                            <i class="fas fa-user"></i>
+                                            <strong>{{.Username | html}}</strong>
+                                        </div>
+                                        <div class="post-date">
+                                            <i class="fas fa-calendar"></i>
+                                            <span>{{.CreatedAt.Format "Jan 2, 2006 at 3:04 PM"}}</span>
+                                            {{if .UpdatedAt}}
+                                                <span class="updated-indicator">✏️ Updated</span>
+                                            {{end}}
+                                        </div>
+                                    </div>
+
+                                    <div class="post-content">
+                                        {{.Content | html}}
+                                    </div>
+
+                                    <div class="post-stats">
+                                        <!-- Comment Reaction Buttons (Only for logged-in users) -->
+                                        {{if $.User}}
+                                            <div class="reaction-buttons">
+                                                <!-- Like Button -->
+                                                <form method="POST" action="/reactions/comments/toggle" style="display: inline;">
+                                                    <input type="hidden" name="comment_id" value="{{.ID}}">
+                                                    <input type="hidden" name="reaction_type" value="1">
+                                                    <input type="hidden" name="redirect_to" value="/post/{{$.Post.ID}}">
+                                                    <button type="submit" class="reaction-btn like-btn {{if and .UserReaction (eq .UserReaction 1)}}active{{end}}">
+                                                        👍 {{.LikeCount}}
+                                                    </button>
+                                                </form>
+                                                <!-- Dislike Button -->
+                                                <form method="POST" action="/reactions/comments/toggle" style="display: inline;">
+                                                    <input type="hidden" name="comment_id" value="{{.ID}}">
+                                                    <input type="hidden" name="reaction_type" value="2">
+                                                    <input type="hidden" name="redirect_to" value="/post/{{$.Post.ID}}">
+                                                    <button type="submit" class="reaction-btn dislike-btn {{if and .UserReaction (eq .UserReaction 2)}}active{{end}}">
+                                                        👎 {{.DislikeCount}}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        {{else}}
+                                            <!-- Read-only reaction counts for non-logged-in users -->
+                                            <div class="reaction-display">
+                                                <span class="reaction-count">👍 {{.LikeCount}}</span>
+                                                <span class="reaction-count">👎 {{.DislikeCount}}</span>
+                                            </div>
+                                        {{end}}
+
+                                        <!-- Edit/Delete buttons (for comment owners) -->
+                                        {{if .IsOwner}}
+                                            <div class="comment-actions">
+                                                <a href="/edit-comment/{{.ID}}" class="edit-btn">✏️ Edit</a>
+                                                <form method="POST" action="/api/comments/delete/{{.ID}}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this comment?')">
+                                                    <input type="hidden" name="redirect_to" value="/post/{{$.Post.ID}}">
+                                                    <button type="submit" class="delete-btn">🗑️ Delete</button>
+                                                </form>
+                                            </div>
+                                        {{end}}
+                                    </div>
+                                </article>
+                            {{end}}
+
+                            <!-- 🔧 NEW: Comment Pagination Component -->
+                            {{if gt .CommentsPagination.TotalPages 1}}
+                                <nav class="pagination">
+                                    <div class="pagination-info">
+                                        Showing comments {{add (mul (sub .CommentsPagination.CurrentPage 1) .CommentsPagination.PerPage) 1}} - 
+                                        {{if lt (mul .CommentsPagination.CurrentPage .CommentsPagination.PerPage) .CommentsPagination.TotalCount}}
+                                            {{mul .CommentsPagination.CurrentPage .CommentsPagination.PerPage}}
+                                        {{else}}
+                                            {{.CommentsPagination.TotalCount}}
+                                        {{end}}
+                                        of {{.CommentsPagination.TotalCount}}
+                                    </div>
+                                    
+                                    <div class="pagination-links">
+                                        <!-- First page -->
+                                        {{if gt .CommentsPagination.CurrentPage 1}}
+                                            <a href="/post/{{.Post.ID}}?limit={{.CommentsPagination.PerPage}}&offset=0{{if .Sort}}&sort={{.Sort}}{{end}}">First</a>
+                                        {{end}}
+
+                                        <!-- Previous page -->
+                                        {{if .CommentsPagination.HasPrevious}}
+                                            <a href="/post/{{.Post.ID}}?limit={{.CommentsPagination.PerPage}}&offset={{mul (sub .CommentsPagination.CurrentPage 2) .CommentsPagination.PerPage}}{{if .Sort}}&sort={{.Sort}}{{end}}">Previous</a>
+                                        {{end}}
+
+                                        <!-- Page numbers -->
+                                        {{range $i := range_until .CommentsPagination.TotalPages}}
+                                            {{if eq $i $.CommentsPagination.CurrentPage}}
+                                                <span class="current">{{$i}}</span>
+                                            {{else if or (le $i 3) (ge $i (sub $.CommentsPagination.TotalPages 2)) (and (ge $i (sub $.CommentsPagination.CurrentPage 2)) (le $i (add $.CommentsPagination.CurrentPage 2)))}}
+                                                <a href="/post/{{$.Post.ID}}?limit={{$.CommentsPagination.PerPage}}&offset={{mul (sub $i 1) $.CommentsPagination.PerPage}}{{if $.Sort}}&sort={{$.Sort}}{{end}}">{{$i}}</a>
+                                            {{else if or (eq $i 4) (eq $i (sub $.CommentsPagination.TotalPages 3))}}
+                                                <span class="ellipsis">...</span>
+                                            {{end}}
+                                        {{end}}
+
+                                        <!-- Next page -->
+                                        {{if .CommentsPagination.HasNext}}
+                                            <a href="/post/{{.Post.ID}}?limit={{.CommentsPagination.PerPage}}&offset={{mul .CommentsPagination.CurrentPage .CommentsPagination.PerPage}}{{if .Sort}}&sort={{.Sort}}{{end}}">Next</a>
+                                        {{end}}
+
+                                        <!-- Last page -->
+                                        {{if lt .CommentsPagination.CurrentPage .CommentsPagination.TotalPages}}
+                                            <a href="/post/{{.Post.ID}}?limit={{.CommentsPagination.PerPage}}&offset={{mul (sub .CommentsPagination.TotalPages 1) .CommentsPagination.PerPage}}{{if .Sort}}&sort={{.Sort}}{{end}}">Last</a>
+                                        {{end}}
+                                    </div>
+                                </nav>
+                            {{end}}
+                        {{else}}
+                            <!-- No Comments State -->
+                            <div class="no-comments">
+                                <h3><i class="fas fa-comments"></i> No comments yet</h3>
+                                <p>Be the first to share your thoughts!</p>
+                                {{if .User}}
+                                    <p>Use the form above to add your comment.</p>
+                                {{else}}
+                                    <p><a href="/login">Login to comment</a></p>
+                                {{end}}
+                            </div>
+                        {{end}}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sidebar (using global CSS) -->
+            <aside class="sidebar">
+                <h3>📊 Post Stats</h3>
+                <!-- Post Stats Widget -->
+                <div class="info-widget">
+                    <div class="info-item">
+                        <label>👍 Likes:</label>
+                        <span>{{.Post.LikeCount}}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>👎 Dislikes:</label>
+                        <span>{{.Post.DislikeCount}}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>💬 Comments:</label>
+                        <span>{{.Post.CommentCount}}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>📅 Posted:</label>
+                        <span>{{.Post.CreatedAt.Format "Jan 2, 2006"}}</span>
+                    </div>
+                    {{if .Post.UpdatedAt}}
+                    <div class="info-item">
+                        <label>✏️ Updated:</label>
+                        <span>{{.Post.UpdatedAt.Format "Jan 2, 2006"}}</span>
+                    </div>
+                    {{end}}
+                </div>
+
+                <!-- Quick Actions Widget -->
+                <div class="quick-actions">
+                    <h4>⚡ Quick Actions</h4>
+                    <p><a href="/" class="action-link">🏠 Back to Home</a></p>
+                    {{if .User}}
+                        <p><a href="/create-post" class="action-link">📝 Create New Post</a></p>
+                        <p><a href="/profile" class="action-link">👤 Your Profile</a></p>
+                    {{else}}
+                        <p><a href="/register" class="action-link">📝 Join Community</a></p>
+                        <p><a href="/login" class="action-link">🔑 Login</a></p>
+                    {{end}}
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        function changeSortOrder(sortBy) {
+            const url = new URL(window.location);
+            url.searchParams.set('sort', sortBy);
+            url.searchParams.delete('offset'); // Reset to first page when changing sort
+            window.location.href = url.toString();
+        }
+
+        // Set the current sort option in the dropdown
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentSort = urlParams.get('sort') || 'newest';
+            document.getElementById('sort').value = currentSort;
+        });
+    </script>
+    <script src="/static/js/page.js"></script>
+    <script src="/static/js/image-lightbox.js"></script>
+    <script src="/static/js/notifications.js"></script>
+</body>
+</html>
