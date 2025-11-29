@@ -16,10 +16,6 @@ func ToggleCommentReactionHandler(crr *repository.CommentReactionRepository, nr 
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Parse request body
 		var req models.CommentReactionRequest
@@ -49,8 +45,8 @@ func ToggleCommentReactionHandler(crr *repository.CommentReactionRepository, nr 
 
 		// Create notification only for new reactions
 		if result.Action == models.ActionCommentLikeCreated || result.Action == models.ActionCommentDislikeCreated {
-			// Get comment details to know who to notify
-			comment, err := cr.GetCommentByID(req.CommentID, nil)
+			// Get comment details to know who to notify (pass empty string since we don't need user-specific data)
+			comment, err := cr.GetCommentByID(req.CommentID, "")
 			if err == nil && comment.UserID != user.ID { // Don't notify yourself
 				// Get post content preview
 				post, err := pr.GetPostByID(comment.PostID, user.ID)

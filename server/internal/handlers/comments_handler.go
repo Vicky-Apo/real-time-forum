@@ -17,10 +17,6 @@ func CreateCommentHandler(cor *repository.CommentRepository, nr *repository.Noti
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get postID from URL path, not request body
 		postID := r.PathValue("id")
@@ -103,10 +99,6 @@ func UpdateCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get comment ID from URL path
 		commentID := r.PathValue("id")
@@ -154,10 +146,6 @@ func DeleteCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get comment ID from URL path
 		commentID := r.PathValue("id")
@@ -189,12 +177,8 @@ func DeleteCommentHandler(cor *repository.CommentRepository) http.HandlerFunc {
 func GetCommentsByPostIDHandler(cor *repository.CommentRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		// Get user context
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
 
 		// Get post ID from URL
 		postID := r.PathValue("id")
@@ -216,7 +200,7 @@ func GetCommentsByPostIDHandler(cor *repository.CommentRepository) http.HandlerF
 		}
 
 		// Get comments with sorting
-		comments, err := cor.GetCommentsByPostID(postID, limit, offset, userID, sortOptions)
+		comments, err := cor.GetCommentsByPostID(postID, limit, offset, user.ID, sortOptions)
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to retrieve comments")
 			return
@@ -238,15 +222,11 @@ func GetSingleCommentHandler(cor *repository.CommentRepository) http.HandlerFunc
 			return
 		}
 
-		// Get user context (optional for this endpoint)
-		currentUser := middleware.GetCurrentUser(r)
-		var userID *string = nil
-		if currentUser != nil {
-			userID = &currentUser.ID
-		}
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
 
-		// Get the comment - you'll need to add this method to your repository
-		comment, err := cor.GetCommentByID(commentID, userID)
+		// Get the comment
+		comment, err := cor.GetCommentByID(commentID, user.ID)
 		if err != nil {
 			if err.Error() == "comment not found" {
 				utils.RespondWithError(w, http.StatusNotFound, "Comment not found")

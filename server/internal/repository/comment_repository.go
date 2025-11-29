@@ -111,14 +111,7 @@ func (cor *CommentRepository) DeleteComment(commentID, userID string) error {
 }
 
 // Get []*comments for PostID
-func (cor *CommentRepository) GetCommentsByPostID(postID string, limit, offset int, userID *string, options utils.SortOptions) ([]*models.Comment, error) {
-	// Prepare user ID argument - UNCHANGED
-	var userIDArg interface{}
-	if userID != nil {
-		userIDArg = *userID
-	} else {
-		userIDArg = "" // Won't match any user_id
-	}
+func (cor *CommentRepository) GetCommentsByPostID(postID string, limit, offset int, userID string, options utils.SortOptions) ([]*models.Comment, error) {
 
 	// Build dynamic query with sorting using unified system - UNCHANGED
 	orderClause := utils.BuildOrderClause(options.SortBy, utils.ContentTypeComments)
@@ -154,7 +147,7 @@ func (cor *CommentRepository) GetCommentsByPostID(postID string, limit, offset i
 		` + orderClause + `
 		LIMIT ? OFFSET ?`
 
-	rows, err := cor.db.Query(query, userIDArg, postID, limit, offset)
+	rows, err := cor.db.Query(query, userID, postID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +182,7 @@ func (cor *CommentRepository) GetCommentCountByPost(postID string) (int, error) 
 }
 
 // Helper method to scan comment rows (updated to handle both *sql.Rows and *sql.Row)
-func (cor *CommentRepository) scanCommentRow(scanner interface{}, userID *string) (*models.Comment, error) {
+func (cor *CommentRepository) scanCommentRow(scanner interface{}, userID string) (*models.Comment, error) {
 	var comment models.Comment
 	var userReaction sql.NullInt64
 	var updatedAt sql.NullTime
@@ -246,20 +239,13 @@ func (cor *CommentRepository) scanCommentRow(scanner interface{}, userID *string
 	}
 
 	// Handle IsOwner
-	comment.IsOwner = (userID != nil && comment.UserID == *userID)
+	comment.IsOwner = (comment.UserID == userID)
 
 	return &comment, nil
 }
 
 // GetCommentByID retrieves a single comment by ID
-func (cor *CommentRepository) GetCommentByID(commentID string, userID *string) (*models.Comment, error) {
-	// Prepare user ID argument
-	var userIDArg interface{}
-	if userID != nil {
-		userIDArg = *userID
-	} else {
-		userIDArg = ""
-	}
+func (cor *CommentRepository) GetCommentByID(commentID string, userID string) (*models.Comment, error) {
 
 	query := `
 		SELECT 
@@ -290,7 +276,7 @@ func (cor *CommentRepository) GetCommentByID(commentID string, userID *string) (
 		LEFT JOIN comment_reactions ur ON c.comment_id = ur.comment_id AND ur.user_id = ?
 		WHERE c.comment_id = ?`
 
-	row := cor.db.QueryRow(query, userIDArg, commentID)
+	row := cor.db.QueryRow(query, userID, commentID)
 	comment, err := cor.scanCommentRow(row, userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
