@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/config"
-	"platform.zone01.gr/git/gpapadopoulos/forum/database"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/routes"
+	"real-time-forum/config"
+	"real-time-forum/database"
+	"real-time-forum/internal/routes"
 )
 
 func main() {

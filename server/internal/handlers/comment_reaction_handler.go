@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/middleware"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/models"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/repository"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/utils"
+	"real-time-forum/internal/middleware"
+	"real-time-forum/internal/models"
+	"real-time-forum/internal/repository"
+	"real-time-forum/internal/utils"
 )
 // ToggleCommentReactionHandler handles toggling reactions on comments
 func ToggleCommentReactionHandler(crr *repository.CommentReactionRepository, nr *repository.NotificationRepository, cr *repository.CommentRepository, ur *repository.UserRepository, pr *repository.PostsRepository) http.HandlerFunc {

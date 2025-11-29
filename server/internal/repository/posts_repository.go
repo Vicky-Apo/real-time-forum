@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/models"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/utils"
-	"platform.zone01.gr/git/gpapadopoulos/forum/queries"
+	"real-time-forum/internal/models"
+	"real-time-forum/internal/utils"
+	"real-time-forum/queries"
 )
 
 type PostsRepository struct {

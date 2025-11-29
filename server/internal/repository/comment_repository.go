@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/models"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/utils"
+	"real-time-forum/internal/models"
+	"real-time-forum/internal/utils"
 )
 
 type CommentRepository struct {

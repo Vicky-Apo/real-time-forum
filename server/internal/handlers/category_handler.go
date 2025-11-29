@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/repository"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/utils"
+	"real-time-forum/internal/repository"
+	"real-time-forum/internal/utils"
 )
 
 // GetAllCategoriesHandler retrieves all post categories

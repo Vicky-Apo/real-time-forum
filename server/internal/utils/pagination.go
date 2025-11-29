@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/config"
+	"real-time-forum/config"
 )
 
 // ParsePaginationParams extracts and validates pagination parameters from HTTP request

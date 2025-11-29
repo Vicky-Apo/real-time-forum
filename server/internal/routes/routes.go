@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/config"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/handlers"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/middleware"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/repository"
+	"real-time-forum/config"
+	"real-time-forum/internal/handlers"
+	"real-time-forum/internal/middleware"
+	"real-time-forum/internal/repository"
+	ws "real-time-forum/internal/websocket"
 )
 
 func SetupRoutes(db *sql.DB) http.Handler {
@@ -25,6 +26,11 @@ func SetupRoutes(db *sql.DB) http.Handler {
 	OAuthRepo := repository.NewOAuthRepository(db)
 	PostImageRepo := repository.NewPostImagesRepository(db)
 	NotificationRepo := repository.NewNotificationRepository(db)
+	MessageRepo := repository.NewMessageRepository(db)
+
+	// ===== WEBSOCKET HUB =====
+	hub := ws.NewHub()
+	go hub.Run() // Start the hub in a goroutine
 
 	// ===== EXISTING MIDDLEWARE =====
 	AuthMiddleware := middleware.NewMiddleware(UserRepo, SessionRepo)
@@ -95,6 +101,21 @@ func SetupRoutes(db *sql.DB) http.Handler {
 	// ===== NEW NOTIFICATION ROUTES =====
 	mux.Handle("GET /api/notifications", AuthMiddleware.RequireAuth(handlers.GetNotificationsHandler(NotificationRepo)))
 	mux.Handle("POST /api/notifications/mark-read/{id}", AuthMiddleware.RequireAuth(handlers.MarkAsReadHandler(NotificationRepo)))
+
+	// ===== MESSAGE ROUTES =====
+	// All routes protected - requires authentication
+	mux.Handle("POST /api/messages/send", AuthMiddleware.RequireAuth(handlers.SendMessageHandler(MessageRepo, hub)))
+	mux.Handle("GET /api/messages/{id}", AuthMiddleware.RequireAuth(handlers.GetMessagesHandler(MessageRepo)))
+	mux.Handle("GET /api/messages/unread-count", AuthMiddleware.RequireAuth(handlers.GetUnreadCountHandler(MessageRepo)))
+	mux.Handle("GET /api/conversations", AuthMiddleware.RequireAuth(handlers.GetConversationsHandler(MessageRepo, hub)))
+
+	// ===== USER ROUTES =====
+	// All routes protected - requires authentication
+	mux.Handle("GET /api/users/online", AuthMiddleware.RequireAuth(handlers.GetOnlineUsersHandler(hub)))
+
+	// ===== WEBSOCKET ROUTES =====
+	// Protected - requires authentication
+	mux.Handle("/ws", AuthMiddleware.RequireAuth(handlers.WebSocketHandler(hub)))
 
 	// ===== APPLY MIDDLEWARE =====
 	handler := RateLimiter.Limit(mux)

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/models"
+	"real-time-forum/internal/models"
 )
 
 type CategoryRepository struct {

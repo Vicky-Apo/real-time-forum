@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/config"
+	"real-time-forum/config"
 )
 
 func ClearSessionCookie(w http.ResponseWriter) {

@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/config"
+	"real-time-forum/config"
 )
 
 func CORS(next http.Handler) http.Handler {

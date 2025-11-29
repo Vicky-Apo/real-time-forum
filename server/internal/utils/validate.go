@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/config"
+	"real-time-forum/config"
 )
 
 // more secure way to validate email, password, and username inputs

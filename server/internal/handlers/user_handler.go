@@ -5,11 +5,11 @@ import (
 	"errors"
 	"net/http"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/config"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/middleware"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/models"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/repository"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/utils"
+	"real-time-forum/config"
+	"real-time-forum/internal/middleware"
+	"real-time-forum/internal/models"
+	"real-time-forum/internal/repository"
+	"real-time-forum/internal/utils"
 )
 
 // Handle user registration logic here
@@ -31,7 +31,7 @@ func RegisterHandler(ur *repository.UserRepository) http.HandlerFunc {
 
 		// Validate new required fields
 		if reg.Username == "" {
-			utils.RespondWithError(w, http.StatusBadRequest, "Nickname is required")
+			utils.RespondWithError(w, http.StatusBadRequest, "Username is required")
 			return
 		}
 		if reg.FirstName == "" {
@@ -168,12 +168,8 @@ func LogoutHandler(ur *repository.UserRepository, sr *repository.SessionReposito
 func GetCurrentUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		// The user will already be in the context thanks to the RequireAuth middleware
+		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, errors.New("unauthorized access").Error())
-			return
-		}
 
 		// Return the user data
 		utils.RespondWithSuccess(w, http.StatusOK, user)
@@ -210,5 +206,30 @@ func GetUserProfileHandler(ur *repository.UserRepository) http.HandlerFunc {
 		}
 
 		utils.RespondWithSuccess(w, http.StatusOK, profile)
+	}
+}
+
+// GetOnlineUsersHandler returns a list of currently online users
+func GetOnlineUsersHandler(hub interface{ GetOnlineUsers() []models.UserStatusPayload }) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		// Get authenticated user
+		user := middleware.GetCurrentUser(r)
+
+		// Get online users from hub
+		onlineUsers := hub.GetOnlineUsers()
+
+		// Filter out the current user from the list
+		filtered := []models.UserStatusPayload{}
+		for _, u := range onlineUsers {
+			if u.UserID != user.ID {
+				filtered = append(filtered, u)
+			}
+		}
+
+		// Return the filtered list
+		utils.RespondWithSuccess(w, http.StatusOK, map[string]interface{}{
+			"online_users": filtered,
+		})
 	}
 }

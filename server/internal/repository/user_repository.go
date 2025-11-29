@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/models"
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/utils"
+	"real-time-forum/internal/models"
+	"real-time-forum/internal/utils"
 )
 
 // UserRepository handles user-related database operations
@@ -130,7 +130,7 @@ func (ur *UserRepository) GetUserByEmailOrUsername(identifier string) (*models.U
 
 }
 
-// Authenticate validates a user's login credentials (accepts nickname or email)
+// Authenticate validates a user's login credentials (accepts username or email)
 func (ur *UserRepository) Authenticate(login models.UserLogin) (*models.User, error) {
 	// Get the user by email
 	user, err := ur.GetUserByEmailOrUsername(login.Identifier)

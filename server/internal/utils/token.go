@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"platform.zone01.gr/git/gpapadopoulos/forum/config"
+	"real-time-forum/config"
 )
 
 // GenerateUUID generates a new UUID string

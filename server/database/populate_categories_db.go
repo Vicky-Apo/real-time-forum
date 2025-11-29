@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/utils"
+	"real-time-forum/internal/utils"
 )
 
 func populateCategories(db *sql.DB) error {

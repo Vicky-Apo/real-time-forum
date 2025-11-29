@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"platform.zone01.gr/git/gpapadopoulos/forum/internal/utils"
+	"real-time-forum/internal/utils"
 )
 
 // RateLimiter tracks request rates per IP and limits excessive requests
