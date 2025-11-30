@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"slices"
 	"errors"
 	"net/mail"
 	"regexp"
+	"slices"
 	"strings"
+	"strconv"
 
 	"real-time-forum/config"
 )
@@ -32,8 +33,8 @@ func ValidatePassword(password string) error {
 	// Password validation using configuration
 	if len(password) < config.Config.MinPasswordLen || len(password) > config.Config.MaxPasswordLen {
 		return errors.New("password must be between " +
-			string(rune(config.Config.MinPasswordLen)) + " and " +
-			string(rune(config.Config.MaxPasswordLen)) + " characters")
+			strconv.Itoa(config.Config.MinPasswordLen) + " and " +
+			strconv.Itoa(config.Config.MaxPasswordLen) + " characters")
 	}
 
 	// Check password complexity
@@ -53,8 +54,8 @@ func ValidateUsername(username string) error {
 	// Username validation using configuration
 	if len(username) < config.Config.MinUsernameLen || len(username) > config.Config.MaxUsernameLen {
 		return errors.New("username must be between " +
-			string(rune(config.Config.MinUsernameLen)) + " and " +
-			string(rune(config.Config.MaxUsernameLen)) + " characters")
+			strconv.Itoa(config.Config.MinUsernameLen) + " and " +
+			strconv.Itoa(config.Config.MaxUsernameLen) + " characters")
 	}
 
 	// Username character validation (alphanumeric and underscore only)
@@ -156,8 +157,8 @@ func ValidatePostContent(content string) error {
 	// Content validation using configuration
 	if len(content) < config.Config.MinPostContentLength || len(content) > config.Config.MaxPostContentLength {
 		return errors.New("post content must be between " +
-			string(rune(config.Config.MinPostContentLength)) + " and " +
-			string(rune(config.Config.MaxPostContentLength)) + " characters")
+			strconv.Itoa(config.Config.MinPostContentLength) + " and " +
+			strconv.Itoa(config.Config.MaxPostContentLength) + " characters")
 	}
 
 	// Check for prohibited words (example)
@@ -175,8 +176,8 @@ func ValidateCommentContent(content string) error {
 	// Content validation using configuration
 	if len(content) < config.Config.MinCommentLength || len(content) > config.Config.MaxCommentLength {
 		return errors.New("comment content must be between " +
-			string(rune(config.Config.MinCommentLength)) + " and " +
-			string(rune(config.Config.MaxCommentLength)) + " characters")
+			strconv.Itoa(config.Config.MinCommentLength) + " and " +
+			strconv.Itoa(config.Config.MaxCommentLength) + " characters")
 	}
 
 	// Check for prohibited words (example)

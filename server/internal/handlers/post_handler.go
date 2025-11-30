@@ -2,20 +2,21 @@ package handlers
 
 import (
 	"fmt"
+	"mime/multipart"
 	"net/http"
 
 	"real-time-forum/config"
 	"real-time-forum/internal/middleware"
-	"real-time-forum/internal/models"
 	"real-time-forum/internal/repository"
+	"real-time-forum/internal/models"
 	"real-time-forum/internal/utils"
 )
 
 // ...
 // CRUD HANDLERS FOR POSTS
 // ...
-// REPLACE the CreatePostHandler in post_handler.go:
 
+// CreatePostHandler creates a new post
 func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRepository, pir *repository.PostImagesRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -30,99 +31,24 @@ func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 		}
 
 		content := r.FormValue("content")
-		if utils.ValidatePostContent(content) != nil {
-			utils.RespondWithError(w, http.StatusBadRequest, "Invalid post content")
+		if err := utils.ValidatePostContent(content); err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		// Parse and validate categories
 		categoryNames := r.MultipartForm.Value["categories"]
-		if len(categoryNames) == 0 {
-			utils.RespondWithError(w, http.StatusBadRequest, "At least one category is required")
-			return
-		}
-
-		// Validate and get category IDs
-		var categoryIDs []string
-		for _, categoryName := range categoryNames {
-			categoryID, err := cr.GetCategoryID(categoryName)
-			if err != nil {
-				utils.RespondWithError(w, http.StatusBadRequest, "Invalid category: "+categoryName)
-				return
-			}
-			categoryIDs = append(categoryIDs, categoryID)
-		}
-		if len(categoryIDs) < config.Config.MinCategories {
-			utils.RespondWithError(w, http.StatusBadRequest,
-				fmt.Sprintf("Minimum %d category required", config.Config.MinCategories))
-			return
-		}
-
-		if len(categoryIDs) > config.Config.MaxCategories {
-			utils.RespondWithError(w, http.StatusBadRequest,
-				fmt.Sprintf("Maximum %d categories allowed", config.Config.MaxCategories))
+		categoryIDs, err := validateCategories(categoryNames, cr)
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		// ---- Parse and validate images ----
-		var images []models.PostImage
-		files := r.MultipartForm.File["images"]
-		if len(files) > 0 {
-			if len(files) > config.Config.MaxImagesPerPost {
-				utils.RespondWithError(w, http.StatusBadRequest,
-					fmt.Sprintf("Maximum %d images allowed per post", config.Config.MaxImagesPerPost))
-				return
-			}
-			for _, fileHeader := range files {
-				// Validate size
-				if fileHeader.Size > 20*1024*1024 {
-					utils.RespondWithError(w, http.StatusBadRequest,
-						fmt.Sprintf("File %s exceeds 20MB limit", fileHeader.Filename))
-					return
-				}
-
-				// Validate extension/type
-				valid := utils.IsValidImageFile(fileHeader.Filename)
-				if !valid {
-					utils.RespondWithError(w, http.StatusBadRequest,
-						fmt.Sprintf("Invalid file type: %s", fileHeader.Filename))
-					return
-				}
-
-				// Open file
-				file, err := fileHeader.Open()
-				if err != nil {
-					utils.RespondWithError(w, http.StatusInternalServerError, "Failed to open image file")
-					return
-				}
-				defer file.Close()
-
-				// Generate unique filename and save to disk
-				imageID := utils.GenerateUUIDToken()
-				ext := utils.GetFileExtension(fileHeader.Filename)
-				uniqueFilename := fmt.Sprintf("%s%s", imageID, ext)
-				uploadPath := config.Config.UploadDir // e.g., "./uploads/"
-				fullPath := uploadPath + uniqueFilename
-
-				outFile, err := utils.CreateFile(fullPath) // wraps os.Create with error checks
-				if err != nil {
-					utils.RespondWithError(w, http.StatusInternalServerError, "Failed to save image")
-					return
-				}
-				defer outFile.Close()
-
-				_, err = utils.CopyFile(outFile, file) // wraps io.Copy
-				if err != nil {
-					utils.RespondWithError(w, http.StatusInternalServerError, "Failed to save image data")
-					return
-				}
-
-				images = append(images, models.PostImage{
-					ImageID:          imageID,
-					ImageURL:         "/uploads/" + uniqueFilename, // adjust if you serve differently
-					OriginalFilename: fileHeader.Filename,
-				})
-			}
+		images, err := utils.ProcessImageUploads(r.MultipartForm.File["images"])
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+			return
 		}
 
 		// Create post - now returns lightweight response
@@ -169,33 +95,15 @@ func UpdatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 
 		// Parse new content/categories
 		content := r.FormValue("content")
-		if utils.ValidatePostContent(content) != nil {
-			utils.RespondWithError(w, http.StatusBadRequest, "Invalid post content")
-			return
-		}
-		categoryNames := r.MultipartForm.Value["categories"]
-		if len(categoryNames) == 0 {
-			utils.RespondWithError(w, http.StatusBadRequest, "At least one category is required")
+		if err := utils.ValidatePostContent(content); err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		var categoryIDs []string
-		for _, categoryName := range categoryNames {
-			categoryID, err := cr.GetCategoryID(categoryName)
-			if err != nil {
-				utils.RespondWithError(w, http.StatusBadRequest, "Invalid category: "+categoryName)
-				return
-			}
-			categoryIDs = append(categoryIDs, categoryID)
-		}
-		if len(categoryIDs) < config.Config.MinCategories {
-			utils.RespondWithError(w, http.StatusBadRequest,
-				fmt.Sprintf("Minimum %d category required", config.Config.MinCategories))
-			return
-		}
-		if len(categoryIDs) > config.Config.MaxCategories {
-			utils.RespondWithError(w, http.StatusBadRequest,
-				fmt.Sprintf("Maximum %d categories allowed", config.Config.MaxCategories))
+		categoryNames := r.MultipartForm.Value["categories"]
+		categoryIDs, err := validateCategories(categoryNames, cr)
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -203,70 +111,12 @@ func UpdatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 
 		// (A) Handle REMOVE images
 		removeIDs := r.MultipartForm.Value["remove_image_ids[]"]
-		for _, imgID := range removeIDs {
-			// Delete from DB and get info for file deletion
-			img, err := pir.DeleteImageByID(imgID)
-			if err != nil {
-				// Log, but don't fail whole update
-				fmt.Printf("Failed to delete image %s: %v\n", imgID, err)
-				continue
-			}
-			// Remove file from disk
-			filePath := "." + img.ImageURL
-			if err := utils.RemoveFileIfExists(filePath); err != nil {
-				fmt.Printf("Failed to delete image file %s: %v\n", filePath, err)
-			}
-		}
+		removeImagesFromPost(removeIDs, pir)
 
-		// (B) Handle ADD images (same logic as Create)
-		files := r.MultipartForm.File["images"]
-		if len(files) > 0 {
-			if len(files) > config.Config.MaxImagesPerPost {
-				utils.RespondWithError(w, http.StatusBadRequest,
-					fmt.Sprintf("Maximum %d images allowed per post", config.Config.MaxImagesPerPost))
-				return
-			}
-			for _, fileHeader := range files {
-				if fileHeader.Size > 20*1024*1024 {
-					utils.RespondWithError(w, http.StatusBadRequest,
-						fmt.Sprintf("File %s exceeds 20MB limit", fileHeader.Filename))
-					return
-				}
-				valid := utils.IsValidImageFile(fileHeader.Filename)
-				if !valid {
-					utils.RespondWithError(w, http.StatusBadRequest,
-						fmt.Sprintf("Invalid file type: %s", fileHeader.Filename))
-					return
-				}
-				file, err := fileHeader.Open()
-				if err != nil {
-					utils.RespondWithError(w, http.StatusInternalServerError, "Failed to open image file")
-					return
-				}
-				defer file.Close()
-				imageID := utils.GenerateUUIDToken()
-				ext := utils.GetFileExtension(fileHeader.Filename)
-				uniqueFilename := fmt.Sprintf("%s%s", imageID, ext)
-				uploadPath := config.Config.UploadDir
-				fullPath := uploadPath + uniqueFilename
-				outFile, err := utils.CreateFile(fullPath)
-				if err != nil {
-					utils.RespondWithError(w, http.StatusInternalServerError, "Failed to save image")
-					return
-				}
-				defer outFile.Close()
-				_, err = utils.CopyFile(outFile, file)
-				if err != nil {
-					utils.RespondWithError(w, http.StatusInternalServerError, "Failed to save image data")
-					return
-				}
-				// Insert image record
-				err = pir.SaveImageRecord(postID, imageID, "/uploads/"+uniqueFilename, fileHeader.Filename)
-				if err != nil {
-					utils.RespondWithError(w, http.StatusInternalServerError, "Failed to save image record")
-					return
-				}
-			}
+		// (B) Handle ADD images
+		if err = addImagesToPost(r.MultipartForm.File["images"], postID, pir); err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+			return
 		}
 
 		// Update the post's main content and categories
@@ -310,15 +160,7 @@ func DeletePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to delete post images")
 			return
 		}
-
-		for _, img := range images {
-			filePath := "." + img.ImageURL // assuming "/uploads/xyz" -> "./uploads/xyz"
-			err := utils.RemoveFileIfExists(filePath)
-			if err != nil {
-				// Log and continue
-				fmt.Printf("Warning: failed to delete image file %s: %v\n", filePath, err)
-			}
-		}
+		deleteImageFilesFromDisk(images)
 		// Delete the post
 		err = pr.DeletePost(postID, user.ID)
 		if err != nil {
@@ -541,4 +383,88 @@ func GetUserCommentedPostsProfileHandler(pr *repository.PostsRepository) http.Ha
 		// Respond with paginated posts
 		utils.RespondWithPaginatedPosts(w, posts, totalCount, limit, offset)
 	}
+}
+
+// ...
+// HELPER FUNCTIONS
+// ...
+
+// validateCategories validates category names and returns their IDs
+func validateCategories(categoryNames []string, cr *repository.CategoryRepository) ([]string, error) {
+	if len(categoryNames) == 0 {
+		return nil, fmt.Errorf("at least one category is required")
+	}
+
+	var categoryIDs []string
+	for _, categoryName := range categoryNames {
+		categoryID, err := cr.GetCategoryID(categoryName)
+		if err != nil {
+			return nil, fmt.Errorf("invalid category: %s", categoryName)
+		}
+		categoryIDs = append(categoryIDs, categoryID)
+	}
+
+	if len(categoryIDs) < config.Config.MinCategories {
+		return nil, fmt.Errorf("minimum %d category required", config.Config.MinCategories)
+	}
+
+	if len(categoryIDs) > config.Config.MaxCategories {
+		return nil, fmt.Errorf("maximum %d categories allowed", config.Config.MaxCategories)
+	}
+
+	return categoryIDs, nil
+}
+
+// deleteImageFilesFromDisk deletes image files from disk
+func deleteImageFilesFromDisk(images []models.PostImage) {
+	for _, img := range images {
+		filePath := "." + img.ImageURL // assuming "/uploads/xyz" -> "./uploads/xyz"
+		err := utils.RemoveFileIfExists(filePath)
+		if err != nil {
+			// Log and continue
+			fmt.Printf("Warning: failed to delete image file %s: %v\n", filePath, err)
+		}
+	}
+}
+
+// removeImagesFromPost removes images from a post by their IDs
+func removeImagesFromPost(removeIDs []string, pir *repository.PostImagesRepository) {
+	for _, imgID := range removeIDs {
+		// Delete from DB and get info for file deletion
+		img, err := pir.DeleteImageByID(imgID)
+		if err != nil {
+			// Log, but don't fail whole update
+			fmt.Printf("Failed to delete image %s: %v\n", imgID, err)
+			continue
+		}
+		// Remove file from disk
+		deleteImageFilesFromDisk([]models.PostImage{*img})
+	}
+}
+
+// addImagesToPost processes and saves images for an existing post
+func addImagesToPost(files []*multipart.FileHeader, postID string, pir *repository.PostImagesRepository) error {
+	if len(files) == 0 {
+		return nil
+	}
+
+	if len(files) > config.Config.MaxImagesPerPost {
+		return fmt.Errorf("maximum %d images allowed per post", config.Config.MaxImagesPerPost)
+	}
+
+	for _, fileHeader := range files {
+		// Process and save the image file
+		images, err := utils.ProcessImageUploads([]*multipart.FileHeader{fileHeader})
+		if err != nil {
+			return err
+		}
+
+		// Insert image record to database
+		image := images[0]
+		if err = pir.SaveImageRecord(postID, image.ImageID, image.ImageURL, image.OriginalFilename); err != nil {
+			return fmt.Errorf("failed to save image record: %w", err)
+		}
+	}
+
+	return nil
 }

@@ -2,7 +2,7 @@ package database
 
 // TableCreationStatements contains all SQL statements for optimized table creation
 var TableCreationStatements = []string{
-	// Users table - unchanged, already optimized
+
 	`CREATE TABLE IF NOT EXISTS users (
 		user_id TEXT PRIMARY KEY NOT NULL UNIQUE,
 		username VARCHAR(15) NOT NULL UNIQUE,
@@ -37,7 +37,6 @@ var TableCreationStatements = []string{
     CHECK (provider IN ('github', 'google'))
     );`,
 
-	// Sessions table - unchanged, already optimized
 	`CREATE TABLE IF NOT EXISTS sessions (
 		user_id TEXT PRIMARY KEY NOT NULL UNIQUE,
 		session_id TEXT NOT NULL UNIQUE,
@@ -47,25 +46,21 @@ var TableCreationStatements = []string{
 		FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 	);`,
 
-	// Categories table - unchanged, already optimized
 	`CREATE TABLE IF NOT EXISTS categories (
 		category_id TEXT PRIMARY KEY NOT NULL UNIQUE,
 		category_name TEXT NOT NULL UNIQUE
 	);`,
 
-	// Posts table - CLEAN, no denormalized counts
 	`CREATE TABLE IF NOT EXISTS posts (
     post_id TEXT PRIMARY KEY NOT NULL UNIQUE,
     user_id TEXT NOT NULL,
     content TEXT NOT NULL,
-    image_path TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL,
 
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );`,
 
-	// Post categories junction table - unchanged
 	`CREATE TABLE IF NOT EXISTS post_categories (
 		post_id TEXT NOT NULL,
 		category_id TEXT NOT NULL,
@@ -74,7 +69,6 @@ var TableCreationStatements = []string{
 		FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 	);`,
 
-	// Comments table - CLEAN, no denormalized counts
 	`CREATE TABLE IF NOT EXISTS comments (
 		comment_id TEXT PRIMARY KEY NOT NULL UNIQUE,
 		post_id TEXT NOT NULL,
@@ -87,7 +81,6 @@ var TableCreationStatements = []string{
 		FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 	);`,
 
-	// Post reactions table - SEPARATED from comments for better performance
 	`CREATE TABLE IF NOT EXISTS post_reactions (
 		user_id TEXT NOT NULL,
 		post_id TEXT NOT NULL,
@@ -104,7 +97,6 @@ var TableCreationStatements = []string{
 		CHECK (reaction_type IN (1, 2))
 	);`,
 
-	// Comment reactions table - SEPARATED for better performance
 	`CREATE TABLE IF NOT EXISTS comment_reactions (
 		user_id TEXT NOT NULL,
 		comment_id TEXT NOT NULL,
@@ -121,7 +113,6 @@ var TableCreationStatements = []string{
 		CHECK (reaction_type IN (1, 2))
 	);`,
 
-	// Images for posts table
 	`CREATE TABLE IF NOT EXISTS post_images (
 		image_id TEXT PRIMARY KEY NOT NULL UNIQUE,
 		post_id TEXT NOT NULL,
@@ -131,7 +122,6 @@ var TableCreationStatements = []string{
 		FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
 	);`,
 
-	// Notifications table - UPDATED: Removed restrictive CHECK constraint
 	`CREATE TABLE IF NOT EXISTS notifications (
 		notification_id TEXT PRIMARY KEY NOT NULL UNIQUE,
 		user_id TEXT NOT NULL,              -- who gets the notification
@@ -146,7 +136,6 @@ var TableCreationStatements = []string{
 		-- REMOVED: Restrictive CHECK constraint to allow flexible action text
 	);`,
 
-	// Messages table - for direct user-to-user messaging
 	`CREATE TABLE IF NOT EXISTS messages (
 		message_id TEXT PRIMARY KEY NOT NULL UNIQUE,
 		sender_id TEXT NOT NULL,
