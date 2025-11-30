@@ -180,16 +180,12 @@ func GetUserProfileHandler(ur *repository.UserRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Get authenticated user (since only users can view their own profile)
-		currentUser := middleware.GetCurrentUser(r)
-		if currentUser == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
+		user := middleware.GetCurrentUser(r)
 
 		// Extract user ID from URL path
 		userID := r.PathValue("id")
 		// Ensure user can only view their own profile
-		if currentUser.ID != userID {
+		if user.ID != userID {
 			utils.RespondWithError(w, http.StatusForbidden, "You can only view your own profile")
 			return
 		}

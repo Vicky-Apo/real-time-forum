@@ -21,10 +21,6 @@ func CreatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// ---- Parse multipart form ----
 		err := r.ParseMultipartForm(25 << 20) // 25MB max memory
@@ -146,10 +142,7 @@ func UpdatePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
+
 		postID := r.PathValue("id")
 		if postID == "" {
 			utils.RespondWithError(w, http.StatusBadRequest, "Post ID is required")
@@ -292,10 +285,7 @@ func DeletePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
+
 		// Extract post ID from URL path
 		postID := r.PathValue("id")
 		if postID == "" {
@@ -314,7 +304,7 @@ func DeletePostHandler(pr *repository.PostsRepository, cr *repository.CategoryRe
 			utils.RespondWithError(w, http.StatusForbidden, "You can only delete your own posts")
 			return
 		}
-		// --- NEW: Delete image files ---
+		// Delete image files
 		images, err := pir.DeleteAllImagesForPost(postID) // Deletes records and returns metadata
 		if err != nil {
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to delete post images")

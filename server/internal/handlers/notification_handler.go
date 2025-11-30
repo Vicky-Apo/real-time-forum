@@ -15,10 +15,6 @@ func GetNotificationsHandler(nr *repository.NotificationRepository) http.Handler
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get all notifications for the user
 		notifications, err := nr.GetUserNotifications(user.ID)
@@ -43,10 +39,6 @@ func MarkAsReadHandler(nr *repository.NotificationRepository) http.HandlerFunc {
 
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
-		if user == nil {
-			utils.RespondWithError(w, http.StatusUnauthorized, "Authentication required")
-			return
-		}
 
 		// Get notification ID from URL path
 		notificationID := r.PathValue("id")
