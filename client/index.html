@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-Time Forum - A modern forum with real-time messaging">
+    <title>Real-Time Forum</title>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/post.css">
+    <link rel="stylesheet" href="/css/create-post.css">
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+    <!-- Navigation Bar (persists across all views) -->
+    <nav id="navbar" class="navbar"></nav>
+
+    <!-- Main Application Container (content changes here) -->
+    <main id="app" class="app-container">
+        <!-- Initial loading state -->
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </main>
+
+    <!-- Modal Root (for dialogs, confirmations, etc.) -->
+    <div id="modal-root"></div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Application Entry Point (ES6 Module) -->
+    <script type="module" src="/js/main.js"></script>
+</body>
+</html>
