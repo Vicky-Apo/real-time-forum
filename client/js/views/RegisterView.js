@@ -177,13 +177,12 @@ export default {
             email: formData.get('email').trim(),
             age: parseInt(formData.get('age')),
             gender: formData.get('gender'),
-            password: formData.get('password')
+            password: formData.get('password'),
+            confirm_password: formData.get('confirm_password')
         };
 
-        const confirmPassword = formData.get('confirm_password');
-
         // Validate passwords match
-        if (data.password !== confirmPassword) {
+        if (data.password !== data.confirm_password) {
             this.showError('Passwords do not match');
             return;
         }
