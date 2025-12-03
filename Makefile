@@ -4,7 +4,7 @@ backend:
 	go -C server run ./cmd
 
 frontend:
-	go -C frontend run ./cmd
+	go -C client run .
 
 dev:
 	$(MAKE) backend & \
