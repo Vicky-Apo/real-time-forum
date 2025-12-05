@@ -10,12 +10,16 @@ import (
 )
 
 type MessageRepository struct {
-	db *sql.DB
+	db                     *sql.DB
+	messageImageRepository *MessageImageRepository
 }
 
 // NewMessageRepository creates a new MessageRepository
-func NewMessageRepository(db *sql.DB) *MessageRepository {
-	return &MessageRepository{db: db}
+func NewMessageRepository(db *sql.DB, messageImageRepo *MessageImageRepository) *MessageRepository {
+	return &MessageRepository{
+		db:                     db,
+		messageImageRepository: messageImageRepo,
+	}
 }
 
 // SaveMessage saves a new message to the database
@@ -50,6 +54,53 @@ func (mr *MessageRepository) SaveMessage(senderID, recipientID, content string) 
 			CreatedAt: createdAt,
 		}, nil
 	})
+}
+
+// SaveMessageWithImages saves a new message with images to the database
+func (mr *MessageRepository) SaveMessageWithImages(senderID, recipientID, content string, images []models.MessageImage) (*models.SendMessageResponse, error) {
+	return utils.ExecuteInTransactionWithResult(mr.db, func(tx *sql.Tx) (*models.SendMessageResponse, error) {
+		// Check if recipient exists
+		var exists int
+		err := tx.QueryRow("SELECT COUNT(*) FROM users WHERE user_id = ?", recipientID).Scan(&exists)
+		if err != nil {
+			return nil, err
+		}
+		if exists == 0 {
+			return nil, errors.New("recipient not found")
+		}
+
+		// Generate UUID for message
+		messageID := utils.GenerateUUIDToken()
+		createdAt := time.Now()
+
+		// Insert message
+		_, err = tx.Exec(
+			"INSERT INTO messages (message_id, sender_id, recipient_id, content, created_at, is_read) VALUES (?, ?, ?, ?, ?, ?)",
+			messageID, senderID, recipientID, content, createdAt, false,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		// Insert images
+		for _, img := range images {
+			err = mr.messageImageRepository.SaveImageRecord(tx, messageID, img.ImageID, img.ImageURL, img.OriginalFilename)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		// Return lightweight response
+		return &models.SendMessageResponse{
+			MessageID: messageID,
+			CreatedAt: createdAt,
+		}, nil
+	})
+}
+
+// GetImagesForMessage is a helper method to fetch images for a specific message
+func (mr *MessageRepository) GetImagesForMessage(messageID string) ([]models.MessageImage, error) {
+	return mr.messageImageRepository.GetImagesForMessage(messageID)
 }
 
 // GetMessages retrieves message history between the current user and another user
@@ -107,6 +158,15 @@ func (mr *MessageRepository) GetMessages(currentUserID, otherUserID string, limi
 	hasMore := len(messages) > limit
 	if hasMore {
 		messages = messages[:limit] // Trim to requested limit
+	}
+
+	// Fetch images for each message
+	for i := range messages {
+		images, err := mr.messageImageRepository.GetImagesForMessage(messages[i].MessageID)
+		if err != nil {
+			return nil, err
+		}
+		messages[i].Images = images
 	}
 
 	return &models.GetMessagesResponse{

@@ -26,7 +26,8 @@ func SetupRoutes(db *sql.DB) http.Handler {
 	OAuthRepo := repository.NewOAuthRepository(db)
 	PostImageRepo := repository.NewPostImagesRepository(db)
 	NotificationRepo := repository.NewNotificationRepository(db)
-	MessageRepo := repository.NewMessageRepository(db)
+	MessageImageRepo := repository.NewMessageImageRepository(db)
+	MessageRepo := repository.NewMessageRepository(db, MessageImageRepo)
 
 	// ===== WEBSOCKET HUB =====
 	hub := ws.NewHub()

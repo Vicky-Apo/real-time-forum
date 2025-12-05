@@ -27,5 +27,7 @@ Thumbs.db
 *.log
 logs/
 
-uploads/*
-api/uploads/*
+# Uploaded files - ignore all uploaded images
+server/uploads/
+uploads/
+api/uploads/

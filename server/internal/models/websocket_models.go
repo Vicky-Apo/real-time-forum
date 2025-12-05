@@ -30,10 +30,11 @@ type SendMessagePayload struct {
 
 // ReceiveMessagePayload represents the payload for receiving a message
 type ReceiveMessagePayload struct {
-	SenderID   string    `json:"sender_id"`   // User ID of the sender
-	SenderName string    `json:"sender_name"` // Username of the sender
-	Content    string    `json:"content"`     // Message content
-	SentAt     time.Time `json:"sent_at"`     // Timestamp when message was sent
+	SenderID   string         `json:"sender_id"`   // User ID of the sender
+	SenderName string         `json:"sender_name"` // Username of the sender
+	Content    string         `json:"content"`     // Message content
+	SentAt     time.Time      `json:"sent_at"`     // Timestamp when message was sent
+	Images     []MessageImage `json:"images"`      // Attached images
 }
 
 // ErrorPayload represents an error message

@@ -124,7 +124,7 @@ func processAndSaveSingleImage(fileHeader *multipart.FileHeader) (models.PostIma
 	}, nil
 }
 
-// ProcessImageUploads handles validation and processing of uploaded images
+// ProcessImageUploads handles validation and processing of uploaded images for posts
 func ProcessImageUploads(files []*multipart.FileHeader) ([]models.PostImage, error) {
 	if len(files) == 0 {
 		return []models.PostImage{}, nil
@@ -139,6 +139,58 @@ func ProcessImageUploads(files []*multipart.FileHeader) ([]models.PostImage, err
 
 	for _, fileHeader := range files {
 		image, err := processAndSaveSingleImage(fileHeader)
+		if err != nil {
+			return nil, err
+		}
+		images = append(images, image)
+	}
+
+	return images, nil
+}
+
+// processAndSaveSingleMessageImage validates, processes, and saves a single message image file to disk
+// Returns the MessageImage metadata
+func processAndSaveSingleMessageImage(fileHeader *multipart.FileHeader, maxSize int64) (models.MessageImage, error) {
+	// Validate size with custom limit
+	if fileHeader.Size > maxSize {
+		return models.MessageImage{}, fmt.Errorf("file %s exceeds %dMB limit", fileHeader.Filename, maxSize/(1024*1024))
+	}
+
+	// Validate extension/type
+	if !IsValidImageFile(fileHeader.Filename) {
+		return models.MessageImage{}, fmt.Errorf("invalid file type: %s", fileHeader.Filename)
+	}
+
+	// Generate unique filename
+	imageID, uniqueFilename, fullPath := generateUniqueImageFilename(fileHeader.Filename)
+
+	// Save image to disk
+	if err := saveImageToDisk(fileHeader, fullPath); err != nil {
+		return models.MessageImage{}, err
+	}
+
+	return models.MessageImage{
+		ImageID:          imageID,
+		ImageURL:         "/uploads/" + uniqueFilename,
+		OriginalFilename: fileHeader.Filename,
+	}, nil
+}
+
+// ProcessMessageImageUploads handles validation and processing of uploaded images for messages
+func ProcessMessageImageUploads(files []*multipart.FileHeader, maxImages int, maxSize int64) ([]models.MessageImage, error) {
+	if len(files) == 0 {
+		return []models.MessageImage{}, nil
+	}
+
+	// Validate total number of images
+	if len(files) > maxImages {
+		return nil, fmt.Errorf("maximum %d images allowed per message", maxImages)
+	}
+
+	images := make([]models.MessageImage, 0, len(files))
+
+	for _, fileHeader := range files {
+		image, err := processAndSaveSingleMessageImage(fileHeader, maxSize)
 		if err != nil {
 			return nil, err
 		}
