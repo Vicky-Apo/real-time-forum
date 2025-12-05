@@ -68,8 +68,10 @@ type AppConfig struct {
 	GoogleRedirectURI  string
 
 	// Image configuration
-	UploadDir        string
-	MaxImagesPerPost int
+	UploadDir           string
+	MaxImagesPerPost    int
+	MaxImagesPerMessage int
+	MaxMessageImageSize int64
 }
 
 // Global configuration instance
@@ -142,6 +144,8 @@ func LoadConfig() error {
 
 	Config.UploadDir = getEnv("UPLOAD_DIR", "./uploads/")
 	Config.MaxImagesPerPost = getEnvAsInt("MAX_IMAGES_PER_POST", 5)
+	Config.MaxImagesPerMessage = getEnvAsInt("MAX_IMAGES_PER_MESSAGE", 3)
+	Config.MaxMessageImageSize = int64(getEnvAsInt("MAX_MESSAGE_IMAGE_SIZE", 5*1024*1024)) // 5MB default
 
 	return nil
 }

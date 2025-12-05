@@ -5,8 +5,10 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
+	"real-time-forum/config"
 	"real-time-forum/internal/middleware"
 	"real-time-forum/internal/models"
 	"real-time-forum/internal/repository"
@@ -22,45 +24,104 @@ func SendMessageHandler(mr *repository.MessageRepository, hub *ws.Hub) http.Hand
 		// Get authenticated user
 		user := middleware.GetCurrentUser(r)
 
-		// Parse request
-		var req models.SendMessageRequest
-		err := json.NewDecoder(r.Body).Decode(&req)
-		if err != nil {
-			utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
-			return
+		// Check Content-Type to determine if this is a multipart form or JSON
+		contentType := r.Header.Get("Content-Type")
+		isMultipart := strings.HasPrefix(contentType, "multipart/form-data")
+
+		var recipientID, content string
+		var images []models.MessageImage
+
+		if isMultipart {
+			// Parse multipart form (25MB limit)
+			err := r.ParseMultipartForm(25 << 20)
+			if err != nil {
+				utils.RespondWithError(w, http.StatusBadRequest, "Failed to parse form")
+				return
+			}
+
+			// Extract text fields
+			recipientID = r.FormValue("recipient_id")
+			content = r.FormValue("content")
+
+			// Process images (if any)
+			files := r.MultipartForm.File["images"]
+			if len(files) > 0 {
+				images, err = utils.ProcessMessageImageUploads(files, config.Config.MaxImagesPerMessage, config.Config.MaxMessageImageSize)
+				if err != nil {
+					utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+					return
+				}
+			}
+		} else {
+			// Parse JSON request (backwards compatibility)
+			var req models.SendMessageRequest
+			err := json.NewDecoder(r.Body).Decode(&req)
+			if err != nil {
+				utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
+				return
+			}
+			recipientID = req.RecipientID
+			content = req.Content
 		}
 
-		// Validate content
-		if len(req.Content) == 0 {
-			utils.RespondWithError(w, http.StatusBadRequest, "Message content cannot be empty")
-			return
-		}
-
-		if len(req.Content) > 512 {
-			utils.RespondWithError(w, http.StatusBadRequest, "Message content too long (max 512 characters)")
+		// Validate recipient
+		if recipientID == "" {
+			utils.RespondWithError(w, http.StatusBadRequest, "Recipient ID is required")
 			return
 		}
 
 		// Validate recipient is not sender
-		if req.RecipientID == user.ID {
+		if recipientID == user.ID {
 			utils.RespondWithError(w, http.StatusBadRequest, "Cannot send message to yourself")
 			return
 		}
 
+		// Validate content length
+		if len(content) > 512 {
+			utils.RespondWithError(w, http.StatusBadRequest, "Message content too long (max 512 characters)")
+			return
+		}
+
+		// Require either content or images
+		if len(content) == 0 && len(images) == 0 {
+			utils.RespondWithError(w, http.StatusBadRequest, "Message must have content or images")
+			return
+		}
+
 		// Save message to database
-		response, err := mr.SaveMessage(user.ID, req.RecipientID, req.Content)
+		var response *models.SendMessageResponse
+		var err error
+
+		if len(images) > 0 {
+			response, err = mr.SaveMessageWithImages(user.ID, recipientID, content, images)
+		} else {
+			response, err = mr.SaveMessage(user.ID, recipientID, content)
+		}
+
 		if err != nil {
 			log.Printf("Failed to save message: %v", err)
 			utils.RespondWithError(w, http.StatusInternalServerError, "Failed to send message")
 			return
 		}
 
+		// Fetch saved images with complete data (message_id, uploaded_at) for WebSocket broadcast
+		var savedImages []models.MessageImage
+		if len(images) > 0 {
+			savedImages, err = mr.GetImagesForMessage(response.MessageID)
+			if err != nil {
+				log.Printf("Failed to fetch saved images: %v", err)
+				// Don't fail the request, just send empty images array
+				savedImages = []models.MessageImage{}
+			}
+		}
+
 		// Broadcast to WebSocket if recipient is online
-		hub.SendMessageToUser(req.RecipientID, models.EventTypeReceiveMessage, models.ReceiveMessagePayload{
+		hub.SendMessageToUser(recipientID, models.EventTypeReceiveMessage, models.ReceiveMessagePayload{
 			SenderID:   user.ID,
 			SenderName: user.Username,
-			Content:    req.Content,
+			Content:    content,
 			SentAt:     response.CreatedAt,
+			Images:     savedImages,
 		})
 
 		// Return success response

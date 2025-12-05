@@ -2,15 +2,25 @@ package models
 
 import "time"
 
+// MessageImage represents an image attached to a message
+type MessageImage struct {
+	ImageID          string    `json:"image_id"`
+	MessageID        string    `json:"message_id"`
+	ImageURL         string    `json:"image_url"`
+	OriginalFilename string    `json:"original_filename"`
+	UploadedAt       time.Time `json:"uploaded_at"`
+}
+
 // Message represents a chat message between two users
 type Message struct {
-	MessageID   string    `json:"message_id"`
-	SenderID    string    `json:"sender_id"`
-	SenderName  string    `json:"sender_name"`
-	RecipientID string    `json:"recipient_id"`
-	Content     string    `json:"content"`
-	CreatedAt   time.Time `json:"created_at"`
-	IsRead      bool      `json:"is_read"`
+	MessageID   string         `json:"message_id"`
+	SenderID    string         `json:"sender_id"`
+	SenderName  string         `json:"sender_name"`
+	RecipientID string         `json:"recipient_id"`
+	Content     string         `json:"content"`
+	CreatedAt   time.Time      `json:"created_at"`
+	IsRead      bool           `json:"is_read"`
+	Images      []MessageImage `json:"images"`
 }
 
 // SendMessageRequest is the payload for sending a message via HTTP

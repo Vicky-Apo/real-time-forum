@@ -147,6 +147,15 @@ var TableCreationStatements = []string{
 		FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE,
 		FOREIGN KEY (recipient_id) REFERENCES users(user_id) ON DELETE CASCADE
 	);`,
+
+	`CREATE TABLE IF NOT EXISTS message_images (
+		image_id TEXT PRIMARY KEY NOT NULL UNIQUE,
+		message_id TEXT NOT NULL,
+		image_url TEXT NOT NULL,
+		original_filename TEXT,
+		uploaded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (message_id) REFERENCES messages(message_id) ON DELETE CASCADE
+	);`,
 }
 
 // IndexCreationStatements contains ESSENTIAL indexes only - what you'll actually use
@@ -179,4 +188,7 @@ var IndexCreationStatements = []string{
 
 	// User's notifications ordered by time
 	`CREATE INDEX IF NOT EXISTS idx_notifications_user_created ON notifications(user_id, created_at DESC);`,
+
+	// Quickly fetch images for a message
+	`CREATE INDEX IF NOT EXISTS idx_message_images_message_id ON message_images(message_id);`,
 }
