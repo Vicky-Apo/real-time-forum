@@ -43,6 +43,43 @@
    CATEGORY SELECTION (UNIQUE)
    =============================================== */
 
+.categories-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.category-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-bg-primary);
+    border: 2px solid var(--color-border-light);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: var(--transition-all);
+    user-select: none;
+}
+
+.category-checkbox:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.category-checkbox input[type="checkbox"] {
+    cursor: pointer;
+    margin: 0;
+}
+
+.category-checkbox input[type="checkbox"]:checked ~ span {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
 .category-selection {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -51,16 +88,6 @@
     background: #f9eeef;
     border-radius: var(--radius-md);
     border: 2px solid #e7e4eb;
-}
-
-.category-checkbox {
-    position: relative;
-}
-
-.category-checkbox input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
 }
 
 .category-label {

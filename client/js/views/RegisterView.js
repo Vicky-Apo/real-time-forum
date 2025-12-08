@@ -213,9 +213,12 @@ export default {
 
             const loginResponse = await apiClient.post('/auth/login', loginData);
 
+            // Backend wraps response in { success: true, data: {...} }
+            const loginDataWrapped = loginResponse.data || loginResponse;
+
             // Store user in state
-            if (loginResponse.user) {
-                state.setUser(loginResponse.user);
+            if (loginDataWrapped.user) {
+                state.setUser(loginDataWrapped.user);
             }
 
             // Connect WebSocket

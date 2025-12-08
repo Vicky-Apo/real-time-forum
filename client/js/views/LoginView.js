@@ -103,9 +103,12 @@ export default {
 
             console.log('[LoginView] Login successful:', response);
 
+            // Backend wraps response in { success: true, data: {...} }
+            const loginData = response.data || response;
+
             // Store user in state
-            if (response.user) {
-                state.setUser(response.user);
+            if (loginData.user) {
+                state.setUser(loginData.user);
             }
 
             // Connect WebSocket

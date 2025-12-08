@@ -7,19 +7,15 @@
    PAGE LAYOUT & STRUCTURE
    =============================================== */
 
-body {
-  background: linear-gradient(135deg, #f9eeef 0%, #e7e4eb 100%);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-2xl);
-}
-
 .auth-container {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
+  padding: var(--space-4xl) var(--space-2xl);
+  min-height: calc(100vh - 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: fadeIn 0.6s ease-out;
 }
 
@@ -434,12 +430,9 @@ body {
    =============================================== */
 
 @media (max-width: 768px) {
-  body {
-    padding: var(--space-lg);
-  }
-  
   .auth-container {
     max-width: 100%;
+    padding: var(--space-3xl) var(--space-lg);
   }
   
   .auth-header {
@@ -462,10 +455,10 @@ body {
 }
 
 @media (max-width: 480px) {
-  body {
-    padding: var(--space-md);
+  .auth-container {
+    padding: var(--space-2xl) var(--space-md);
   }
-  
+
   .auth-header {
     padding: var(--space-2xl);
     margin-bottom: var(--space-3xl);

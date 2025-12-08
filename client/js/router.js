@@ -101,6 +101,12 @@ class Router {
     async renderView(route) {
         const app = document.getElementById('app');
 
+        // Hide hero section by default (individual views can show it)
+        const heroSection = document.getElementById('hero-section');
+        if (heroSection) {
+            heroSection.style.display = 'none';
+        }
+
         // Show loading state
         app.innerHTML = `
             <div class="loading-container">
