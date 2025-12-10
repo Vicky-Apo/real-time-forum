@@ -22,8 +22,20 @@ func main() {
 		log.Fatal("Invalid backend URL:", err)
 	}
 
-	// Create reverse proxy
+	// Create reverse proxy with WebSocket support
 	proxy := httputil.NewSingleHostReverseProxy(backendURL)
+
+	// Configure the proxy to handle WebSocket upgrades
+	proxy.Director = func(req *http.Request) {
+		req.URL.Scheme = backendURL.Scheme
+		req.URL.Host = backendURL.Host
+		req.Host = backendURL.Host
+
+		// Preserve original headers for WebSocket upgrade
+		if req.Header.Get("Upgrade") == "websocket" {
+			log.Printf("WebSocket upgrade request detected")
+		}
+	}
 
 	// Create file server for static files
 	fs := http.FileServer(http.Dir("."))

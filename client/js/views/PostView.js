@@ -29,7 +29,7 @@ export default {
         `;
     },
 
-    async afterRender(params) {
+    async afterRender() {
         console.log('[PostView] Rendered for post:', this.postId);
 
         try {
@@ -46,7 +46,7 @@ export default {
         const container = document.getElementById('post-content');
 
         try {
-            const response = await apiClient.get(`/posts/${this.postId}`);
+            const response = await apiClient.get(`/posts/view/${this.postId}`);
             this.post = response.data || response;
 
             container.innerHTML = this.renderPost(this.post);
@@ -69,7 +69,7 @@ export default {
         if (!container) return;
 
         try {
-            const response = await apiClient.get(`/posts/${this.postId}/comments`);
+            const response = await apiClient.get(`/comments/for-post/${this.postId}`);
             const data = response.data || response;
             this.comments = data.comments || [];
 
@@ -287,7 +287,7 @@ export default {
         }
 
         try {
-            await apiClient.post(`/posts/${this.postId}/comments`, {
+            await apiClient.post(`/comments/create-on-post/${this.postId}`, {
                 content: content
             });
 
@@ -307,7 +307,8 @@ export default {
 
     async handlePostReaction(postId, reactionType) {
         try {
-            await apiClient.post(`/posts/${postId}/react`, {
+            await apiClient.post(`/reactions/posts/toggle`, {
+                post_id: postId,
                 reaction_type: reactionType
             });
 
@@ -322,7 +323,8 @@ export default {
 
     async handleCommentReaction(commentId, reactionType) {
         try {
-            await apiClient.post(`/comments/${commentId}/react`, {
+            await apiClient.post(`/reactions/comments/toggle`, {
+                comment_id: commentId,
                 reaction_type: reactionType
             });
 
@@ -341,7 +343,7 @@ export default {
         }
 
         try {
-            await apiClient.delete(`/posts/${postId}`);
+            await apiClient.delete(`/posts/remove/${postId}`);
             this.showToast('Post deleted successfully!', 'success');
 
             // Redirect to home after a short delay
@@ -360,7 +362,7 @@ export default {
         }
 
         try {
-            await apiClient.delete(`/comments/${commentId}`);
+            await apiClient.delete(`/comments/remove/${commentId}`);
             this.showToast('Comment deleted successfully!', 'success');
 
             // Reload comments and post

@@ -4,8 +4,11 @@ import state from '../state.js';
 
 class WebSocketManager {
     constructor() {
-        // Use relative URL - will work with Nginx proxy
-        this.url = `ws://${window.location.host}/ws`;
+        // Connect to WebSocket through the same origin (will be proxied to backend)
+        // This ensures cookies and CORS work correctly
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.host; // includes port
+        this.url = `${protocol}//${host}/ws`;
         this.ws = null;
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 10;

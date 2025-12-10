@@ -12,6 +12,7 @@ import RegisterView from './views/RegisterView.js';
 import HomeView from './views/HomeView.js';
 import PostView from './views/PostView.js';
 import CreatePostView from './views/CreatePostView.js';
+import CategoryView from './views/CategoryView.js';
 import ProfileView from './views/ProfileView.js';
 import ChatView from './views/ChatView.js';
 import NotificationsView from './views/NotificationsView.js';
@@ -44,6 +45,11 @@ const routes = [
         requiresAuth: true
     },
     {
+        path: '/category/:id',
+        component: async () => CategoryView,
+        requiresAuth: true
+    },
+    {
         path: '/profile/:id',
         component: async () => ProfileView,
         requiresAuth: true
@@ -70,8 +76,12 @@ async function initApp() {
 
         if (currentUser) {
             state.setUser(currentUser);
+        }
 
-            // Connect WebSocket if authenticated
+        // Connect WebSocket if we have an authenticated user (from API or localStorage)
+        const user = state.getUser();
+        if (user) {
+            console.log('[App] User authenticated, connecting WebSocket...');
             wsManager.connect();
         }
 
