@@ -2677,8 +2677,17 @@ table {
   }
 
   .home-layout {
-    grid-template-columns: 1fr 220px;
+    grid-template-columns: 1fr 220px !important;
     gap: var(--space-lg);
+  }
+
+  /* Force order: posts left, categories right */
+  .main-content {
+    order: 1 !important;
+  }
+
+  .sidebar {
+    order: 2 !important;
   }
 
   /* Chat layout adjustments */
@@ -2700,11 +2709,17 @@ table {
     gap: var(--space-lg);
   }
 
+  /* Keep posts first, categories second on mobile too */
+  .main-content {
+    order: 1 !important;
+  }
+
   .sidebar {
     position: static !important;
     height: auto !important;
     max-height: 400px;
     overflow-y: auto;
+    order: 2 !important;
   }
 
   /* Single column chat on mobile */
