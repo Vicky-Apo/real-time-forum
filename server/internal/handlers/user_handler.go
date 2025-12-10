@@ -204,28 +204,3 @@ func GetUserProfileHandler(ur *repository.UserRepository) http.HandlerFunc {
 		utils.RespondWithSuccess(w, http.StatusOK, profile)
 	}
 }
-
-// GetOnlineUsersHandler returns a list of currently online users
-func GetOnlineUsersHandler(hub interface{ GetOnlineUsers() []models.UserStatusPayload }) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		// Get authenticated user
-		user := middleware.GetCurrentUser(r)
-
-		// Get online users from hub
-		onlineUsers := hub.GetOnlineUsers()
-
-		// Filter out the current user from the list
-		filtered := []models.UserStatusPayload{}
-		for _, u := range onlineUsers {
-			if u.UserID != user.ID {
-				filtered = append(filtered, u)
-			}
-		}
-
-		// Return the filtered list
-		utils.RespondWithSuccess(w, http.StatusOK, map[string]interface{}{
-			"online_users": filtered,
-		})
-	}
-}

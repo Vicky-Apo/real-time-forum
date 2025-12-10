@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -207,8 +208,11 @@ func GetUnreadCountHandler(mr *repository.MessageRepository) http.HandlerFunc {
 	}
 }
 
-// GetConversationsHandler returns all conversations for the current user
-// Sorted by last message timestamp (Discord-style), with users without messages alphabetically at the end
+// GetConversationsHandler returns all users sorted by:
+// 1. Online users first, then offline
+// 2. Users with messages first, then without
+// 3. By last message time (newest first) for those with messages
+// 4. Alphabetically for those without messages
 func GetConversationsHandler(mr *repository.MessageRepository, hub interface{ GetOnlineUsers() []models.UserStatusPayload }) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -234,6 +238,37 @@ func GetConversationsHandler(mr *repository.MessageRepository, hub interface{ Ge
 		for i := range conversations {
 			conversations[i].IsOnline = onlineMap[conversations[i].UserID]
 		}
+
+		// Sort conversations by:
+		// 1. Online status (online first)
+		// 2. Has messages or not (with messages first)
+		// 3. Last message time DESC (for those with messages)
+		// 4. Username alphabetically (for those without messages)
+		sort.Slice(conversations, func(i, j int) bool {
+			convI := conversations[i]
+			convJ := conversations[j]
+
+			// 1. Compare online status (online users first)
+			if convI.IsOnline != convJ.IsOnline {
+				return convI.IsOnline // true comes before false
+			}
+
+			// 2. Compare if they have messages (users with messages first)
+			hasMessageI := convI.LastMessage != nil
+			hasMessageJ := convJ.LastMessage != nil
+
+			if hasMessageI != hasMessageJ {
+				return hasMessageI // true comes before false
+			}
+
+			// 3. If both have messages, sort by last message time (newest first)
+			if hasMessageI && hasMessageJ {
+				return convI.LastMessage.CreatedAt.After(convJ.LastMessage.CreatedAt)
+			}
+
+			// 4. If neither has messages, sort alphabetically by username
+			return convI.Username < convJ.Username
+		})
 
 		// Return conversations
 		utils.RespondWithSuccess(w, http.StatusOK, map[string]interface{}{
