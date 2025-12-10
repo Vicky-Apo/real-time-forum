@@ -37,8 +37,9 @@ export function renderNavbar() {
                 <a href="/chat" data-link class="nav-link">
                     Chat
                 </a>
-                <a href="/notifications" data-link class="nav-link">
-                    Notifications ${unreadBadge}
+                <a href="/notifications" data-link class="nav-link" style="position: relative;">
+                    Notifications
+                    ${unreadBadge}
                 </a>
                 <a href="/create-post" data-link class="nav-link btn-primary">
                     New Post
