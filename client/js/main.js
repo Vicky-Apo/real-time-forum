@@ -82,6 +82,16 @@ async function initApp() {
 
         if (currentUser) {
             state.setUser(currentUser);
+
+            // Load initial unread notification count
+            try {
+                const notifResponse = await apiClient.get('/notifications');
+                const notifications = notifResponse.notifications || [];
+                const unreadCount = notifications.filter(n => !n.is_read).length;
+                state.setUnreadCount(unreadCount);
+            } catch (error) {
+                console.error('[App] Error loading notifications count:', error);
+            }
         }
 
         // Connect WebSocket if we have an authenticated user (from API or localStorage)
