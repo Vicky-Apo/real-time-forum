@@ -34,56 +34,65 @@
     gap: var(--space-lg);
 }
 
-/* Notification Item */
+/* Notification Item - Read (default) */
 .notification-item {
     display: flex;
     align-items: flex-start;
     gap: var(--space-lg);
     padding: var(--space-xl);
-    background: #ffffff;
+    background: #f9fafb;
     border-radius: var(--radius-lg);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     cursor: pointer;
     transition: var(--transition-all);
     position: relative;
     border: 1px solid #e5e7eb;
     margin-bottom: 4px;
+    opacity: 0.75;
 }
 
 .notification-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border-color: #6366f1;
+    opacity: 1;
 }
 
+/* Notification Item - Unread (highlighted) */
 .notification-item.notification-unread {
-    background: #eff6ff;
-    border-color: #93c5fd;
+    background: #ffffff;
+    border-color: #3b82f6;
     border-left: 4px solid #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+    opacity: 1;
 }
 
 .notification-item.notification-unread:hover {
-    background: #dbeafe;
+    background: #eff6ff;
     border-color: #3b82f6;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
 }
 
-/* Notification Icon */
+/* Notification Icon - Read (muted) */
 .notification-icon {
     width: 56px;
     height: 56px;
     border-radius: var(--radius-full);
-    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    background: #e5e7eb;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.75rem;
     flex-shrink: 0;
     box-shadow: var(--shadow-sm);
+    opacity: 0.6;
 }
 
+/* Notification Icon - Unread (vibrant) */
 .notification-unread .notification-icon {
     background: var(--gradient-primary);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    opacity: 1;
 }
 
 /* Notification Content */
@@ -103,6 +112,15 @@
     color: var(--color-primary);
 }
 
+/* Read notifications - muted text */
+.notification-item:not(.notification-unread) .notification-text {
+    color: var(--color-text-secondary);
+}
+
+.notification-item:not(.notification-unread) .notification-text strong {
+    color: var(--color-text-primary);
+}
+
 .notification-preview {
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
@@ -111,6 +129,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Read notifications - more muted preview */
+.notification-item:not(.notification-unread) .notification-preview {
+    color: var(--color-text-tertiary);
 }
 
 .notification-time {
