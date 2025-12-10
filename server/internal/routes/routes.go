@@ -112,7 +112,7 @@ func SetupRoutes(db *sql.DB) http.Handler {
 
 	// ===== USER ROUTES =====
 	// All routes protected - requires authentication
-	mux.Handle("GET /api/users/online", AuthMiddleware.RequireAuth(handlers.GetOnlineUsersHandler(hub)))
+	// Note: User list with online/offline status is available via /api/conversations
 
 	// ===== WEBSOCKET ROUTES =====
 	// Protected - requires authentication
