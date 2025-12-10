@@ -56,8 +56,9 @@ export default {
 
             container.innerHTML = this.notifications.map(notif => this.renderNotification(notif)).join('');
 
-            // Clear unread count in state
-            state.setUnreadCount(0);
+            // Update unread count based on actual unread notifications
+            const unreadCount = this.notifications.filter(n => !n.is_read).length;
+            state.setUnreadCount(unreadCount);
 
         } catch (error) {
             console.error('[NotificationsView] Error loading notifications:', error);
