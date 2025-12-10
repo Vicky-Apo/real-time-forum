@@ -307,9 +307,12 @@ export default {
 
     async handlePostReaction(postId, reactionType) {
         try {
+            // Convert reaction type string to integer (1 = like, 2 = dislike)
+            const reactionTypeInt = reactionType === 'like' ? 1 : 2;
+
             await apiClient.post(`/reactions/posts/toggle`, {
                 post_id: postId,
-                reaction_type: reactionType
+                reaction_type: reactionTypeInt
             });
 
             // Reload post to update reaction counts
@@ -323,9 +326,12 @@ export default {
 
     async handleCommentReaction(commentId, reactionType) {
         try {
+            // Convert reaction type string to integer (1 = like, 2 = dislike)
+            const reactionTypeInt = reactionType === 'like' ? 1 : 2;
+
             await apiClient.post(`/reactions/comments/toggle`, {
                 comment_id: commentId,
-                reaction_type: reactionType
+                reaction_type: reactionTypeInt
             });
 
             // Reload comments to update reaction counts
