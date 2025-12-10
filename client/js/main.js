@@ -12,6 +12,7 @@ import RegisterView from './views/RegisterView.js';
 import HomeView from './views/HomeView.js';
 import PostView from './views/PostView.js';
 import CreatePostView from './views/CreatePostView.js';
+import EditPostView from './views/EditPostView.js';
 import CategoryView from './views/CategoryView.js';
 import ProfileView from './views/ProfileView.js';
 import ChatView from './views/ChatView.js';
@@ -42,6 +43,11 @@ const routes = [
     {
         path: '/create-post',
         component: async () => CreatePostView,
+        requiresAuth: true
+    },
+    {
+        path: '/edit-post/:id',
+        component: async () => EditPostView,
         requiresAuth: true
     },
     {
