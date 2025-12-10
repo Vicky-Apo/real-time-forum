@@ -48,12 +48,31 @@ export function renderNavbar() {
             <div class="navbar-user">
                 <div class="user-menu">
                     <button class="user-menu-btn" id="user-menu-btn">
-                        <span>${user.username}</span>
+                        <div class="user-avatar">
+                            ${user.username.slice(0, 2).toUpperCase()}
+                        </div>
+                        <span class="user-name">${user.username}</span>
                         <span class="dropdown-icon">▼</span>
                     </button>
                     <div class="user-dropdown" id="user-dropdown">
-                        <a href="/profile/${user.user_id}" data-link>My Profile</a>
-                        <a href="#" id="logout-btn">Logout</a>
+                        <div class="user-dropdown-header">
+                            <div class="user-avatar-large">
+                                ${user.username.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div class="user-info">
+                                <div class="user-display-name">${user.username}</div>
+                                <div class="user-email">${user.email || 'User Account'}</div>
+                            </div>
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="/profile/${user.user_id}" data-link class="dropdown-item">
+                            <span class="dropdown-icon-left">👤</span>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="#" id="logout-btn" class="dropdown-item logout-item">
+                            <span class="dropdown-icon-left">🚪</span>
+                            <span>Logout</span>
+                        </a>
                     </div>
                 </div>
             </div>
