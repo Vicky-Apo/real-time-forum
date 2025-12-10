@@ -87,9 +87,9 @@ export default {
         return `
             <article class="post-card" onclick="window.router.navigate('/post/${post.post_id}')">
                 <div class="post-vote">
-                    <button class="vote-btn upvote" onclick="event.stopPropagation()">▲</button>
-                    <span class="vote-count">${netVotes}</span>
-                    <button class="vote-btn downvote" onclick="event.stopPropagation()">▼</button>
+                    <button class="vote-btn upvote" onclick="event.stopPropagation()" title="Like this post">▲</button>
+                    <span class="vote-count" title="Net votes (likes - dislikes)">${netVotes}</span>
+                    <button class="vote-btn downvote" onclick="event.stopPropagation()" title="Dislike this post">▼</button>
                 </div>
                 <div class="post-main">
                     <div class="post-meta">
