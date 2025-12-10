@@ -50,10 +50,7 @@ export default {
         this.currentUser = state.getUser();
 
         try {
-            // Load online users first
-            await this.loadOnlineUsers();
-
-            // Load conversations
+            // Load conversations (includes all users with online status)
             await this.loadConversations();
 
             // Setup WebSocket listeners
@@ -66,39 +63,31 @@ export default {
         }
     },
 
-    async loadOnlineUsers() {
-        try {
-            const response = await apiClient.get('/users/online');
-            const data = response.data || response;
-            const users = data.users || [];
-            this.onlineUsers = new Set(users.map(u => u.user_id));
-            console.log('[ChatView] Online users loaded:', this.onlineUsers.size, 'users:', users);
-            console.log('[ChatView] Online user IDs:', Array.from(this.onlineUsers));
-        } catch (error) {
-            console.error('[ChatView] Error loading online users:', error);
-        }
-    },
-
     async loadConversations() {
         const container = document.getElementById('conversations-list');
 
         try {
-            // Load both conversations and online users
-            await this.loadOnlineUsers();
-
+            // Get conversations (now includes all users with online status)
             const convResponse = await apiClient.get('/conversations');
             const data = convResponse.data || convResponse;
             this.conversations = data.conversations || [];
 
-            console.log('[ChatView] Loaded conversations:', this.conversations);
+            // Build online users set from conversations
+            this.onlineUsers = new Set(
+                this.conversations
+                    .filter(conv => conv.is_online)
+                    .map(conv => conv.user_id)
+            );
+
+            console.log('[ChatView] Loaded conversations:', this.conversations.length);
+            console.log('[ChatView] Online users:', this.onlineUsers.size);
 
             if (this.conversations.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state" style="padding: var(--space-3xl) var(--space-2xl);">
-                        <p class="empty-state-message">No conversations yet</p>
+                        <p class="empty-state-message">No users available</p>
                         <p style="font-size: var(--font-size-sm); margin-top: var(--space-md);">
-                            Send a message to someone to start a conversation!<br><br>
-                            <strong>Online users:</strong> ${this.onlineUsers.size}
+                            No other users found in the system.
                         </p>
                     </div>
                 `;
@@ -182,7 +171,8 @@ export default {
         try {
             const response = await apiClient.get(`/messages/${userId}`);
             const data = response.data || response;
-            this.messages = data.messages || [];
+            // Reverse messages so oldest appears first (backend sends newest first)
+            this.messages = (data.messages || []).reverse();
 
             const isOnline = this.onlineUsers.has(userId);
 
@@ -303,14 +293,15 @@ export default {
         const initials = message.sender_username?.slice(0, 2).toUpperCase() || 'U';
 
         let imageHTML = '';
-        if (message.image_url) {
-            imageHTML = `
-                <img src="${message.image_url}"
+        if (message.images && message.images.length > 0) {
+            imageHTML = message.images.map(img => `
+                <img src="${img.image_url}"
                      alt="Message image"
                      class="message-image"
-                     onclick="showImageLightbox('${message.image_url}')"
+                     onclick="showImageLightbox('${img.image_url}')"
+                     style="max-width: 200px; border-radius: 8px; margin-top: 8px; cursor: pointer;"
                 >
-            `;
+            `).join('');
         }
 
         return `
@@ -429,11 +420,19 @@ export default {
         state.on('message:received', (message) => {
             console.log('[ChatView] New message received:', message);
 
+            // Normalize WebSocket payload to match database format
+            const normalizedMessage = {
+                sender_id: message.sender_id,
+                sender_username: message.sender_name,  // WebSocket uses sender_name
+                content: message.content,
+                created_at: message.sent_at,  // WebSocket uses sent_at
+                images: message.images || []
+            };
+
             // If message is for current conversation, add it
             if (this.currentConversation &&
-                (message.sender_id === this.currentConversation.user_id ||
-                 message.receiver_id === this.currentConversation.user_id)) {
-                this.addMessageToUI(message);
+                (message.sender_id === this.currentConversation.user_id)) {
+                this.addMessageToUI(normalizedMessage);
             }
 
             // Reload conversations to update preview
@@ -442,13 +441,13 @@ export default {
 
         // Listen for typing indicators
         state.on('typing:start', (data) => {
-            if (this.currentConversation && data.sender_id === this.currentConversation.user_id) {
+            if (this.currentConversation && data.user_id === this.currentConversation.user_id) {
                 this.showTypingIndicator();
             }
         });
 
         state.on('typing:stop', (data) => {
-            if (this.currentConversation && data.sender_id === this.currentConversation.user_id) {
+            if (this.currentConversation && data.user_id === this.currentConversation.user_id) {
                 this.hideTypingIndicator();
             }
         });

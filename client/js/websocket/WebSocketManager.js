@@ -58,21 +58,21 @@ class WebSocketManager {
     onMessage(event) {
         try {
             const message = JSON.parse(event.data);
-            console.log('[WS] Message received:', message.type);
+            // Backend sends 'event' field, not 'type'
+            const eventType = message.event || message.type;
+            console.log('[WS] Message received:', eventType);
 
             // Emit event based on message type
-            state.emit(`ws:${message.type}`, message.payload);
+            state.emit(`ws:${eventType}`, message.payload);
 
             // Handle specific message types
-            this.handleMessage(message);
+            this.handleMessage(eventType, message.payload);
         } catch (error) {
             console.error('[WS] Failed to parse message:', error);
         }
     }
 
-    handleMessage(message) {
-        const { type, payload } = message;
-
+    handleMessage(type, payload) {
         switch (type) {
             case 'user_online':
                 state.addOnlineUser(payload);
@@ -90,6 +90,7 @@ class WebSocketManager {
                 state.emit('typing:stop', payload);
                 break;
 
+            case 'receive_message':
             case 'new_message':
                 state.emit('message:received', payload);
                 this.showBrowserNotification(payload);
@@ -148,7 +149,8 @@ class WebSocketManager {
 
     send(type, payload) {
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            const message = JSON.stringify({ type, payload });
+            // Backend expects 'event' field, not 'type'
+            const message = JSON.stringify({ event: type, payload });
             this.ws.send(message);
             console.log('[WS] Sent:', type);
         } else {

@@ -2596,3 +2596,175 @@ table {
     margin-bottom: var(--space-3xl);
     color: var(--color-text-muted);
   }
+/* ===============================================
+@media (max-width: 1024px) {
+  .layout-container {
+    grid-template-columns: 250px 1fr;
+    gap: var(--grid-gap-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --container-padding: var(--space-xl);
+  }
+
+  .layout-container {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    max-height: none;
+  }
+
+  /* Stack navbar items on mobile */
+  .navbar-links {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  /* Make chat conversations list collapsible on mobile */
+  .chat-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .conversations-list {
+    display: none;
+  }
+
+  /* Full width forms */
+  .auth-container,
+  .post-form-container {
+    max-width: 100%;
+    padding: var(--space-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .post-card {
+    padding: var(--space-md);
+  }
+}
+
+/* ===============================================
+   RESPONSIVE MEDIA QUERIES - UPDATED
+   =============================================== */
+
+/* Tablets and smaller desktops */
+@media (max-width: 1200px) {
+  .home-layout {
+    grid-template-columns: 1fr 250px;
+    gap: var(--space-xl);
+  }
+}
+
+/* Tablets */
+@media (max-width: 1024px) {
+  :root {
+    --container-max-width: 100%;
+  }
+
+  .home-layout {
+    grid-template-columns: 1fr 220px;
+    gap: var(--space-lg);
+  }
+
+  /* Chat layout adjustments */
+  .chat-container {
+    grid-template-columns: 280px 1fr !important;
+  }
+}
+
+/* Mobile landscape and tablets portrait */
+@media (max-width: 768px) {
+  :root {
+    --container-padding: var(--space-lg);
+    --grid-gap: var(--space-lg);
+  }
+
+  /* Stack layout vertically on mobile */
+  .home-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .sidebar {
+    position: static !important;
+    height: auto !important;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  /* Single column chat on mobile */
+  .chat-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .conversations-sidebar {
+    max-height: 300px;
+    margin-bottom: var(--space-lg);
+  }
+
+  /* Adjust post cards for mobile */
+  .post-card {
+    padding: var(--space-md);
+  }
+
+  /* Navbar mobile adjustments */
+  .navbar-content {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
+  :root {
+    --container-padding: var(--space-md);
+  }
+
+  .btn {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .post-card {
+    padding: var(--space-sm);
+  }
+
+  /* Make images responsive */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Prevent horizontal overflow globally */
+* {
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
