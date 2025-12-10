@@ -22,6 +22,7 @@ export function renderNavbar() {
 
     // Logged in - show full navbar
     const unreadCount = state.unreadCount;
+    console.log('[Navbar] Unread count:', unreadCount);
     const unreadBadge = unreadCount > 0 ? `<span class="badge">${unreadCount}</span>` : '';
 
     navbar.innerHTML = `

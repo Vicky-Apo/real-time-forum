@@ -40,29 +40,31 @@
     align-items: flex-start;
     gap: var(--space-lg);
     padding: var(--space-xl);
-    background: var(--color-bg-primary);
+    background: #ffffff;
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: var(--transition-all);
     position: relative;
-    border: 2px solid transparent;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 4px;
 }
 
 .notification-item:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-primary-light);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: #6366f1;
 }
 
 .notification-item.notification-unread {
-    background: rgba(99, 102, 241, 0.08);
-    border-color: rgba(99, 102, 241, 0.2);
+    background: #eff6ff;
+    border-color: #93c5fd;
+    border-left: 4px solid #3b82f6;
 }
 
 .notification-item.notification-unread:hover {
-    background: rgba(99, 102, 241, 0.12);
-    border-color: var(--color-primary);
+    background: #dbeafe;
+    border-color: #3b82f6;
 }
 
 /* Notification Icon */
