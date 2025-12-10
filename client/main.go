@@ -42,8 +42,8 @@ func main() {
 
 	// Main handler
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Proxy API and WebSocket requests to backend
-		if strings.HasPrefix(r.URL.Path, "/api/") || r.URL.Path == "/ws" {
+		// Proxy API, WebSocket, and uploads requests to backend
+		if strings.HasPrefix(r.URL.Path, "/api/") || r.URL.Path == "/ws" || strings.HasPrefix(r.URL.Path, "/uploads/") {
 			log.Printf("Proxying: %s %s", r.Method, r.URL.Path)
 			proxy.ServeHTTP(w, r)
 			return
