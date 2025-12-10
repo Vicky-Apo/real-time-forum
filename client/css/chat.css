@@ -37,7 +37,11 @@
 .conversations-list {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: var(--space-md);
+    min-height: 0; /* Allow flex item to shrink */
+    display: flex;
+    flex-direction: column;
 }
 
 .conversation-item {
@@ -51,6 +55,8 @@
     display: flex;
     align-items: center;
     gap: var(--space-md);
+    flex-shrink: 0; /* Prevent items from shrinking */
+    min-height: 60px; /* Ensure minimum height */
 }
 
 .conversation-item:hover {
@@ -405,7 +411,50 @@
 }
 
 /* Responsive Design */
+/* Medium screens - narrow the sidebar */
+@media (max-width: 1200px) {
+    .chat-container {
+        grid-template-columns: 250px 1fr;
+        gap: var(--space-lg);
+    }
+}
+
+/* Tablet and smaller - make sidebar even narrower */
 @media (max-width: 968px) {
+    .chat-container {
+        grid-template-columns: 200px 1fr;
+        gap: var(--space-md);
+    }
+
+    .conversation-item {
+        padding: var(--space-md);
+    }
+
+    .conversation-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: var(--font-size-md);
+    }
+
+    .conversation-name {
+        font-size: var(--font-size-sm);
+    }
+
+    .conversation-preview {
+        display: none; /* Hide preview text on smaller screens */
+    }
+
+    .chat-header {
+        padding: var(--space-lg);
+    }
+
+    .message-input-area {
+        padding: var(--space-md);
+    }
+}
+
+/* Mobile - stack vertically */
+@media (max-width: 768px) {
     .chat-container {
         grid-template-columns: 1fr;
     }

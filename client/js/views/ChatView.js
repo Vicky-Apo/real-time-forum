@@ -68,9 +68,11 @@ export default {
 
         try {
             // Get conversations (now includes all users with online status)
-            const convResponse = await apiClient.get('/conversations');
-            const data = convResponse.data || convResponse;
-            this.conversations = data.conversations || [];
+            const response = await apiClient.get('/conversations');
+            console.log('[ChatView] Raw API response:', response);
+
+            // API client already normalizes the response
+            this.conversations = response.conversations || [];
 
             // Build online users set from conversations
             this.onlineUsers = new Set(
@@ -81,6 +83,7 @@ export default {
 
             console.log('[ChatView] Loaded conversations:', this.conversations.length);
             console.log('[ChatView] Online users:', this.onlineUsers.size);
+            console.log('[ChatView] Container element:', container);
 
             if (this.conversations.length === 0) {
                 container.innerHTML = `
@@ -94,7 +97,10 @@ export default {
                 return;
             }
 
-            container.innerHTML = this.conversations.map(conv => this.renderConversation(conv)).join('');
+            const html = this.conversations.map(conv => this.renderConversation(conv)).join('');
+            console.log('[ChatView] Generated HTML length:', html.length);
+            console.log('[ChatView] First 200 chars of HTML:', html.substring(0, 200));
+            container.innerHTML = html;
         } catch (error) {
             console.error('[ChatView] Error loading conversations:', error);
             container.innerHTML = `
