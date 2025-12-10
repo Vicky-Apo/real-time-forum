@@ -42,6 +42,7 @@ export default {
             this.notifications = data.notifications || [];
 
             console.log('[NotificationsView] Loaded notifications:', this.notifications.length);
+            console.log('[NotificationsView] Notifications data:', this.notifications);
 
             if (this.notifications.length === 0) {
                 container.innerHTML = `
@@ -133,15 +134,25 @@ export default {
                 const postId = notificationItem.dataset.postId;
                 const notifId = notificationItem.dataset.id;
 
+                console.log('[NotificationsView] Clicked notification:', { notifId, postId });
+                console.log('[NotificationsView] Dataset:', notificationItem.dataset);
+
                 // Mark as read
                 try {
                     await apiClient.post(`/notifications/mark-read/${notifId}`);
                     notificationItem.classList.remove('notification-unread');
+
+                    // Decrement unread count
+                    const currentUnread = state.unreadCount;
+                    if (currentUnread > 0) {
+                        state.setUnreadCount(currentUnread - 1);
+                    }
                 } catch (error) {
                     console.error('[NotificationsView] Error marking as read:', error);
                 }
 
                 // Navigate to post
+                console.log('[NotificationsView] Navigating to /post/' + postId);
                 navigate(`/post/${postId}`);
             }
         });
