@@ -21,12 +21,17 @@ export function renderNavbar() {
     }
 
     // Logged in - show full navbar
+    console.log('[Navbar] User object:', user);
     const unreadCount = state.unreadCount;
     console.log('[Navbar] Unread count:', unreadCount);
     console.log('[Navbar] Unread count type:', typeof unreadCount);
     const badgeHTML = `<span class="badge">${unreadCount}</span>`;
     console.log('[Navbar] Badge HTML:', badgeHTML);
     const unreadBadge = unreadCount > 0 ? badgeHTML : '';
+
+    // Use id or user_id depending on what's available
+    const userId = user.id || user.user_id;
+    console.log('[Navbar] User ID:', userId);
 
     navbar.innerHTML = `
         <div class="navbar-container">
@@ -70,7 +75,7 @@ export function renderNavbar() {
                             </div>
                         </div>
                         <div class="user-dropdown-divider"></div>
-                        <a href="/profile/${user.user_id}" data-link class="dropdown-item">
+                        <a href="/profile/${userId}" data-link class="dropdown-item">
                             <span class="dropdown-icon-left">👤</span>
                             <span>My Profile</span>
                         </a>
