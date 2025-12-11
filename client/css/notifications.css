@@ -31,7 +31,7 @@
 .notifications-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-lg);
+    gap: var(--space-2xl);
 }
 
 /* Notification Item - Read (default) */
@@ -40,15 +40,14 @@
     align-items: flex-start;
     gap: var(--space-lg);
     padding: var(--space-xl);
-    background: #f9fafb;
+    background: #f3f4f6;
     border-radius: var(--radius-lg);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     cursor: pointer;
     transition: var(--transition-all);
     position: relative;
-    border: 1px solid #e5e7eb;
-    margin-bottom: 4px;
-    opacity: 0.75;
+    border: 2px solid #d1d5db;
+    opacity: 0.65;
 }
 
 .notification-item:hover {
@@ -61,9 +60,9 @@
 /* Notification Item - Unread (highlighted) */
 .notification-item.notification-unread {
     background: #ffffff;
-    border-color: #3b82f6;
-    border-left: 4px solid #3b82f6;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+    border: 2px solid #3b82f6;
+    border-left: 6px solid #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
     opacity: 1;
 }
 
