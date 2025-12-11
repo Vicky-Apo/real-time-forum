@@ -3,7 +3,7 @@
 import apiClient from '../api/client.js';
 import state from '../state.js';
 import wsManager from '../websocket/WebSocketManager.js';
-import { getInitials, showImageLightbox, showToast, formatTime } from '../utils/helpers.js';
+import { getInitials, showImageLightbox, showToast, formatTime, throttle } from '../utils/helpers.js';
 
 export default {
     conversations: [],
@@ -419,20 +419,21 @@ export default {
     setupInfiniteScroll() {
         const messagesArea = document.getElementById('messages-area');
         if (!messagesArea) {
-            console.log('[ChatView] setupInfiniteScroll: messages-area not found');
             return;
         }
 
-        console.log('[ChatView] Setting up infinite scroll listener');
-
-        messagesArea.addEventListener('scroll', async () => {
+        // Throttle the scroll event handler to prevent spamming (required by project specs)
+        // This ensures loadOlderMessages is called at most once every 500ms
+        const throttledScrollHandler = throttle(async () => {
             // Check if scrolled near top (within 50px threshold for easier triggering)
             const isNearTop = messagesArea.scrollTop < 50;
 
             if (isNearTop && !this.isLoadingOlderMessages && this.hasMoreMessages) {
                 await this.loadOlderMessages();
             }
-        });
+        }, 500); // 500ms throttle delay to prevent scroll event spam
+
+        messagesArea.addEventListener('scroll', throttledScrollHandler);
     },
 
     async loadOlderMessages() {

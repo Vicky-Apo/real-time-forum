@@ -84,8 +84,12 @@ func SetupRoutes(db *sql.DB) http.Handler {
 	// ===== EXISTING COMMENT ROUTES =====
 	// Private GET routes
 	mux.Handle("GET /api/comments/for-post/{id}", AuthMiddleware.RequireAuth(http.HandlerFunc(handlers.GetCommentsByPostIDHandler(CommentRepo))))
-	// ---  SERVE UPLOADED IMAGES  ---
+
+	// ---  SERVE STATIC FILES  ---
+	// Serve uploaded images (user content)
 	mux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir(config.Config.UploadDir))))
+	// Serve client static assets (logos, icons, etc.)
+	mux.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("client/images"))))
 	// Protected routes
 	mux.Handle("POST /api/comments/create-on-post/{id}", AuthMiddleware.RequireAuth(handlers.CreateCommentHandler(CommentRepo, NotificationRepo, PostRepo, UserRepo)))
 	mux.Handle("PUT /api/comments/edit/{id}", AuthMiddleware.RequireAuth(handlers.UpdateCommentHandler(CommentRepo)))
