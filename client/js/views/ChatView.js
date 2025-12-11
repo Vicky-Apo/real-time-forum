@@ -11,6 +11,9 @@ export default {
     messages: [],
     onlineUsers: new Set(),
     typingTimeout: null,
+    isLoadingOlderMessages: false,
+    hasMoreMessages: true,
+    oldestMessageId: null,
 
     async render() {
         return `
@@ -227,12 +230,17 @@ export default {
                 </div>
             `;
 
+            // Reset infinite scroll state for new conversation
+            this.hasMoreMessages = true;
+            this.oldestMessageId = this.messages[0]?.message_id || null;
+
             // Scroll to bottom
             this.scrollToBottom();
 
             // Setup message form
             this.setupMessageForm();
             this.setupTypingIndicator();
+            this.setupInfiniteScroll();
 
         } catch (error) {
             console.error('[ChatView] Error loading messages:', error);
@@ -379,6 +387,75 @@ export default {
                 }, 2000);
             }
         });
+    },
+
+    setupInfiniteScroll() {
+        const messagesArea = document.getElementById('messages-area');
+        if (!messagesArea) return;
+
+        messagesArea.addEventListener('scroll', async () => {
+            // Check if scrolled to top
+            if (messagesArea.scrollTop === 0 && !this.isLoadingOlderMessages && this.hasMoreMessages) {
+                console.log('[ChatView] Loading older messages...');
+                await this.loadOlderMessages();
+            }
+        });
+    },
+
+    async loadOlderMessages() {
+        if (!this.currentConversation || this.isLoadingOlderMessages || !this.hasMoreMessages) {
+            return;
+        }
+
+        this.isLoadingOlderMessages = true;
+        const messagesArea = document.getElementById('messages-area');
+
+        // Store current scroll height to restore scroll position
+        const previousScrollHeight = messagesArea.scrollHeight;
+
+        try {
+            // Make API call with before parameter for pagination
+            const response = await apiClient.get(`/messages/${this.currentConversation.user_id}?before=${this.oldestMessageId}&limit=10`);
+            const data = response.data || response;
+            const olderMessages = (data.messages || []).reverse();
+
+            if (olderMessages.length === 0) {
+                console.log('[ChatView] No more messages to load');
+                this.hasMoreMessages = false;
+                return;
+            }
+
+            console.log('[ChatView] Loaded', olderMessages.length, 'older messages');
+
+            // Update oldest message ID
+            this.oldestMessageId = olderMessages[0]?.message_id;
+
+            // Prepend messages to current messages array
+            this.messages = [...olderMessages, ...this.messages];
+
+            // Render older messages at the top
+            const olderMessagesHTML = olderMessages.map(msg => this.renderMessage(msg)).join('');
+            const typingIndicator = document.getElementById('typing-indicator');
+
+            // Insert before the first message (after any typing indicator parent)
+            const firstMessage = messagesArea.querySelector('.message');
+            if (firstMessage) {
+                firstMessage.insertAdjacentHTML('beforebegin', olderMessagesHTML);
+            } else if (typingIndicator) {
+                typingIndicator.insertAdjacentHTML('beforebegin', olderMessagesHTML);
+            } else {
+                messagesArea.insertAdjacentHTML('afterbegin', olderMessagesHTML);
+            }
+
+            // Restore scroll position
+            const newScrollHeight = messagesArea.scrollHeight;
+            messagesArea.scrollTop = newScrollHeight - previousScrollHeight;
+
+        } catch (error) {
+            console.error('[ChatView] Error loading older messages:', error);
+        } finally {
+            this.isLoadingOlderMessages = false;
+        }
     },
 
     async sendMessage(imageFile = null) {
