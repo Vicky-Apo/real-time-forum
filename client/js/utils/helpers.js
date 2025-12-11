@@ -94,3 +94,56 @@ export function formatTime(date) {
         minute: '2-digit'
     });
 }
+
+/**
+ * Throttle function - Limits how often a function can be called
+ * Ensures the function is called at most once per specified delay
+ * Perfect for scroll events to prevent performance issues
+ * @param {Function} func - The function to throttle
+ * @param {number} delay - Minimum time between function calls in milliseconds
+ * @returns {Function} Throttled function
+ */
+export function throttle(func, delay = 300) {
+    let lastCall = 0;
+    let timeoutId = null;
+
+    return function (...args) {
+        const now = Date.now();
+        const timeSinceLastCall = now - lastCall;
+
+        // Clear any pending timeout
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        if (timeSinceLastCall >= delay) {
+            // Enough time has passed, execute immediately
+            lastCall = now;
+            func.apply(this, args);
+        } else {
+            // Schedule execution after remaining delay
+            timeoutId = setTimeout(() => {
+                lastCall = Date.now();
+                func.apply(this, args);
+            }, delay - timeSinceLastCall);
+        }
+    };
+}
+
+/**
+ * Debounce function - Delays function execution until after specified time has elapsed
+ * since the last time it was invoked
+ * @param {Function} func - The function to debounce
+ * @param {number} delay - Time to wait before calling function in milliseconds
+ * @returns {Function} Debounced function
+ */
+export function debounce(func, delay = 300) {
+    let timeoutId = null;
+
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}

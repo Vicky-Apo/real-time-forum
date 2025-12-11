@@ -19,7 +19,7 @@
    =============================================== */
 
 .profile-header {
-    background: linear-gradient(135deg, #cadce9 0%, #b5b6d7 100%);
+    background: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-accent-indigo) 50%, var(--color-accent-lavender) 100%);
     color: #000000;
     padding: var(--space-5xl) var(--space-4xl);
     display: flex;
@@ -44,7 +44,7 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #b5b6d7 0%, #a9a7c1 100%);
+    background: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-palette-7) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -123,7 +123,7 @@
 }
 
 .profile-stats h3 i {
-    color: #b5b6d7;
+    color: var(--color-palette-6);
 }
 
 .stats-grid {
@@ -133,14 +133,14 @@
 }
 
 .stat-card {
-    background: #f9eeef;
+    background: var(--color-palette-4);
     border-radius: var(--radius-xl);
     padding: var(--space-2xl);
     display: flex;
     align-items: center;
     gap: var(--space-xl);
     transition: var(--transition-all);
-    border: 2px solid #e7e4eb;
+    border: 2px solid var(--color-palette-2);
     position: relative;
     overflow: hidden;
 }
@@ -167,48 +167,48 @@
     transform: scaleX(1);
 }
 
-.stat-card.posts-created::before { background: #cadce9; }
-.stat-card.comments-made::before { background: #b5b6d7; }
-.stat-card.posts-liked::before { background: #e4aeb4; }
-.stat-card.posts-commented::before { background: #f1cdd2; }
-.stat-card.likes-received::before { background: #27ae60; }
-.stat-card.dislikes-received::before { background: #a9a7c1; }
+.stat-card.posts-created::before { background: var(--color-palette-6); }
+.stat-card.comments-made::before { background: var(--color-palette-7); }
+.stat-card.posts-liked::before { background: var(--color-palette-3); }
+.stat-card.posts-commented::before { background: var(--color-palette-6); }
+.stat-card.likes-received::before { background: var(--color-success); }
+.stat-card.dislikes-received::before { background: var(--color-palette-8); }
 
 .stat-card:hover.posts-created {
-    background: linear-gradient(135deg, rgba(202, 220, 233, 0.1) 0%, rgba(181, 182, 215, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(38, 166, 154, 0.1) 0%, rgba(128, 203, 196, 0.1) 100%);
 }
 
 .stat-card:hover.comments-made {
-    background: linear-gradient(135deg, rgba(181, 182, 215, 0.1) 0%, rgba(169, 167, 193, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(0, 137, 123, 0.1) 0%, rgba(0, 105, 92, 0.1) 100%);
 }
 
 .stat-card:hover.posts-liked {
-    background: linear-gradient(135deg, rgba(228, 174, 180, 0.1) 0%, rgba(241, 205, 210, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(128, 203, 196, 0.1) 0%, rgba(38, 166, 154, 0.1) 100%);
 }
 
 .stat-card:hover.posts-commented {
-    background: linear-gradient(135deg, rgba(241, 205, 210, 0.1) 0%, rgba(249, 220, 223, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(38, 166, 154, 0.1) 0%, rgba(128, 203, 196, 0.1) 100%);
 }
 
 .stat-card:hover.likes-received {
-    background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(46, 204, 113, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
 }
 
 .stat-card:hover.dislikes-received {
-    background: linear-gradient(135deg, rgba(169, 167, 193, 0.1) 0%, rgba(181, 182, 215, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(0, 105, 92, 0.1) 0%, rgba(0, 137, 123, 0.1) 100%);
 }
 
 .stat-icon {
     font-size: 2.5rem;
-    color: #cadce9;
+    color: var(--color-palette-6);
     flex-shrink: 0;
 }
 
-.stat-card.comments-made .stat-icon { color: #b5b6d7; }
-.stat-card.posts-liked .stat-icon { color: #e4aeb4; }
-.stat-card.posts-commented .stat-icon { color: #f1cdd2; }
-.stat-card.likes-received .stat-icon { color: #27ae60; }
-.stat-card.dislikes-received .stat-icon { color: #a9a7c1; }
+.stat-card.comments-made .stat-icon { color: var(--color-palette-7); }
+.stat-card.posts-liked .stat-icon { color: var(--color-palette-3); }
+.stat-card.posts-commented .stat-icon { color: var(--color-palette-6); }
+.stat-card.likes-received .stat-icon { color: var(--color-success); }
+.stat-card.dislikes-received .stat-icon { color: var(--color-palette-8); }
 
 .stat-content {
     flex: 1;
@@ -248,7 +248,7 @@
 }
 
 .activity-navigation h3 i {
-    color: #b5b6d7;
+    color: var(--color-palette-6);
 }
 
 .nav-cards {
@@ -261,8 +261,8 @@
     display: flex;
     align-items: center;
     gap: var(--space-2xl);
-    background: #f9eeef;
-    border: 2px solid #e7e4eb;
+    background: var(--color-palette-4);
+    border: 2px solid var(--color-palette-2);
     border-radius: var(--radius-xl);
     padding: var(--space-2xl);
     text-decoration: none;
@@ -279,7 +279,7 @@
     left: 0;
     bottom: 0;
     width: 4px;
-    background: #cadce9;
+    background: var(--color-palette-6);
     transform: scaleY(0);
     transition: var(--transition-all);
 }
@@ -287,8 +287,8 @@
 .nav-card:hover {
     transform: translateX(5px);
     box-shadow: var(--shadow-2xl);
-    border-color: #cadce9;
-    background: linear-gradient(135deg, rgba(202, 220, 233, 0.05) 0%, #ffffff 100%);
+    border-color: var(--color-palette-6);
+    background: linear-gradient(135deg, rgba(128, 203, 196, 0.05) 0%, #ffffff 100%);
 }
 
 .nav-card:hover::before {
@@ -297,14 +297,14 @@
 
 .nav-icon {
     font-size: 2rem;
-    color: #cadce9;
-    background: rgba(202, 220, 233, 0.2);
+    color: var(--color-palette-6);
+    background: rgba(128, 203, 196, 0.2);
     padding: var(--space-xl);
     border-radius: var(--radius-full);
     min-width: 60px;
     text-align: center;
     flex-shrink: 0;
-    border: 2px solid rgba(202, 220, 233, 0.3);
+    border: 2px solid rgba(128, 203, 196, 0.3);
 }
 
 .nav-content {
@@ -326,13 +326,13 @@
 
 .nav-arrow {
     font-size: var(--font-size-lg);
-    color: #a9a7c1;
+    color: var(--color-palette-7);
     transition: var(--transition-all);
     flex-shrink: 0;
 }
 
 .nav-card:hover .nav-arrow {
-    color: #cadce9;
+    color: var(--color-palette-6);
     transform: translateX(5px);
 }
 
@@ -361,7 +361,7 @@
 }
 
 .achievements h4 i {
-    color: #f1cdd2;
+    color: var(--color-palette-6);
 }
 
 .achievement-badges {
@@ -390,23 +390,25 @@
 }
 
 .badge.first-post {
-    background: linear-gradient(135deg, #cadce9 0%, #b5b6d7 100%);
-    border-color: rgba(202, 220, 233, 0.5);
+    background: linear-gradient(135deg, var(--color-accent-coral) 0%, var(--color-accent-lavender) 100%);
+    border-color: rgba(244, 166, 163, 0.5);
 }
 
 .badge.active-poster {
-    background: linear-gradient(135deg, #f1cdd2 0%, #f9dcdf 100%);
-    border-color: rgba(241, 205, 210, 0.5);
+    background: linear-gradient(135deg, var(--color-accent-indigo) 0%, var(--color-accent-lavender) 100%);
+    color: white;
+    border-color: rgba(121, 134, 203, 0.5);
 }
 
 .badge.conversationalist {
-    background: linear-gradient(135deg, #b5b6d7 0%, #a9a7c1 100%);
-    border-color: rgba(181, 182, 215, 0.5);
+    background: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-accent-indigo) 100%);
+    color: white;
+    border-color: rgba(38, 166, 154, 0.5);
 }
 
 .badge.well-liked {
-    background: linear-gradient(135deg, #e4aeb4 0%, #f1cdd2 100%);
-    border-color: rgba(228, 174, 180, 0.5);
+    background: linear-gradient(135deg, var(--color-accent-lavender) 0%, var(--color-palette-3) 100%);
+    border-color: rgba(184, 167, 212, 0.5);
 }
 
 /* ===============================================
@@ -446,7 +448,7 @@
 }
 
 .profile-summary h4 i {
-    color: #cadce9;
+    color: var(--color-palette-6);
 }
 
 .summary-item {
@@ -454,7 +456,7 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--space-md) 0;
-    border-bottom: 1px solid #f9eeef;
+    border-bottom: 1px solid var(--color-palette-2);
 }
 
 .summary-item:last-child {
@@ -496,14 +498,14 @@
 }
 
 .profile-navigation h3 i {
-    color: #b5b6d7;
+    color: var(--color-palette-6);
 }
 
 .profile-navigation .nav-link {
     display: block;
     padding: var(--space-lg) var(--space-xl);
     margin-bottom: var(--space-sm);
-    background: #f9eeef;
+    background: var(--color-palette-4);
     color: #000000;
     text-decoration: none;
     border-radius: var(--radius-md);
@@ -512,23 +514,23 @@
     align-items: center;
     gap: var(--space-md);
     font-weight: var(--font-weight-medium);
-    border: 2px solid #e7e4eb;
+    border: 2px solid var(--color-palette-2);
 }
 
 .profile-navigation .nav-link:hover {
-    background: #cadce9;
+    background: var(--color-palette-3);
     color: #000000;
     transform: translateX(5px);
-    border-color: #cadce9;
+    border-color: var(--color-palette-3);
     box-shadow: var(--shadow-md);
 }
 
 .profile-navigation .nav-link.active {
-    background: linear-gradient(135deg, #cadce9 0%, #b5b6d7 100%);
+    background: linear-gradient(135deg, var(--color-palette-3) 0%, var(--color-palette-6) 100%);
     color: #000000;
     font-weight: var(--font-weight-semibold);
-    box-shadow: 0 4px 15px rgba(202, 220, 233, 0.4);
-    border-color: #b5b6d7;
+    box-shadow: 0 4px 15px rgba(128, 203, 196, 0.4);
+    border-color: var(--color-palette-6);
 }
 
 .profile-navigation .nav-link:last-child {
@@ -536,7 +538,7 @@
 }
 
 .profile-navigation .nav-link i {
-    color: #a9a7c1;
+    color: var(--color-palette-7);
     font-size: var(--font-size-base);
 }
 
@@ -571,7 +573,7 @@
 }
 
 .quick-actions h4 i {
-    color: #f1cdd2;
+    color: var(--color-palette-6);
 }
 
 .quick-actions p {
@@ -587,21 +589,21 @@
     display: inline-block;
     padding: var(--space-sm) var(--space-lg);
     border-radius: var(--radius-sm);
-    background: rgba(202, 220, 233, 0.1);
-    border: 1px solid rgba(202, 220, 233, 0.3);
+    background: rgba(128, 203, 196, 0.1);
+    border: 1px solid rgba(128, 203, 196, 0.3);
 }
 
 .quick-actions a:hover,
 .action-link:hover {
-    background: #cadce9;
+    background: var(--color-palette-3);
     color: #000000;
     transform: translateX(4px);
-    border-color: #cadce9;
+    border-color: var(--color-palette-3);
     box-shadow: var(--shadow-sm);
 }
 
 .quick-actions a i {
-    color: #b5b6d7;
+    color: var(--color-palette-6);
     margin-right: var(--space-sm);
 }
 
@@ -676,7 +678,7 @@
 .nav-card:focus,
 .profile-navigation .nav-link:focus,
 .quick-actions a:focus {
-    outline: 2px solid #cadce9;
+    outline: 2px solid var(--color-palette-6);
     outline-offset: 2px;
 }
 
@@ -734,13 +736,13 @@
 
 .tab-btn:hover {
     color: #000000;
-    border-bottom-color: #cadce9;
+    border-bottom-color: var(--color-palette-3);
 }
 
 .tab-btn.active {
     color: #000000;
-    border-bottom-color: #b5b6d7;
-    background: rgba(202, 220, 233, 0.1);
+    border-bottom-color: var(--color-palette-6);
+    background: rgba(128, 203, 196, 0.1);
 }
 
 .profile-tab-content {
@@ -757,8 +759,8 @@
 }
 
 .post-card {
-    background: #f9eeef;
-    border: 2px solid #e7e4eb;
+    background: var(--color-palette-4);
+    border: 2px solid var(--color-palette-2);
     border-radius: var(--radius-lg);
     padding: var(--space-xl);
     margin-bottom: var(--space-lg);
@@ -769,7 +771,7 @@
 .post-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-    border-color: #cadce9;
+    border-color: var(--color-palette-3);
 }
 
 .post-card-header {
@@ -789,7 +791,7 @@
 }
 
 .post-date {
-    color: #a9a7c1;
+    color: var(--color-palette-7);
 }
 
 .post-card-content {
@@ -815,13 +817,13 @@
 .loading-text {
     text-align: center;
     padding: var(--space-4xl);
-    color: #a9a7c1;
+    color: var(--color-palette-7);
 }
 
 .empty-state {
     text-align: center;
     padding: var(--space-5xl) var(--space-2xl);
-    color: #a9a7c1;
+    color: var(--color-palette-7);
 }
 
 .empty-state p {

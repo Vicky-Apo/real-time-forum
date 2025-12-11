@@ -3,12 +3,15 @@
    =============================================== */
 
 .hero-section {
-  background: linear-gradient(135deg, var(--color-palette-2) 0%, var(--color-palette-3) 50%, var(--color-palette-6) 100%);
-  padding: clamp(3rem, 8vw, 6rem) var(--space-3xl);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #00695c 0%, #26a69a 40%, var(--color-accent-lavender) 100%);
+  padding: var(--space-2xl) var(--space-xl);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   position: relative;
   overflow: hidden;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-section::before {
@@ -53,19 +56,58 @@
 }
 
 .hero-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: var(--font-weight-black);
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-lg);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
-  letter-spacing: -0.5px;
+  font-size: 48px;
+  font-weight: var(--font-weight-bold);
+  color: white;
+  margin-bottom: var(--space-md);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .hero-subtitle {
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-medium);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: var(--line-height-relaxed);
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.15);
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 36px;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+  }
+
+  .hero-section {
+    padding: var(--space-xl) var(--space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 28px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+  }
+
+  .hero-section {
+    padding: var(--space-lg) var(--space-md);
+  }
 }

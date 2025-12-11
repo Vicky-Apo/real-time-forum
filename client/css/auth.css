@@ -27,7 +27,7 @@
   text-align: center;
   margin-bottom: var(--space-4xl);
   padding: var(--space-4xl) var(--space-2xl);
-  background: linear-gradient(135deg, #cadce9 0%, #b5b6d7 100%);
+  background: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-accent-indigo) 50%, var(--color-accent-lavender) 100%);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl);
   color: #000000;
@@ -83,7 +83,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(135deg, #cadce9 0%, #b5b6d7 100%);
+  background: linear-gradient(135deg, var(--color-accent-coral) 0%, var(--color-accent-lavender) 100%);
 }
 
 /* ===============================================
@@ -281,7 +281,7 @@
 }
 
 .auth-btn-primary {
-  background: linear-gradient(135deg, #cadce9 0%, #b5b6d7 100%);
+  background: linear-gradient(135deg, var(--color-accent-coral) 0%, var(--color-accent-lavender) 100%);
   color: #000000;
   box-shadow: 0 4px 15px rgba(202, 220, 233, 0.4);
 }
