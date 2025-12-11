@@ -89,6 +89,7 @@ class State {
 
     setUnreadCount(count) {
         this.unreadCount = count;
+        console.log('[State] Unread count set to:', count);
         this.emit('unread:changed', count);
     }
 
