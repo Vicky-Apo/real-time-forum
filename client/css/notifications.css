@@ -31,23 +31,23 @@
 .notifications-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2xl);
+    gap: 24px;
 }
 
 /* Notification Item - Read (default) */
 .notification-item {
     display: flex;
     align-items: flex-start;
-    gap: var(--space-lg);
-    padding: var(--space-xl);
-    background: #f3f4f6;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    gap: 16px;
+    padding: 20px;
+    background: #f3f4f6 !important;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
     cursor: pointer;
-    transition: var(--transition-all);
+    transition: all 0.2s ease;
     position: relative;
-    border: 2px solid #d1d5db;
-    opacity: 0.65;
+    border: 2px solid #d1d5db !important;
+    opacity: 0.65 !important;
 }
 
 .notification-item:hover {
@@ -59,11 +59,11 @@
 
 /* Notification Item - Unread (highlighted) */
 .notification-item.notification-unread {
-    background: #ffffff;
-    border: 2px solid #3b82f6;
-    border-left: 6px solid #3b82f6;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-    opacity: 1;
+    background: #ffffff !important;
+    border: 2px solid #3b82f6 !important;
+    border-left: 6px solid #3b82f6 !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+    opacity: 1 !important;
 }
 
 .notification-item.notification-unread:hover {
