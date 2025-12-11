@@ -94,6 +94,10 @@ class WebSocketManager {
             case 'new_message':
                 state.emit('message:received', payload);
                 this.showBrowserNotification(payload);
+
+                // Increment unread message count
+                // Note: ChatView will decrement this when user opens the conversation
+                state.incrementUnreadMessageCount();
                 break;
 
             case 'message_read':
