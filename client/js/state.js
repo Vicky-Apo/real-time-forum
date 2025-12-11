@@ -14,10 +14,11 @@ class State {
         // Notifications
         this.unreadCount = 0;
 
+        // Messages
+        this.unreadMessageCount = 0;
+
         // Event listeners (pub/sub pattern)
         this.listeners = new Map();
-
-        console.log('[State] State manager initialized');
     }
 
     // ============= User Management =============
@@ -29,7 +30,6 @@ class State {
             if (stored) {
                 try {
                     this.user = JSON.parse(stored);
-                    console.log('[State] User loaded from localStorage:', this.user.username);
                 } catch (e) {
                     console.error('[State] Error parsing stored user:', e);
                     localStorage.removeItem('user');
@@ -44,10 +44,8 @@ class State {
 
         if (user) {
             localStorage.setItem('user', JSON.stringify(user));
-            console.log('[State] User set:', user.username);
         } else {
             localStorage.removeItem('user');
-            console.log('[State] User cleared');
         }
 
         this.emit('user:changed', user);
@@ -57,14 +55,12 @@ class State {
 
     setOnlineUsers(users) {
         this.onlineUsers = users;
-        console.log('[State] Online users set:', users.length);
         this.emit('users:online', users);
     }
 
     addOnlineUser(user) {
         if (!this.onlineUsers.find(u => u.user_id === user.user_id)) {
             this.onlineUsers.push(user);
-            console.log('[State] User came online:', user.username);
             this.emit('user:online', user);
             this.emit('users:online', this.onlineUsers);
         }
@@ -75,7 +71,6 @@ class State {
         this.onlineUsers = this.onlineUsers.filter(u => u.user_id !== userId);
 
         if (user) {
-            console.log('[State] User went offline:', user.username);
             this.emit('user:offline', userId);
             this.emit('users:online', this.onlineUsers);
         }
@@ -89,7 +84,6 @@ class State {
 
     setUnreadCount(count) {
         this.unreadCount = count;
-        console.log('[State] Unread count set to:', count);
         this.emit('unread:changed', count);
     }
 
@@ -98,11 +92,22 @@ class State {
         this.emit('unread:changed', this.unreadCount);
     }
 
+    // ============= Messages =============
+
+    setUnreadMessageCount(count) {
+        this.unreadMessageCount = count;
+        this.emit('unread-messages:changed', count);
+    }
+
+    incrementUnreadMessageCount() {
+        this.unreadMessageCount++;
+        this.emit('unread-messages:changed', this.unreadMessageCount);
+    }
+
     // ============= WebSocket State =============
 
     setWsConnected(connected) {
         this.wsConnected = connected;
-        console.log('[State] WebSocket connected:', connected);
         this.emit('ws:connection', connected);
     }
 
@@ -113,7 +118,6 @@ class State {
             this.listeners.set(event, []);
         }
         this.listeners.get(event).push(callback);
-        // console.log('[State] Listener added for event:', event);
     }
 
     off(event, callback) {
@@ -146,8 +150,8 @@ class State {
         this.wsConnected = false;
         this.onlineUsers = [];
         this.unreadCount = 0;
+        this.unreadMessageCount = 0;
         localStorage.removeItem('user');
-        console.log('[State] State cleared');
     }
 }
 

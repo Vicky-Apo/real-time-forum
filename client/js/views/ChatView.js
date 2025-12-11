@@ -3,6 +3,7 @@
 import apiClient from '../api/client.js';
 import state from '../state.js';
 import wsManager from '../websocket/WebSocketManager.js';
+import { getInitials, showImageLightbox, showToast, formatTime } from '../utils/helpers.js';
 
 export default {
     conversations: [],
@@ -13,7 +14,7 @@ export default {
     typingTimeout: null,
     isLoadingOlderMessages: false,
     hasMoreMessages: true,
-    oldestMessageId: null,
+    oldestMessageTimestamp: null,
 
     async render() {
         return `
@@ -49,8 +50,12 @@ export default {
     },
 
     async afterRender() {
-        console.log('[ChatView] Rendered');
         this.currentUser = state.getUser();
+
+        // Normalize user object to always have user_id field
+        if (this.currentUser && !this.currentUser.user_id && this.currentUser.id) {
+            this.currentUser.user_id = this.currentUser.id;
+        }
 
         try {
             // Load conversations (includes all users with online status)
@@ -69,10 +74,14 @@ export default {
     async loadConversations() {
         const container = document.getElementById('conversations-list');
 
+        // If container doesn't exist, user has navigated away - skip update
+        if (!container) {
+            return;
+        }
+
         try {
             // Get conversations (now includes all users with online status)
             const response = await apiClient.get('/conversations');
-            console.log('[ChatView] Raw API response:', response);
 
             // API client already normalizes the response
             this.conversations = response.conversations || [];
@@ -83,10 +92,6 @@ export default {
                     .filter(conv => conv.is_online)
                     .map(conv => conv.user_id)
             );
-
-            console.log('[ChatView] Loaded conversations:', this.conversations.length);
-            console.log('[ChatView] Online users:', this.onlineUsers.size);
-            console.log('[ChatView] Container element:', container);
 
             if (this.conversations.length === 0) {
                 container.innerHTML = `
@@ -101,8 +106,6 @@ export default {
             }
 
             const html = this.conversations.map(conv => this.renderConversation(conv)).join('');
-            console.log('[ChatView] Generated HTML length:', html.length);
-            console.log('[ChatView] First 200 chars of HTML:', html.substring(0, 200));
             container.innerHTML = html;
         } catch (error) {
             console.error('[ChatView] Error loading conversations:', error);
@@ -123,7 +126,7 @@ export default {
             ? `<span class="conversation-unread">${conversation.unread_count}</span>`
             : '';
 
-        const initials = conversation.username?.slice(0, 2).toUpperCase() || 'U';
+        const initials = getInitials(conversation.username);
 
         // Format last message properly
         let lastMessageText = 'No messages yet';
@@ -154,7 +157,6 @@ export default {
     },
 
     async selectConversation(userId) {
-        console.log('[ChatView] Selecting conversation:', userId);
 
         // Find conversation
         this.currentConversation = this.conversations.find(c => c.user_id === userId);
@@ -178,10 +180,20 @@ export default {
         const chatContent = document.getElementById('chat-content');
 
         try {
-            const response = await apiClient.get(`/messages/${userId}`);
+            // Load more messages initially (50 instead of default 10)
+            const response = await apiClient.get(`/messages/${userId}?limit=50`);
             const data = response.data || response;
             // Reverse messages so oldest appears first (backend sends newest first)
             this.messages = (data.messages || []).reverse();
+
+            console.log('[ChatView] Loaded messages:', this.messages.length);
+            console.log('[ChatView] Current user ID:', this.currentUser.user_id);
+            console.log('[ChatView] Other user ID:', userId);
+            console.log('[ChatView] First 3 messages:', this.messages.slice(0, 3).map(m => ({
+                sender_id: m.sender_id,
+                sender_username: m.sender_username,
+                content: m.content?.substring(0, 50)
+            })));
 
             const isOnline = this.onlineUsers.has(userId);
 
@@ -189,7 +201,7 @@ export default {
                 <div class="chat-header">
                     <div class="chat-header-info">
                         <div class="chat-header-avatar">
-                            ${this.currentConversation.username?.slice(0, 2).toUpperCase() || 'U'}
+                            ${getInitials(this.currentConversation.username)}
                         </div>
                         <div class="chat-header-details">
                             <h3>${this.currentConversation.username}</h3>
@@ -232,7 +244,7 @@ export default {
 
             // Reset infinite scroll state for new conversation
             this.hasMoreMessages = true;
-            this.oldestMessageId = this.messages[0]?.message_id || null;
+            this.oldestMessageTimestamp = this.messages[0]?.created_at || null;
 
             // Scroll to bottom
             this.scrollToBottom();
@@ -241,6 +253,10 @@ export default {
             this.setupMessageForm();
             this.setupTypingIndicator();
             this.setupInfiniteScroll();
+
+            // Fetch updated unread count after marking messages as read
+            // (backend marks messages as read when we fetch them)
+            await this.updateUnreadCount();
 
         } catch (error) {
             console.error('[ChatView] Error loading messages:', error);
@@ -252,7 +268,7 @@ export default {
                 <div class="chat-header">
                     <div class="chat-header-info">
                         <div class="chat-header-avatar">
-                            ${this.currentConversation.username?.slice(0, 2).toUpperCase() || 'U'}
+                            ${getInitials(this.currentConversation.username)}
                         </div>
                         <div class="chat-header-details">
                             <h3>${this.currentConversation.username}</h3>
@@ -299,12 +315,23 @@ export default {
     },
 
     renderMessage(message) {
+        // Debug logging for every message to understand the issue
         const isSent = message.sender_id === this.currentUser.user_id;
-        const time = new Date(message.created_at).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        const initials = message.sender_username?.slice(0, 2).toUpperCase() || 'U';
+        const time = formatTime(message.created_at);
+
+        // Get initials - use sender_username if available, otherwise use conversation username for received messages
+        let initials;
+        if (message.sender_username) {
+            initials = getInitials(message.sender_username);
+        } else if (!isSent && this.currentConversation) {
+            // For received messages without sender_username, use the conversation username
+            initials = getInitials(this.currentConversation.username);
+        } else if (isSent && this.currentUser) {
+            // For sent messages without sender_username, use current user's username
+            initials = getInitials(this.currentUser.username);
+        } else {
+            initials = 'U';
+        }
 
         let imageHTML = '';
         if (message.images && message.images.length > 0) {
@@ -391,12 +418,18 @@ export default {
 
     setupInfiniteScroll() {
         const messagesArea = document.getElementById('messages-area');
-        if (!messagesArea) return;
+        if (!messagesArea) {
+            console.log('[ChatView] setupInfiniteScroll: messages-area not found');
+            return;
+        }
+
+        console.log('[ChatView] Setting up infinite scroll listener');
 
         messagesArea.addEventListener('scroll', async () => {
-            // Check if scrolled to top
-            if (messagesArea.scrollTop === 0 && !this.isLoadingOlderMessages && this.hasMoreMessages) {
-                console.log('[ChatView] Loading older messages...');
+            // Check if scrolled near top (within 50px threshold for easier triggering)
+            const isNearTop = messagesArea.scrollTop < 50;
+
+            if (isNearTop && !this.isLoadingOlderMessages && this.hasMoreMessages) {
                 await this.loadOlderMessages();
             }
         });
@@ -414,21 +447,18 @@ export default {
         const previousScrollHeight = messagesArea.scrollHeight;
 
         try {
-            // Make API call with before parameter for pagination
-            const response = await apiClient.get(`/messages/${this.currentConversation.user_id}?before=${this.oldestMessageId}&limit=10`);
+            // Make API call with before parameter for pagination (using timestamp)
+            const response = await apiClient.get(`/messages/${this.currentConversation.user_id}?before=${encodeURIComponent(this.oldestMessageTimestamp)}&limit=10`);
             const data = response.data || response;
             const olderMessages = (data.messages || []).reverse();
 
             if (olderMessages.length === 0) {
-                console.log('[ChatView] No more messages to load');
                 this.hasMoreMessages = false;
                 return;
             }
 
-            console.log('[ChatView] Loaded', olderMessages.length, 'older messages');
-
-            // Update oldest message ID
-            this.oldestMessageId = olderMessages[0]?.message_id;
+            // Update oldest message timestamp
+            this.oldestMessageTimestamp = olderMessages[0]?.created_at;
 
             // Prepend messages to current messages array
             this.messages = [...olderMessages, ...this.messages];
@@ -467,7 +497,7 @@ export default {
         }
 
         if (!this.currentConversation) {
-            this.showToast('Please select a conversation first', 'warning');
+            showToast('Please select a conversation first', 'warning');
             return;
         }
 
@@ -483,25 +513,37 @@ export default {
                 formData.append('images', imageFile);
             }
 
-            await apiClient.post('/messages/send', formData);
+            const response = await apiClient.post('/messages/send', formData);
 
             // Clear input
             input.value = '';
             input.style.height = 'auto';
 
-            // Reload messages
-            await this.loadMessages(this.currentConversation.user_id);
+            // Add sent message to UI instead of reloading all messages
+            const sentMessage = response.data || response;
+            if (sentMessage && sentMessage.message_id) {
+                // Normalize the sent message
+                const normalizedMessage = {
+                    sender_id: this.currentUser.user_id,
+                    sender_username: this.currentUser.username,
+                    content: sentMessage.content || content,
+                    created_at: sentMessage.created_at || new Date().toISOString(),
+                    message_id: sentMessage.message_id,
+                    images: sentMessage.images || []
+                };
+                this.messages.push(normalizedMessage);
+                this.addMessageToUI(normalizedMessage);
+            }
 
         } catch (error) {
             console.error('[ChatView] Error sending message:', error);
-            this.showToast(error.message || 'Failed to send message', 'error');
+            showToast(error.message || 'Failed to send message', 'error');
         }
     },
 
     setupWebSocketListeners() {
         // Listen for new messages
         state.on('message:received', (message) => {
-            console.log('[ChatView] New message received:', message);
 
             // Normalize WebSocket payload to match database format
             const normalizedMessage = {
@@ -615,51 +657,23 @@ export default {
         }, 100);
     },
 
+    async updateUnreadCount() {
+        try {
+            const response = await apiClient.get('/messages/unread-count');
+            const data = response.data || response;
+            const unreadCount = data.unread_count || 0;
+            state.setUnreadMessageCount(unreadCount);
+
+            // Also reload conversations to update badges in sidebar
+            await this.loadConversations();
+        } catch (error) {
+            console.error('[ChatView] Error updating unread message count:', error);
+        }
+    },
+
     setupEventListeners() {
-        // Make selectConversation available globally
+        // Make selectConversation and showImageLightbox available globally for inline onclick handlers
         window.selectConversation = this.selectConversation.bind(this);
-        window.showImageLightbox = this.showImageLightbox.bind(this);
-    },
-
-    showImageLightbox(imageUrl) {
-        let lightbox = document.getElementById('image-lightbox');
-        if (!lightbox) {
-            lightbox = document.createElement('div');
-            lightbox.id = 'image-lightbox';
-            lightbox.innerHTML = `
-                <button class="close-btn" onclick="this.parentElement.classList.remove('active')">×</button>
-                <img src="" alt="Full size image">
-            `;
-            document.body.appendChild(lightbox);
-        }
-
-        const img = lightbox.querySelector('img');
-        img.src = imageUrl;
-        lightbox.classList.add('active');
-    },
-
-    showToast(message, type = 'info') {
-        let container = document.querySelector('.toast-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.className = 'toast-container';
-            document.body.appendChild(container);
-        }
-
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `
-            <div class="toast-content">
-                <div class="toast-message">${message}</div>
-            </div>
-            <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-        `;
-
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.classList.add('removing');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        window.showImageLightbox = showImageLightbox;
     }
 };

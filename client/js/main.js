@@ -91,10 +91,21 @@ async function initApp() {
                 const notifications = data.notifications || [];
                 console.log('[App] Notifications array:', notifications);
                 const unreadCount = notifications.filter(n => !n.is_read).length;
-                console.log('[App] Initial unread count:', unreadCount);
+                console.log('[App] Initial unread notification count:', unreadCount);
                 state.setUnreadCount(unreadCount);
             } catch (error) {
                 console.error('[App] Error loading notifications count:', error);
+            }
+
+            // Load initial unread message count
+            try {
+                const msgResponse = await apiClient.get('/messages/unread-count');
+                const msgData = msgResponse.data || msgResponse;
+                const unreadMessageCount = msgData.unread_count || 0;
+                console.log('[App] Initial unread message count:', unreadMessageCount);
+                state.setUnreadMessageCount(unreadMessageCount);
+            } catch (error) {
+                console.error('[App] Error loading message count:', error);
             }
         }
 

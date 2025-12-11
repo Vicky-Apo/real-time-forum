@@ -3,6 +3,7 @@
 import state from '../state.js';
 import apiClient from '../api/client.js';
 import { navigate } from '../router.js';
+import { getInitials } from '../utils/helpers.js';
 
 export function renderNavbar() {
     const navbar = document.getElementById('navbar');
@@ -21,17 +22,16 @@ export function renderNavbar() {
     }
 
     // Logged in - show full navbar
-    console.log('[Navbar] User object:', user);
+    // Notification badge
     const unreadCount = state.unreadCount;
-    console.log('[Navbar] Unread count:', unreadCount);
-    console.log('[Navbar] Unread count type:', typeof unreadCount);
-    const badgeHTML = `<span class="badge">${unreadCount}</span>`;
-    console.log('[Navbar] Badge HTML:', badgeHTML);
-    const unreadBadge = unreadCount > 0 ? badgeHTML : '';
+    const notificationBadge = unreadCount > 0 ? `<span class="badge">${unreadCount}</span>` : '';
+
+    // Message badge
+    const unreadMessageCount = state.unreadMessageCount;
+    const messageBadge = unreadMessageCount > 0 ? `<span class="badge">${unreadMessageCount}</span>` : '';
 
     // Use id or user_id depending on what's available
     const userId = user.id || user.user_id;
-    console.log('[Navbar] User ID:', userId);
 
     navbar.innerHTML = `
         <div class="navbar-container">
@@ -43,12 +43,13 @@ export function renderNavbar() {
                 <a href="/" data-link class="nav-link">
                     Home
                 </a>
-                <a href="/chat" data-link class="nav-link">
+                <a href="/chat" data-link class="nav-link" style="position: relative;">
                     Chat
+                    ${messageBadge}
                 </a>
                 <a href="/notifications" data-link class="nav-link" style="position: relative;">
                     Notifications
-                    ${unreadBadge}
+                    ${notificationBadge}
                 </a>
                 <a href="/create-post" data-link class="nav-link btn-primary">
                     New Post
@@ -59,7 +60,7 @@ export function renderNavbar() {
                 <div class="user-menu">
                     <button class="user-menu-btn" id="user-menu-btn">
                         <div class="user-avatar">
-                            ${user.username.slice(0, 2).toUpperCase()}
+                            ${getInitials(user.username)}
                         </div>
                         <span class="user-name">${user.username}</span>
                         <span class="dropdown-icon">▼</span>
@@ -67,7 +68,7 @@ export function renderNavbar() {
                     <div class="user-dropdown" id="user-dropdown">
                         <div class="user-dropdown-header">
                             <div class="user-avatar-large">
-                                ${user.username.slice(0, 2).toUpperCase()}
+                                ${getInitials(user.username)}
                             </div>
                             <div class="user-info">
                                 <div class="user-display-name">${user.username}</div>
@@ -125,8 +126,13 @@ async function handleLogout() {
     }
 }
 
-// Update navbar when unread count changes
+// Update navbar when unread notification count changes
 state.on('unread:changed', () => {
+    renderNavbar();
+});
+
+// Update navbar when unread message count changes
+state.on('unread-messages:changed', () => {
     renderNavbar();
 });
 

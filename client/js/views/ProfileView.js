@@ -2,6 +2,7 @@
 
 import apiClient from '../api/client.js';
 import state from '../state.js';
+import { getInitials } from '../utils/helpers.js';
 
 export default {
     profile: null,
@@ -85,7 +86,6 @@ export default {
     },
 
     async afterRender() {
-        console.log('[ProfileView] Rendered');
         await this.loadProfile();
         this.setupEventListeners();
     },
@@ -97,8 +97,6 @@ export default {
         try {
             const response = await apiClient.get(`/users/profile/${this.userId}`);
             this.profile = response.data || response;
-
-            console.log('[ProfileView] Loaded profile:', this.profile);
 
             // Populate profile data
             this.renderProfileData();
@@ -123,7 +121,7 @@ export default {
     renderProfileData() {
         // Avatar
         const avatar = document.getElementById('profile-avatar');
-        avatar.textContent = this.profile.username.slice(0, 2).toUpperCase();
+        avatar.textContent = getInitials(this.profile.username);
 
         // Basic info
         document.getElementById('profile-username').textContent = this.profile.username;
