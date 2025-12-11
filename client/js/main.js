@@ -86,13 +86,24 @@ async function initApp() {
             // Load initial unread notification count
             try {
                 const notifResponse = await apiClient.get('/notifications');
-                const notifications = notifResponse.notifications || [];
+                console.log('[App] Notification response:', notifResponse);
+                const data = notifResponse.data || notifResponse;
+                const notifications = data.notifications || [];
+                console.log('[App] Notifications array:', notifications);
                 const unreadCount = notifications.filter(n => !n.is_read).length;
+                console.log('[App] Initial unread count:', unreadCount);
                 state.setUnreadCount(unreadCount);
             } catch (error) {
                 console.error('[App] Error loading notifications count:', error);
             }
         }
+
+        // Initialize router
+        const router = new Router(routes);
+        window.router = router; // Make router globally accessible
+
+        // Render navbar AFTER setting unread count
+        renderNavbar();
 
         // Connect WebSocket if we have an authenticated user (from API or localStorage)
         const user = state.getUser();
@@ -100,13 +111,6 @@ async function initApp() {
             console.log('[App] User authenticated, connecting WebSocket...');
             wsManager.connect();
         }
-
-        // Initialize router
-        const router = new Router(routes);
-        window.router = router; // Make router globally accessible
-
-        // Render navbar
-        renderNavbar();
 
         // Handle initial route
         await router.handleRoute();
