@@ -32,9 +32,32 @@
 
 .conversations-header {
     padding: var(--space-2xl);
-    background: var(--gradient-primary);
-    color: var(--color-text-inverse);
+    background: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-accent-indigo) 100%);
+    color: white;
     border-bottom: 1px solid var(--color-border-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.conversations-header::before {
+    content: '';
+    position: absolute;
+    top: -80%;
+    right: -30%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: floatChat 10s ease-in-out infinite;
+}
+
+@keyframes floatChat {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(10px, -10px);
+    }
 }
 
 .conversations-header h2 {

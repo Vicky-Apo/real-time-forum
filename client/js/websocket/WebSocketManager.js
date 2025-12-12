@@ -25,8 +25,14 @@ class WebSocketManager {
             return;
         }
 
+        // Don't block if WebSocket is not supported
+        if (typeof WebSocket === 'undefined') {
+            console.warn('[WS] WebSocket not supported in this browser');
+            return;
+        }
+
         this.isConnecting = true;
-        console.log('[WS] Connecting...');
+        console.log('[WS] Connecting to:', this.url);
 
         try {
             this.ws = new WebSocket(this.url);
@@ -34,6 +40,11 @@ class WebSocketManager {
         } catch (error) {
             console.error('[WS] Connection error:', error);
             this.isConnecting = false;
+            // Don't schedule reconnect if it's a fundamental error (like invalid URL)
+            if (error.message && error.message.includes('Invalid')) {
+                console.error('[WS] Invalid WebSocket URL, not attempting reconnect');
+                return;
+            }
             this.scheduleReconnect();
         }
     }
@@ -116,6 +127,8 @@ class WebSocketManager {
 
     onError(error) {
         console.error('[WS] Error:', error);
+        // Don't let WebSocket errors block the application
+        // The connection will be handled by onClose
     }
 
     onClose(event) {

@@ -40,36 +40,36 @@
     align-items: flex-start;
     gap: 16px;
     padding: 20px;
-    background: #f3f4f6 !important;
+    background: var(--color-bg-tertiary) !important;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    border: 2px solid #d1d5db !important;
+    border: 2px solid var(--color-border) !important;
     opacity: 0.65 !important;
 }
 
 .notification-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-color: #6366f1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: var(--color-palette-6);
     opacity: 1;
 }
 
 /* Notification Item - Unread (highlighted) */
 .notification-item.notification-unread {
-    background: #ffffff !important;
-    border: 2px solid #3b82f6 !important;
-    border-left: 6px solid #3b82f6 !important;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+    background: var(--color-bg-secondary) !important;
+    border: 2px solid var(--color-palette-6) !important;
+    border-left: 6px solid var(--color-palette-6) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
     opacity: 1 !important;
 }
 
 .notification-item.notification-unread:hover {
-    background: #eff6ff;
-    border-color: #3b82f6;
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+    background: var(--color-bg-primary);
+    border-color: var(--color-palette-6);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
 }
 
 /* Notification Icon - Read (muted) */
@@ -77,7 +77,7 @@
     width: 56px;
     height: 56px;
     border-radius: var(--radius-full);
-    background: #e5e7eb;
+    background: var(--color-bg-tertiary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -90,7 +90,7 @@
 /* Notification Icon - Unread (vibrant) */
 .notification-unread .notification-icon {
     background: var(--gradient-primary);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     opacity: 1;
 }
 
@@ -145,9 +145,9 @@
     width: 12px;
     height: 12px;
     border-radius: var(--radius-full);
-    background: var(--color-primary);
+    background: var(--color-palette-6);
     flex-shrink: 0;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 /* Empty State */

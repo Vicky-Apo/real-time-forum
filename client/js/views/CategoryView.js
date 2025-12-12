@@ -6,7 +6,15 @@ export default {
     categoryId: null,
     category: null,
 
+    init() {
+        // Setup global handler for vote buttons
+        window.handleCategoryVote = (postId, reactionType) => {
+            this.handleVote(postId, reactionType);
+        };
+    },
+
     async render(params) {
+        this.init();
         this.categoryId = params.id;
 
         return `
@@ -85,11 +93,11 @@ export default {
         const netVotes = (post.likes || 0) - (post.dislikes || 0);
 
         return `
-            <article class="post-card" onclick="window.router.navigate('/post/${post.post_id}')">
+            <article class="post-card" data-post-id="${post.post_id}" onclick="window.router.navigate('/post/${post.post_id}')">
                 <div class="post-vote">
-                    <button class="vote-btn upvote" onclick="event.stopPropagation()" title="Like this post">▲</button>
+                    <button class="vote-btn upvote" onclick="event.stopPropagation(); window.handleCategoryVote('${post.post_id}', 1)" title="Like this post">▲</button>
                     <span class="vote-count" title="Net votes (likes - dislikes)">${netVotes}</span>
-                    <button class="vote-btn downvote" onclick="event.stopPropagation()" title="Dislike this post">▼</button>
+                    <button class="vote-btn downvote" onclick="event.stopPropagation(); window.handleCategoryVote('${post.post_id}', 2)" title="Dislike this post">▼</button>
                 </div>
                 <div class="post-main">
                     <div class="post-meta">
@@ -130,5 +138,34 @@ export default {
                 <a href="/" data-link class="btn btn-primary" style="margin-top: 1rem;">Back to Home</a>
             </div>
         `;
+    },
+
+    async handleVote(postId, reactionType) {
+        try {
+            // Make API call to toggle reaction
+            await apiClient.post('/reactions/posts/toggle', {
+                post_id: postId,
+                reaction_type: parseInt(reactionType)
+            });
+
+            // Reload just this post's data to update vote counts
+            const response = await apiClient.get(`/posts/view/${postId}`);
+            const updatedPost = response.data || response;
+
+            // Find the post card and update vote count
+            const postCard = document.querySelector(`[data-post-id="${postId}"]`);
+            if (postCard) {
+                const netVotes = (updatedPost.likes || 0) - (updatedPost.dislikes || 0);
+                const voteCountElement = postCard.querySelector('.vote-count');
+                if (voteCountElement) {
+                    voteCountElement.textContent = netVotes;
+                }
+            }
+
+            console.log('[CategoryView] Vote recorded successfully');
+        } catch (error) {
+            console.error('[CategoryView] Error voting on post:', error);
+            alert(error.message || 'Failed to record vote');
+        }
     }
 };

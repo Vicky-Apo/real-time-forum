@@ -372,6 +372,14 @@ export default {
             input.style.height = input.scrollHeight + 'px';
         });
 
+        // Handle Enter key to send (Shift+Enter for new line)
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+
         // Handle form submission
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
