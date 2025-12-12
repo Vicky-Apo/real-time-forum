@@ -788,8 +788,8 @@ body {
 
 .form-control:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-focus-primary);
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
 }
 
 .form-control::placeholder {
@@ -841,14 +841,14 @@ body {
 }
 
 .btn-primary {
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
   color: var(--color-text-inverse);
-  box-shadow: var(--shadow-btn-primary);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-btn-primary);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4), 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .btn-secondary {

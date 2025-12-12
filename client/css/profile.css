@@ -736,13 +736,15 @@
 
 .tab-btn:hover {
     color: var(--color-text-primary);
-    border-bottom-color: var(--color-palette-3);
+    border-bottom-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.05);
 }
 
 .tab-btn.active {
     color: var(--color-text-primary);
-    border-bottom-color: var(--color-palette-6);
-    background: rgba(59, 130, 246, 0.1);
+    border-bottom-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.1);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 .profile-tab-content {
