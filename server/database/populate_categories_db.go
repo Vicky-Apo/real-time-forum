@@ -20,22 +20,20 @@ func populateCategories(db *sql.DB) error {
 		return nil
 	}
 
-	// Define the categories to add
+	// Define the categories to add (IT-focused)
 	categories := []string{
-		"General discussion",
+		"General Discussion",
 		"Programming",
 		"Web Development",
-		"Gardening",
 		"Networking",
-		"Fishing",
 		"Game Development",
 		"Database Management",
 		"DevOps",
 		"Cloud Computing",
 		"Mobile Development",
 		"Machine Learning",
-		"Security",
-		"Off-Topic",
+		"Cybersecurity",
+		"AI & Data Science",
 	}
 	// Ensure texists
 

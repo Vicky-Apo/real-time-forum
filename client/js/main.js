@@ -78,35 +78,45 @@ async function initApp() {
 
     try {
         // Check if user is already logged in
-        const currentUser = await checkAuthStatus();
+        let currentUser = null;
+        try {
+            currentUser = await checkAuthStatus();
+        } catch (error) {
+            console.error('[App] Error checking auth status:', error);
+            // Continue without user - they can still access login/register pages
+        }
 
         if (currentUser) {
             state.setUser(currentUser);
 
-            // Load initial unread notification count
-            try {
-                const notifResponse = await apiClient.get('/notifications');
-                console.log('[App] Notification response:', notifResponse);
-                const data = notifResponse.data || notifResponse;
-                const notifications = data.notifications || [];
-                console.log('[App] Notifications array:', notifications);
-                const unreadCount = notifications.filter(n => !n.is_read).length;
-                console.log('[App] Initial unread notification count:', unreadCount);
-                state.setUnreadCount(unreadCount);
-            } catch (error) {
-                console.error('[App] Error loading notifications count:', error);
-            }
+            // Load initial unread notification count (non-blocking)
+            setTimeout(async () => {
+                try {
+                    const notifResponse = await apiClient.get('/notifications');
+                    console.log('[App] Notification response:', notifResponse);
+                    const data = notifResponse.data || notifResponse;
+                    const notifications = data.notifications || [];
+                    console.log('[App] Notifications array:', notifications);
+                    const unreadCount = notifications.filter(n => !n.is_read).length;
+                    console.log('[App] Initial unread notification count:', unreadCount);
+                    state.setUnreadCount(unreadCount);
+                } catch (error) {
+                    console.error('[App] Error loading notifications count:', error);
+                }
+            }, 0);
 
-            // Load initial unread message count
-            try {
-                const msgResponse = await apiClient.get('/messages/unread-count');
-                const msgData = msgResponse.data || msgResponse;
-                const unreadMessageCount = msgData.unread_count || 0;
-                console.log('[App] Initial unread message count:', unreadMessageCount);
-                state.setUnreadMessageCount(unreadMessageCount);
-            } catch (error) {
-                console.error('[App] Error loading message count:', error);
-            }
+            // Load initial unread message count (non-blocking)
+            setTimeout(async () => {
+                try {
+                    const msgResponse = await apiClient.get('/messages/unread-count');
+                    const msgData = msgResponse.data || msgResponse;
+                    const unreadMessageCount = msgData.unread_count || 0;
+                    console.log('[App] Initial unread message count:', unreadMessageCount);
+                    state.setUnreadMessageCount(unreadMessageCount);
+                } catch (error) {
+                    console.error('[App] Error loading message count:', error);
+                }
+            }, 0);
         }
 
         // Initialize router
@@ -114,22 +124,58 @@ async function initApp() {
         window.router = router; // Make router globally accessible
 
         // Render navbar AFTER setting unread count
-        renderNavbar();
+        try {
+            renderNavbar();
+        } catch (error) {
+            console.error('[App] Error rendering navbar:', error);
+            // Continue even if navbar fails
+        }
 
         // Connect WebSocket if we have an authenticated user (from API or localStorage)
+        // Use setTimeout to ensure this doesn't block page rendering
         const user = state.getUser();
         if (user) {
             console.log('[App] User authenticated, connecting WebSocket...');
-            wsManager.connect();
+            // Connect WebSocket asynchronously to not block page load
+            setTimeout(() => {
+                try {
+                    wsManager.connect();
+                } catch (error) {
+                    console.error('[App] WebSocket connection failed, but continuing:', error);
+                    // Don't let WebSocket errors prevent the app from loading
+                }
+            }, 100);
         }
 
         // Handle initial route
-        await router.handleRoute();
+        try {
+            await router.handleRoute();
+        } catch (error) {
+            console.error('[App] Error handling initial route:', error);
+            // Show error but don't crash
+            const app = document.getElementById('app');
+            if (app) {
+                app.innerHTML = `
+                    <div class="error-container">
+                        <h2>Error Loading Page</h2>
+                        <p>${error.message || 'Unknown error occurred'}</p>
+                        <button onclick="window.location.reload()" class="btn btn-primary">
+                            Reload Page
+                        </button>
+                    </div>
+                `;
+            }
+        }
 
         console.log('[App] Application initialized successfully');
     } catch (error) {
         console.error('[App] Initialization failed:', error);
-        showError('Failed to initialize application');
+        // Try to show error, but don't fail completely
+        try {
+            showError('Failed to initialize application: ' + (error.message || 'Unknown error'));
+        } catch (e) {
+            console.error('[App] Could not show error message:', e);
+        }
     }
 }
 
@@ -164,11 +210,21 @@ state.on('user:changed', (user) => {
     renderNavbar();
 
     if (user && !state.wsConnected) {
-        // User logged in, connect WebSocket
-        wsManager.connect();
+        // User logged in, connect WebSocket (non-blocking)
+        setTimeout(() => {
+            try {
+                wsManager.connect();
+            } catch (error) {
+                console.error('[App] WebSocket connection failed:', error);
+            }
+        }, 100);
     } else if (!user && state.wsConnected) {
         // User logged out, disconnect WebSocket
-        wsManager.disconnect();
+        try {
+            wsManager.disconnect();
+        } catch (error) {
+            console.error('[App] WebSocket disconnect error:', error);
+        }
     }
 });
 

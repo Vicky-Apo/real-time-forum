@@ -9,35 +9,35 @@
 :root {
   /* ===== NEW 8-COLOR PALETTE ===== */
 
-  /* Primary Palette Colors - Muted Blue-Green/Teal Palette */
-  --color-palette-1: #e8f5f1;  /* Very pale muted mint */
-  --color-palette-2: #c7e6dd;  /* Light muted mint */
-  --color-palette-3: #80cbc4;  /* Muted teal */
-  --color-palette-4: #ecf3f2;  /* Very pale muted teal */
-  --color-palette-5: #d0e4e1;  /* Pale muted teal */
-  --color-palette-6: #26a69a;  /* Medium muted teal */
-  --color-palette-7: #00897b;  /* Dark muted teal */
-  --color-palette-8: #00695c;  /* Deep muted teal */
+  /* Primary Palette Colors - Graphite Grey, Green, and Blue */
+  --color-palette-1: #3a3a3a;  /* Light graphite grey */
+  --color-palette-2: #4a4a4a;  /* Medium-light graphite grey */
+  --color-palette-3: #10b981;  /* Bright green */
+  --color-palette-4: #2b2b2b;  /* Dark graphite grey */
+  --color-palette-5: #5a5a5a;  /* Medium graphite grey */
+  --color-palette-6: #3b82f6;  /* Bright blue */
+  --color-palette-7: #059669;  /* Medium green */
+  --color-palette-8: #2563eb;  /* Medium blue */
 
-  /* Accent Colors - Complementary to Teal */
-  --color-accent-coral: #f4a6a3;      /* Soft muted coral */
-  --color-accent-coral-light: #fce4e3; /* Very pale coral */
-  --color-accent-lavender: #b8a7d4;   /* Soft muted lavender */
-  --color-accent-lavender-light: #e8e1f5; /* Very pale lavender */
-  --color-accent-indigo: #7986cb;     /* Soft muted indigo */
-  --color-accent-indigo-light: #e3e7f7; /* Very pale indigo */
+  /* Accent Colors - Green and Blue Variants */
+  --color-accent-coral: #047857;      /* Dark green */
+  --color-accent-coral-light: #065f46; /* Very dark green */
+  --color-accent-lavender: #1d4ed8;   /* Dark blue */
+  --color-accent-lavender-light: #1e40af; /* Very dark blue */
+  --color-accent-indigo: #2563eb;     /* Medium blue */
+  --color-accent-indigo-light: #3b82f6; /* Light blue */
   
   /* ===== SEMANTIC COLOR MAPPING ===== */
   
-  /* Primary Colors - Use bold blue/purple */
-  --color-primary: var(--color-palette-3);
-  --color-primary-dark: var(--color-palette-2);
-  --color-primary-light: var(--color-palette-4);
-  --color-primary-lighter: var(--color-palette-5);
+  /* Primary Colors - Use blue */
+  --color-primary: var(--color-palette-6);
+  --color-primary-dark: var(--color-palette-8);
+  --color-primary-light: var(--color-accent-indigo-light);
+  --color-primary-lighter: #60a5fa;
 
-  /* Secondary Colors - Use green-teal */
-  --color-secondary: var(--color-palette-1);
-  --color-secondary-dark: var(--color-palette-8);
+  /* Secondary Colors - Use green */
+  --color-secondary: var(--color-palette-3);
+  --color-secondary-dark: var(--color-palette-7);
 
   /* Semantic Colors */
   --color-success: #10b981;
@@ -56,38 +56,38 @@
   --color-purple-lighter: var(--color-palette-4);
 
   /* Neutral Colors */
-  --color-dark: #222;
-  --color-gray-dark: #4a4a4a;
-  --color-gray: #6a6a6a;
-  --color-gray-light: #8a8a8a;
-  --color-gray-lighter: #b0b0b0;
-  --color-gray-lightest: #e0e0e0;
+  --color-dark: #1a1a1a;
+  --color-gray-dark: #3a3a3a;
+  --color-gray: #4a4a4a;
+  --color-gray-light: #5a5a5a;
+  --color-gray-lighter: #6a6a6a;
+  --color-gray-lightest: #8a8a8a;
   --color-border: var(--color-palette-5);
   --color-border-light: var(--color-palette-4);
 
   /* Background Colors */
-  --color-bg-primary: #fff;
-  --color-bg-secondary: var(--color-palette-4);
-  --color-bg-tertiary: var(--color-palette-5);
-  --color-bg-overlay: rgba(0, 0, 0, 0.05);
+  --color-bg-primary: #2b2b2b;
+  --color-bg-secondary: #3a3a3a;
+  --color-bg-tertiary: #4a4a4a;
+  --color-bg-overlay: rgba(0, 0, 0, 0.3);
 
   /* Text Colors */
-  --color-text-primary: #222;
-  --color-text-secondary: #4a4a4a;
-  --color-text-muted: #8a8a8a;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #d1d5db;
+  --color-text-muted: #9ca3af;
   --color-text-inverse: #fff;
 
 
   /* ===== GRADIENTS USING NEW PALETTE ===== */
-  --gradient-primary: linear-gradient(135deg, var(--color-palette-7) 0%, var(--color-palette-6) 100%);
-  --gradient-secondary: linear-gradient(135deg, var(--color-palette-8) 0%, var(--color-palette-7) 100%);
-  --gradient-success: linear-gradient(135deg, var(--color-palette-3) 0%, var(--color-palette-6) 100%);
+  --gradient-primary: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-palette-8) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--color-palette-3) 0%, var(--color-palette-7) 100%);
+  --gradient-success: linear-gradient(135deg, var(--color-palette-3) 0%, var(--color-palette-7) 100%);
   --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   --gradient-danger: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  --gradient-info: linear-gradient(135deg, var(--color-palette-4) 0%, var(--color-palette-5) 100%);
-  --gradient-purple: linear-gradient(135deg, var(--color-palette-5) 0%, var(--color-palette-7) 100%);
-  --gradient-background: linear-gradient(135deg, #f5f9f8 0%, #e8f5f1 100%);
-  --gradient-header: linear-gradient(135deg, var(--color-palette-7) 0%, var(--color-palette-6) 100%);
+  --gradient-info: linear-gradient(135deg, var(--color-palette-4) 0%, var(--color-palette-2) 100%);
+  --gradient-purple: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-palette-3) 100%);
+  --gradient-background: linear-gradient(135deg, #2b2b2b 0%, #3a3a3a 100%);
+  --gradient-header: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-palette-3) 100%);
 
   /* ===== TYPOGRAPHY ===== */
   --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -213,7 +213,7 @@ body {
   font-size: var(--font-size-md);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-primary);
-  background: linear-gradient(135deg, #f5f9f8 0%, #e8f5f1 100%);
+  background: linear-gradient(135deg, #2b2b2b 0%, #3a3a3a 100%);
   padding: 0;
   margin: 0;
   min-height: 100vh;
@@ -261,7 +261,7 @@ body {
 }
 
 .sidebar-card {
-  background: var(--color-bg-primary);
+  background: var(--color-bg-secondary);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
   box-shadow: var(--shadow-sm);
@@ -478,7 +478,7 @@ body {
 
 .post-card {
   border: 1px solid var(--color-border-light);
-  background: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(58, 58, 58, 0.8) !important;
   backdrop-filter: blur(10px);
   border-radius: var(--radius-lg);
   display: flex;
@@ -498,7 +498,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--color-palette-1);
+  background: var(--color-bg-secondary);
   padding: var(--space-md);
   width: 48px;
   gap: 4px;
@@ -509,28 +509,28 @@ body {
   border: none;
   cursor: pointer;
   padding: 2px;
-  color: #878a8c;
+  color: #9ca3af;
   font-size: 20px;
   transition: var(--transition-colors);
   line-height: 1;
 }
 
 .vote-btn:hover {
-  color: #1c1c1c;
+  color: #ffffff;
 }
 
 .vote-btn.upvote:hover {
-  color: #ff4500;
+  color: #10b981;
 }
 
 .vote-btn.downvote:hover {
-  color: #7193ff;
+  color: #3b82f6;
 }
 
 .vote-count {
   font-size: 12px;
   font-weight: var(--font-weight-bold);
-  color: #1c1c1c;
+  color: #ffffff;
 }
 
 .post-main {
@@ -540,7 +540,7 @@ body {
 }
 
 .post-meta {
-  color: #7c7c7c;
+  color: #9ca3af;
   font-size: 12px;
   margin-bottom: var(--space-md);
   display: flex;
@@ -550,7 +550,7 @@ body {
 }
 
 .post-meta strong {
-  color: #1c1c1c;
+  color: #ffffff;
   font-weight: var(--font-weight-semibold);
 }
 
@@ -593,7 +593,7 @@ body {
   gap: var(--space-lg);
   align-items: center;
   font-size: 12px;
-  color: #7c7c7c;
+  color: #9ca3af;
   font-weight: var(--font-weight-semibold);
 }
 
@@ -690,9 +690,9 @@ body {
   margin-top: var(--space-5xl);
   text-align: center;
   padding: var(--space-4xl);
-  background: var(--gradient-background);
+  background: var(--color-bg-secondary);
   border-radius: var(--radius-xl);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .pagination-info {
@@ -1171,7 +1171,7 @@ body {
    =============================================== */
 
 .page-banner {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(58, 58, 58, 0.95);
   color: var(--color-text-primary);
   padding: var(--space-4xl);
   margin-bottom: var(--space-3xl);
@@ -1210,7 +1210,7 @@ body {
 }
 
 .post-count {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(58, 58, 58, 0.95);
   color: var(--color-text-primary);
   padding: var(--space-lg) var(--space-2xl);
   border-radius: var(--radius-pill);
@@ -1226,22 +1226,22 @@ body {
 
 /* Banner variants */
 .page-banner.user-posts {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(58, 58, 58, 0.95);
   border: 2px solid var(--color-palette-6);
 }
 
 .page-banner.liked-posts {
-  background: rgba(255, 255, 255, 0.95);
-  border: 2px solid var(--color-palette-1);
+  background: rgba(58, 58, 58, 0.95);
+  border: 2px solid var(--color-palette-3);
 }
 
 .page-banner.commented-posts {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(58, 58, 58, 0.95);
   border: 2px solid var(--color-palette-7);
 }
 
 .page-banner.category-page {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(58, 58, 58, 0.95);
   border: 2px solid var(--color-palette-6);
 }
 

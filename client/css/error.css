@@ -3,40 +3,46 @@
     margin: 100px auto;
     text-align: center;
     padding: 40px 20px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
 }
 
 .error-icon {
     font-size: 4rem;
-    color: #dc3545;
+    color: var(--color-danger);
     margin-bottom: 20px;
 }
 
 .error-title {
-    color: #dc3545;
+    color: var(--color-danger);
     margin-bottom: 15px;
     font-size: 2rem;
 }
 
 .error-message {
-    color: #666;
+    color: var(--color-text-secondary);
     font-size: 1.1rem;
     margin-bottom: 30px;
     line-height: 1.6;
 }
 
 .home-btn {
-    background: #007bff;
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--color-text-inverse);
     padding: 12px 30px;
     text-decoration: none;
     border-radius: 6px;
     font-size: 1.1rem;
     display: inline-block;
-    transition: background 0.2s;
+    transition: var(--transition-all);
+    box-shadow: var(--shadow-btn-primary);
 }
 
 .home-btn:hover {
-    background: #0056b3;
+    background: var(--gradient-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
 
@@ -46,38 +52,44 @@
     margin: 100px auto;
     text-align: center;
     padding: 40px 20px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
 }
 
 .error-icon {
     font-size: 4rem;
-    color: #dc3545;
+    color: var(--color-danger);
     margin-bottom: 20px;
 }
 
 .error-title {
-    color: #dc3545;
+    color: var(--color-danger);
     margin-bottom: 15px;
     font-size: 2rem;
 }
 
 .error-message {
-    color: #666;
+    color: var(--color-text-secondary);
     font-size: 1.1rem;
     margin-bottom: 30px;
     line-height: 1.6;
 }
 
 .login-btn {
-    background: #007bff;
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--color-text-inverse);
     padding: 12px 30px;
     text-decoration: none;
     border-radius: 6px;
     font-size: 1.1rem;
     display: inline-block;
-    transition: background 0.2s;
+    transition: var(--transition-all);
+    box-shadow: var(--shadow-btn-primary);
 }
 
 .login-btn:hover {
-    background: #0056b3;
+    background: var(--gradient-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }

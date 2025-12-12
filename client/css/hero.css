@@ -3,9 +3,9 @@
    =============================================== */
 
 .hero-section {
-  background: linear-gradient(135deg, #00695c 0%, #26a69a 40%, var(--color-accent-lavender) 100%);
+  background: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-palette-3) 50%, var(--color-palette-8) 100%);
   padding: var(--space-2xl) var(--space-xl);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
   width: 100%;
