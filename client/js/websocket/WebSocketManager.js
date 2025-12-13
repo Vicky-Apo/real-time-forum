@@ -15,13 +15,10 @@ class WebSocketManager {
         this.reconnectDelay = 1000;
         this.isConnecting = false;
         this.shouldReconnect = true;
-
-        console.log('[WS] Manager initialized with URL:', this.url);
     }
 
     connect() {
         if (this.isConnecting || (this.ws && this.ws.readyState === WebSocket.OPEN)) {
-            console.log('[WS] Already connected or connecting');
             return;
         }
 
@@ -32,7 +29,6 @@ class WebSocketManager {
         }
 
         this.isConnecting = true;
-        console.log('[WS] Connecting to:', this.url);
 
         try {
             this.ws = new WebSocket(this.url);
@@ -71,7 +67,6 @@ class WebSocketManager {
             const message = JSON.parse(event.data);
             // Backend sends 'event' field, not 'type'
             const eventType = message.event || message.type;
-            console.log('[WS] Message received:', eventType);
 
             // Emit event based on message type
             state.emit(`ws:${eventType}`, message.payload);
@@ -157,8 +152,6 @@ class WebSocketManager {
             30000
         );
 
-        console.log(`[WS] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`);
-
         setTimeout(() => {
             this.connect();
         }, delay);
@@ -169,14 +162,12 @@ class WebSocketManager {
             // Backend expects 'event' field, not 'type'
             const message = JSON.stringify({ event: type, payload });
             this.ws.send(message);
-            console.log('[WS] Sent:', type);
         } else {
             console.warn('[WS] Cannot send, not connected');
         }
     }
 
     disconnect() {
-        console.log('[WS] Disconnecting...');
         this.shouldReconnect = false;
 
         if (this.ws) {

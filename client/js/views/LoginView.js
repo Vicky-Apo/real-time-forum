@@ -69,7 +69,6 @@ export default {
     },
 
     afterRender() {
-        console.log('[LoginView] Rendered');
 
         const form = document.getElementById('login-form');
         form.addEventListener('submit', this.handleSubmit.bind(this));
@@ -100,8 +99,6 @@ export default {
         try {
             // Call login API
             const response = await apiClient.post('/auth/login', data);
-
-            console.log('[LoginView] Login successful:', response);
 
             // Backend wraps response in { success: true, data: {...} }
             const loginData = response.data || response;

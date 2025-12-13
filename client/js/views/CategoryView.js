@@ -30,7 +30,6 @@ export default {
     },
 
     async afterRender() {
-        console.log('[CategoryView] Rendered for category:', this.categoryId);
 
         try {
             await this.loadCategoryPosts();
@@ -162,7 +161,6 @@ export default {
                 }
             }
 
-            console.log('[CategoryView] Vote recorded successfully');
         } catch (error) {
             console.error('[CategoryView] Error voting on post:', error);
             alert(error.message || 'Failed to record vote');

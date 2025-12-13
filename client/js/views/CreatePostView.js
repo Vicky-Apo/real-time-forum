@@ -64,7 +64,6 @@ export default {
     },
 
     async afterRender() {
-        console.log('[CreatePostView] Rendered');
 
         await this.loadCategories();
         this.setupEventListeners();
@@ -167,8 +166,6 @@ export default {
 
             // Create post
             const response = await apiClient.post('/posts/create', formData);
-
-            console.log('[CreatePostView] Post created:', response);
 
             // Redirect to home
             navigate('/');

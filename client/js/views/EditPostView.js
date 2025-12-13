@@ -78,7 +78,6 @@ export default {
     },
 
     async afterRender() {
-        console.log('[EditPostView] Rendered');
 
         await this.loadPost();
         await this.loadCategories();

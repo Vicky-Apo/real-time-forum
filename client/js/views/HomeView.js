@@ -32,7 +32,6 @@ export default {
     },
 
     async afterRender() {
-        console.log('[HomeView] Rendered');
 
         // Show hero section on home page
         const heroSection = document.getElementById('hero-section');
@@ -164,7 +163,6 @@ export default {
                 }
             }
 
-            console.log('[HomeView] Vote recorded successfully');
         } catch (error) {
             console.error('[HomeView] Error voting on post:', error);
             alert(error.message || 'Failed to record vote');
