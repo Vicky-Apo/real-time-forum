@@ -74,12 +74,6 @@ export default {
         const unreadClass = isUnread ? 'notification-unread' : '';
         const timeAgo = this.getTimeAgo(notif.created_at);
 
-            id: notif.notification_id,
-            is_read: notif.is_read,
-            isUnread: isUnread,
-            unreadClass: unreadClass
-        });
-
         // Determine icon based on action
         let icon = '📝';
         let actionText = notif.action;
