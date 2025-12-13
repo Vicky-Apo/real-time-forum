@@ -30,7 +30,6 @@ export default {
     },
 
     async afterRender() {
-        console.log('[PostView] Rendered for post:', this.postId);
 
         try {
             await this.loadPost();

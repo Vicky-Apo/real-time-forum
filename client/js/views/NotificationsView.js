@@ -28,7 +28,6 @@ export default {
     },
 
     async afterRender() {
-        console.log('[NotificationsView] Rendered');
         await this.loadNotifications();
         this.setupWebSocketListeners();
     },
@@ -41,8 +40,6 @@ export default {
             const data = response.data || response;
             this.notifications = data.notifications || [];
 
-            console.log('[NotificationsView] Loaded notifications:', this.notifications.length);
-            console.log('[NotificationsView] Notifications data:', this.notifications);
 
             if (this.notifications.length === 0) {
                 container.innerHTML = `
@@ -77,7 +74,6 @@ export default {
         const unreadClass = isUnread ? 'notification-unread' : '';
         const timeAgo = this.getTimeAgo(notif.created_at);
 
-        console.log('[NotificationsView] Rendering notification:', {
             id: notif.notification_id,
             is_read: notif.is_read,
             isUnread: isUnread,
@@ -130,7 +126,6 @@ export default {
     setupWebSocketListeners() {
         // Listen for new notifications
         state.on('notification:received', (payload) => {
-            console.log('[NotificationsView] New notification received');
             this.loadNotifications(); // Reload to show new notification
         });
 
@@ -141,8 +136,6 @@ export default {
                 const postId = notificationItem.dataset.postId;
                 const notifId = notificationItem.dataset.id;
 
-                console.log('[NotificationsView] Clicked notification:', { notifId, postId });
-                console.log('[NotificationsView] Dataset:', notificationItem.dataset);
 
                 // Mark as read
                 try {
@@ -159,7 +152,6 @@ export default {
                 }
 
                 // Navigate to post
-                console.log('[NotificationsView] Navigating to /post/' + postId);
                 navigate(`/post/${postId}`);
             }
         });

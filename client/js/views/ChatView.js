@@ -186,15 +186,6 @@ export default {
             // Reverse messages so oldest appears first (backend sends newest first)
             this.messages = (data.messages || []).reverse();
 
-            console.log('[ChatView] Loaded messages:', this.messages.length);
-            console.log('[ChatView] Current user ID:', this.currentUser.user_id);
-            console.log('[ChatView] Other user ID:', userId);
-            console.log('[ChatView] First 3 messages:', this.messages.slice(0, 3).map(m => ({
-                sender_id: m.sender_id,
-                sender_username: m.sender_username,
-                content: m.content?.substring(0, 50)
-            })));
-
             const isOnline = this.onlineUsers.has(userId);
 
             chatContent.innerHTML = `

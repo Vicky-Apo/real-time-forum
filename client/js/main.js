@@ -93,12 +93,9 @@ async function initApp() {
             setTimeout(async () => {
                 try {
                     const notifResponse = await apiClient.get('/notifications');
-                    console.log('[App] Notification response:', notifResponse);
                     const data = notifResponse.data || notifResponse;
                     const notifications = data.notifications || [];
-                    console.log('[App] Notifications array:', notifications);
                     const unreadCount = notifications.filter(n => !n.is_read).length;
-                    console.log('[App] Initial unread notification count:', unreadCount);
                     state.setUnreadCount(unreadCount);
                 } catch (error) {
                     console.error('[App] Error loading notifications count:', error);
@@ -111,7 +108,6 @@ async function initApp() {
                     const msgResponse = await apiClient.get('/messages/unread-count');
                     const msgData = msgResponse.data || msgResponse;
                     const unreadMessageCount = msgData.unread_count || 0;
-                    console.log('[App] Initial unread message count:', unreadMessageCount);
                     state.setUnreadMessageCount(unreadMessageCount);
                 } catch (error) {
                     console.error('[App] Error loading message count:', error);

@@ -4,7 +4,6 @@ class APIClient {
     constructor(baseURL = '') {
         // Use relative URLs (will work with Nginx proxy)
         this.baseURL = baseURL || '/api';
-        console.log('[API] Client initialized with baseURL:', this.baseURL);
     }
 
     async request(endpoint, options = {}) {
@@ -23,8 +22,6 @@ class APIClient {
         if (options.body instanceof FormData) {
             delete config.headers['Content-Type'];
         }
-
-        console.log(`[API] ${config.method || 'GET'} ${url}`);
 
         try {
             const response = await fetch(url, config);
@@ -46,7 +43,6 @@ class APIClient {
                 throw error;
             }
 
-            console.log(`[API] ${config.method || 'GET'} ${url} - Success`);
 
             // Normalize data structure from backend to frontend format
             return this.normalizeResponse(data);

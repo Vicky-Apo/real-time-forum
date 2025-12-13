@@ -9,7 +9,6 @@ class Router {
 
         // Handle browser back/forward buttons
         window.addEventListener('popstate', () => {
-            console.log('[Router] Popstate event');
             this.handleRoute();
         });
 
@@ -26,7 +25,6 @@ class Router {
 
     // Navigate to a new path
     navigate(path) {
-        console.log('[Router] Navigating to:', path);
         window.history.pushState(null, null, path);
         this.handleRoute();
     }
@@ -34,7 +32,6 @@ class Router {
     // Handle the current route
     async handleRoute() {
         const path = window.location.pathname;
-        console.log('[Router] Handling route:', path);
 
         const route = this.matchRoute(path);
 
@@ -47,14 +44,12 @@ class Router {
 
         // Check authentication
         if (route.requiresAuth && !state.getUser()) {
-            console.log('[Router] Auth required, redirecting to login');
             this.navigate('/login');
             return;
         }
 
         // If logged in and trying to access login/register, redirect to home
         if (!route.requiresAuth && state.getUser() && (path === '/login' || path === '/register')) {
-            console.log('[Router] Already logged in, redirecting to home');
             this.navigate('/');
             return;
         }
@@ -131,7 +126,6 @@ class Router {
             // Scroll to top
             window.scrollTo(0, 0);
 
-            console.log('[Router] View rendered successfully');
         } catch (error) {
             console.error('[Router] Error rendering view:', error);
             app.innerHTML = `

@@ -135,7 +135,6 @@ export default {
     },
 
     afterRender() {
-        console.log('[RegisterView] Rendered');
 
         const form = document.getElementById('register-form');
         form.addEventListener('submit', this.handleSubmit.bind(this));
@@ -202,8 +201,6 @@ export default {
         try {
             // Call register API
             const response = await apiClient.post('/auth/register', data);
-
-            console.log('[RegisterView] Registration successful:', response);
 
             // Auto-login: call login API
             const loginData = {
