@@ -100,7 +100,7 @@ export default {
                 </div>
                 <div class="post-main">
                     <div class="post-meta">
-                        <span><strong>u/${post.username || 'Anonymous'}</strong></span>
+                        <span class="author-info">${post.username || 'Anonymous'}</span>
                         <span>•</span>
                         <span>${createdDate}</span>
                         ${categories ? `<span>•</span>${categories}` : ''}

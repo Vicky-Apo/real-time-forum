@@ -14,7 +14,10 @@ export function renderNavbar() {
         navbar.innerHTML = `
             <div class="navbar-container">
                 <div class="navbar-brand">
-                    <h1>Real-Time Forum</h1>
+                    <h1>
+                        <i class="fas fa-robot robot-icon"></i>
+                        Real-Time Forum
+                    </h1>
                 </div>
             </div>
         `;
@@ -36,7 +39,10 @@ export function renderNavbar() {
     navbar.innerHTML = `
         <div class="navbar-container">
             <div class="navbar-brand">
-                <h1><a href="/" data-link>Real-Time Forum</a></h1>
+                <h1>
+                    <i class="fas fa-robot robot-icon"></i>
+                    <a href="/" data-link>Real-Time Forum</a>
+                </h1>
             </div>
 
             <nav class="navbar-menu">

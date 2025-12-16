@@ -24,7 +24,7 @@ export default {
                     <!-- Conversations Sidebar -->
                     <div class="conversations-sidebar">
                         <div class="conversations-header">
-                            <h2>💬 Messages</h2>
+                            <h2><i class="fas fa-comments"></i> Messages</h2>
                         </div>
                         <div id="conversations-list" class="conversations-list">
                             <div class="loading-container">
@@ -38,7 +38,9 @@ export default {
                     <div class="chat-window">
                         <div id="chat-content">
                             <div class="chat-empty-state">
-                                <div class="chat-empty-state-icon">💬</div>
+                                <div class="chat-empty-state-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
                                 <h3>Select a conversation</h3>
                                 <p>Choose a user from the list to start messaging</p>
                             </div>
@@ -214,6 +216,7 @@ export default {
 
                 <div class="message-input-area">
                     <form class="message-input-form" id="message-form">
+                        <div class="message-input-row">
                         <div class="message-input-wrapper">
                             <textarea
                                 id="message-input"
@@ -221,13 +224,15 @@ export default {
                                 placeholder="Type a message..."
                                 rows="1"
                             ></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-send">Send</button>
                         </div>
                         <div class="message-actions">
-                            <label class="btn-icon" for="image-upload" title="Send image">
-                                📷
-                                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            <label class="btn-upload-image" for="image-upload">
+                                <span class="upload-icon"><i class="fas fa-camera"></i></span>
+                                Upload Image
                             </label>
-                            <button type="submit" class="btn btn-send">Send</button>
+                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
                         </div>
                     </form>
                 </div>
@@ -280,6 +285,7 @@ export default {
 
                 <div class="message-input-area">
                     <form class="message-input-form" id="message-form">
+                        <div class="message-input-row">
                         <div class="message-input-wrapper">
                             <textarea
                                 id="message-input"
@@ -287,13 +293,15 @@ export default {
                                 placeholder="Type a message..."
                                 rows="1"
                             ></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-send">Send</button>
                         </div>
                         <div class="message-actions">
-                            <label class="btn-icon" for="image-upload" title="Send image">
-                                📷
-                                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            <label class="btn-upload-image" for="image-upload">
+                                <span class="upload-icon"><i class="fas fa-camera"></i></span>
+                                Upload Image
                             </label>
-                            <button type="submit" class="btn btn-send">Send</button>
+                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
                         </div>
                     </form>
                 </div>

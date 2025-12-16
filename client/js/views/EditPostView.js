@@ -140,18 +140,51 @@ export default {
             }
 
             // Get post's current categories
+            // Helper function to get icon for category
+            const getCategoryIcon = (categoryName) => {
+                const icons = {
+                    'General Discussion': 'fa-comments',
+                    'Programming': 'fa-code',
+                    'Web Development': 'fa-globe',
+                    'Networking': 'fa-network-wired',
+                    'Game Development': 'fa-gamepad',
+                    'Database Management': 'fa-database',
+                    'DevOps': 'fa-server',
+                    'Cloud Computing': 'fa-cloud',
+                    'Mobile Development': 'fa-mobile-alt',
+                    'Machine Learning': 'fa-brain',
+                    'Cybersecurity': 'fa-shield-alt',
+                    'AI & Data Science': 'fa-robot'
+                };
+                return icons[categoryName] || 'fa-tag';
+            };
+
             const postCategories = (this.post?.categories || []).map(c => c.category_name || c.name);
 
             container.innerHTML = categories.map(cat => {
                 const catName = cat.category_name || cat.name;
                 const isChecked = postCategories.includes(catName) ? 'checked' : '';
+                const icon = getCategoryIcon(catName);
                 return `
-                    <label class="category-checkbox">
+                    <label class="category-checkbox ${isChecked ? 'checked' : ''}">
                         <input type="checkbox" name="categories[]" value="${catName}" ${isChecked}>
+                        <i class="fas ${icon}"></i>
                         <span>${catName}</span>
                     </label>
                 `;
             }).join('');
+
+            // Add event listeners for checkbox state changes
+            container.querySelectorAll('.category-checkbox input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const label = this.closest('.category-checkbox');
+                    if (this.checked) {
+                        label.classList.add('checked');
+                    } else {
+                        label.classList.remove('checked');
+                    }
+                });
+            });
 
         } catch (error) {
             console.error('[EditPostView] Error loading categories:', error);

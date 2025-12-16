@@ -12,8 +12,7 @@ export default {
             <div class="container">
                 <div class="notifications-container">
                     <div class="notifications-header">
-                        <h1>📬 Notifications</h1>
-                        <p>Stay updated with your forum activity</p>
+                        <h1><i class="fas fa-bell"></i> Notifications</h1>
                     </div>
 
                     <div id="notifications-list" class="notifications-list">
@@ -44,7 +43,7 @@ export default {
             if (this.notifications.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">🔔</div>
+                        <div class="empty-state-icon"><i class="fas fa-bell"></i></div>
                         <h3>No notifications yet</h3>
                         <p>When someone interacts with your posts, you'll see notifications here</p>
                     </div>
@@ -75,14 +74,14 @@ export default {
         const timeAgo = this.getTimeAgo(notif.created_at);
 
         // Determine icon based on action
-        let icon = '📝';
+        let icon = '<i class="fas fa-bell"></i>';
         let actionText = notif.action;
 
         if (notif.action.includes('liked')) {
-            icon = '👍';
+            icon = '<i class="fas fa-thumbs-up"></i>';
             actionText = 'liked your post';
         } else if (notif.action.includes('comment')) {
-            icon = '💬';
+            icon = '<i class="fas fa-comment"></i>';
             actionText = 'commented on your post';
         }
 

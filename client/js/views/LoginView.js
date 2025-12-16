@@ -50,11 +50,11 @@ export default {
 
                     <div class="oauth-buttons">
                         <a href="http://localhost:8080/api/auth/github/login" class="btn btn-github btn-block">
-                            <span class="btn-icon">&#xf09b;</span>
+                            <i class="fab fa-github"></i>
                             Continue with GitHub
                         </a>
                         <a href="http://localhost:8080/api/auth/google/login" class="btn btn-google btn-block">
-                            <span class="btn-icon">G</span>
+                            <i class="fab fa-google"></i>
                             Continue with Google
                         </a>
                     </div>

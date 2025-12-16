@@ -100,7 +100,10 @@ export default {
             `<a href="/category/${cat.category_id}" data-link class="category-tag">${cat.category_name || cat.name}</a>`
         ).join(' ') || '';
 
-        const isAuthor = currentUser && currentUser.user_id === post.author_id;
+        // Use is_owner from backend if available, otherwise compare user_id
+        const isAuthor = post.is_owner !== undefined 
+            ? post.is_owner 
+            : (currentUser && currentUser.user_id && post.user_id && currentUser.user_id === post.user_id);
         const netVotes = (post.likes || 0) - (post.dislikes || 0);
 
         // Render images if available
@@ -126,7 +129,7 @@ export default {
                 <div class="post-header">
                     <div class="post-meta">
                         <span class="author-info">
-                            <strong>u/${post.username || 'Anonymous'}</strong>
+                            ${post.username || 'Anonymous'}
                         </span>
                         <span>•</span>
                         <span class="post-date">${createdDate}</span>
@@ -149,15 +152,15 @@ export default {
                 ` : ''}
 
                 <!-- Reactions and Actions -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-2xl); flex-wrap: wrap; gap: var(--space-lg);">
+                <div class="post-reactions-actions">
                     <div class="reaction-buttons">
                         <button class="reaction-btn like-btn" onclick="handlePostReaction('${post.post_id}', 'like')">
-                            👍 Like (${post.likes || 0})
+                            <i class="fas fa-thumbs-up"></i> Like (${post.likes || 0})
                         </button>
                         <button class="reaction-btn dislike-btn" onclick="handlePostReaction('${post.post_id}', 'dislike')">
-                            👎 Dislike (${post.dislikes || 0})
+                            <i class="fas fa-thumbs-down"></i> Dislike (${post.dislikes || 0})
                         </button>
-                        <span style="font-weight: var(--font-weight-bold); color: var(--color-text-secondary);">
+                        <span class="net-votes">
                             Net: ${netVotes}
                         </span>
                     </div>
@@ -165,10 +168,10 @@ export default {
                     ${isAuthor ? `
                         <div class="post-actions">
                             <a href="/edit-post/${post.post_id}" data-link class="edit-btn">
-                                ✏️ Edit
+                                <i class="fas fa-edit"></i> Edit
                             </a>
                             <button class="delete-btn" onclick="handleDeletePost('${post.post_id}')">
-                                🗑️ Delete
+                                <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
                     ` : ''}
@@ -221,13 +224,16 @@ export default {
     renderComment(comment) {
         const currentUser = state.getUser();
         const createdDate = new Date(comment.created_at).toLocaleDateString();
-        const isAuthor = currentUser && currentUser.user_id === comment.author_id;
+        // Use is_owner from backend if available, otherwise compare user_id
+        const isAuthor = comment.is_owner !== undefined 
+            ? comment.is_owner 
+            : (currentUser && currentUser.user_id && comment.user_id && currentUser.user_id === comment.user_id);
 
         return `
             <article class="comment-card">
                 <div class="post-meta">
                     <span class="author-info">
-                        <strong>u/${comment.username || 'Anonymous'}</strong>
+                        ${comment.username || 'Anonymous'}
                     </span>
                     <span>•</span>
                     <span class="post-date">${createdDate}</span>
@@ -237,20 +243,23 @@ export default {
                     ${comment.content}
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-lg); flex-wrap: wrap; gap: var(--space-md);">
-                    <div class="reaction-buttons">
+                <div class="comment-actions-container">
+                    <div class="comment-reaction-buttons">
                         <button class="reaction-btn like-btn btn-sm" onclick="handleCommentReaction('${comment.comment_id}', 'like')">
-                            👍 ${comment.likes || 0}
+                            <i class="fas fa-thumbs-up"></i>
+                            <span>${comment.likes || 0}</span>
                         </button>
                         <button class="reaction-btn dislike-btn btn-sm" onclick="handleCommentReaction('${comment.comment_id}', 'dislike')">
-                            👎 ${comment.dislikes || 0}
+                            <i class="fas fa-thumbs-down"></i>
+                            <span>${comment.dislikes || 0}</span>
                         </button>
                     </div>
 
                     ${isAuthor ? `
                         <div class="comment-actions">
-                            <button class="delete-btn" onclick="handleDeleteComment('${comment.comment_id}')">
-                                🗑️ Delete
+                            <button class="delete-btn btn-sm" onclick="handleDeleteComment('${comment.comment_id}')">
+                                <i class="fas fa-trash"></i>
+                                <span>Delete</span>
                             </button>
                         </div>
                     ` : ''}
