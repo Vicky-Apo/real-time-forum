@@ -1,0 +1,33 @@
+# Environment files - NEVER commit secrets
+.env
+.env.local
+.env.production
+
+# Database files
+*.db
+*.db-wal
+*.db-shm
+database/*.db
+DBPath/*.db
+
+# Go binaries
+*.exe
+forum
+main
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+    
+# Logs (if you add logging to files later)
+*.log
+logs/
+
+# Uploaded files - ignore all uploaded images
+server/uploads/
+uploads/
+api/uploads/

@@ -1,0 +1,507 @@
+/* Post.css - Modern Cherry Design */
+.main-post-card {
+    border-left: 4px solid var(--color-primary);
+    background: var(--color-bg-secondary);
+    box-shadow: var(--shadow-xl);
+    padding: var(--space-3xl);
+    display: flex;
+    flex-direction: column;
+}
+
+.post-header {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 2px solid var(--color-bg-tertiary);
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-md);
+}
+
+.author-info {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-bold);
+}
+
+.post-date {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-normal);
+}
+
+.post-categories {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-top: var(--space-lg);
+}
+
+.post-categories .category-tag {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    transition: var(--transition-all);
+    display: inline-block;
+    border: 2px solid var(--color-primary-dark);
+}
+
+.post-categories .category-tag:hover {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(235, 199, 213, 0.4);
+}
+
+.post-categories .category-tag:active {
+    background: var(--color-primary-dark);
+    transform: translateY(0);
+}
+
+.post-content {
+    margin: var(--space-2xl) 0;
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    word-wrap: break-word;
+}
+
+.post-reactions-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 2px solid var(--color-bg-tertiary);
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+}
+
+.net-votes {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    margin-left: var(--space-md);
+}
+
+.comments-section {
+    margin-top: var(--space-5xl);
+    padding-top: var(--space-4xl);
+    border-top: 3px solid var(--color-bg-tertiary);
+}
+
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3xl);
+    flex-wrap: wrap;
+    gap: var(--space-xl);
+}
+
+.comments-header h3 {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
+}
+
+.add-comment {
+    margin-bottom: var(--space-4xl);
+    padding: var(--space-3xl);
+    background: var(--color-bg-tertiary);
+    border: 2px dashed var(--color-border);
+}
+
+.add-comment .form-group {
+    margin-bottom: var(--space-md);
+}
+
+.add-comment .form-control {
+    border: 2px solid var(--color-border);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    min-height: 100px;
+    resize: vertical;
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+    font-family: inherit;
+}
+
+.add-comment .form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(235, 199, 213, 0.3);
+    outline: none;
+}
+
+.add-comment .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+}
+
+.add-comment .btn-primary {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border: 2px solid var(--color-primary-dark);
+    padding: var(--space-md) var(--space-2xl);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-all);
+    min-height: 44px;
+}
+
+.add-comment .btn-primary:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(235, 199, 213, 0.4);
+}
+
+.add-comment .btn-primary:active {
+    background: var(--color-primary-dark);
+    transform: translateY(0);
+}
+
+.comment-card {
+    border: 2px solid var(--color-bg-tertiary);
+    background: var(--color-bg-secondary);
+    padding: var(--space-2xl);
+    margin-bottom: var(--space-xl);
+    transition: var(--transition-all);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.comment-card .post-meta {
+    margin-bottom: 0;
+}
+
+.comment-card .post-content {
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+}
+
+.comment-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+}
+
+.comment-card:active {
+    transform: translateY(0);
+}
+
+.post-card .reaction-btn {
+    padding: var(--space-md) var(--space-xl);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base);
+    min-height: 44px;
+    box-shadow: var(--shadow-sm);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: var(--transition-all);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.post-card .reaction-btn i {
+    font-size: var(--font-size-base);
+}
+
+.reaction-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.post-card .like-btn {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border-color: var(--color-primary-dark);
+}
+
+.post-card .like-btn:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(235, 199, 213, 0.4);
+}
+
+.post-card .like-btn:active {
+    background: var(--color-primary-dark);
+    transform: translateY(0);
+}
+
+.post-card .dislike-btn {
+    background: var(--color-secondary);
+    color: white;
+    border-color: var(--color-secondary-dark);
+}
+
+.post-card .dislike-btn:hover {
+    background: var(--color-secondary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(151, 24, 26, 0.4);
+}
+
+.post-card .dislike-btn:active {
+    background: var(--color-secondary-dark);
+    transform: translateY(0);
+}
+
+.edit-btn {
+    background: var(--color-warning);
+    color: var(--color-text-inverse);
+    border: 2px solid var(--color-warning);
+    padding: var(--space-sm) var(--space-lg);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-all);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 40px;
+    line-height: 24px;
+}
+
+.edit-btn i {
+    font-size: var(--font-size-sm);
+}
+
+.edit-btn:hover {
+    background: var(--color-warning-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+.edit-btn:active {
+    background: #f57c00;
+    transform: translateY(0);
+}
+
+.delete-btn {
+    background: var(--color-gray-light);
+    color: var(--color-text-inverse);
+    border: 2px solid var(--color-gray-light);
+    padding: var(--space-sm) var(--space-lg);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-all);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 40px;
+}
+
+.delete-btn i {
+    font-size: var(--font-size-sm);
+}
+
+.delete-btn:hover {
+    background: var(--color-danger);
+    border-color: var(--color-danger);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn:active {
+    background: var(--color-danger-dark);
+    transform: translateY(0);
+}
+
+/* Comment Actions Container */
+.comment-actions-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-lg);
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding-top: var(--space-lg);
+    border-top: 2px solid var(--color-bg-tertiary);
+}
+
+.comment-reaction-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+/* Small button size */
+.btn-sm {
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-sm);
+    min-height: 32px;
+}
+
+.btn-sm i {
+    font-size: var(--font-size-sm);
+}
+
+.btn-sm span {
+    margin-left: var(--space-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Comment reaction buttons */
+.comment-reaction-buttons .reaction-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.comment-actions .delete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+/* Comment reaction buttons styling */
+.comment-reaction-buttons .reaction-btn.btn-sm {
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-sm);
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.comment-reaction-buttons .like-btn.btn-sm {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border-color: var(--color-primary-dark);
+}
+
+.comment-reaction-buttons .like-btn.btn-sm:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(235, 199, 213, 0.3);
+}
+
+.comment-reaction-buttons .like-btn.btn-sm:active {
+    background: var(--color-primary-dark);
+    transform: translateY(0);
+    }
+    
+.comment-reaction-buttons .dislike-btn.btn-sm {
+    background: var(--color-secondary);
+    color: white;
+    border-color: var(--color-secondary-dark);
+    }
+    
+.comment-reaction-buttons .dislike-btn.btn-sm:hover {
+    background: var(--color-secondary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(151, 24, 26, 0.3);
+    }
+    
+.comment-reaction-buttons .dislike-btn.btn-sm:active {
+    background: var(--color-secondary-dark);
+    transform: translateY(0);
+}
+
+.comment-actions .delete-btn.btn-sm {
+    background: var(--color-gray-light);
+    color: var(--color-text-inverse);
+    border-color: var(--color-gray-light);
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-sm);
+    min-height: 32px;
+    }
+    
+.comment-actions .delete-btn.btn-sm:hover {
+    background: var(--color-danger);
+    border-color: var(--color-danger);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.comment-actions .delete-btn.btn-sm:active {
+    background: var(--color-danger-dark);
+    transform: translateY(0);
+    }
+
+.post-image {
+    max-width: 400px;
+    max-height: 350px;
+    cursor: zoom-in;
+    margin-bottom: 1em;
+    transition: box-shadow 0.2s;
+}
+
+#image-lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+#image-lightbox.active {
+    display: flex;
+}
+
+#image-lightbox img {
+    max-width: 90vw;
+    max-height: 85vh;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+    background: var(--color-bg-secondary);
+    padding: 8px;
+    border: 3px solid var(--color-primary);
+}
+
+#image-lightbox .close-btn {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    font-size: 2.2em;
+    color: var(--color-text-inverse);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+@media (max-width: 768px) {
+    .comments-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .comment-card {
+        padding: var(--space-xl);
+    }
+}

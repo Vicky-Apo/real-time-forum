@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  db:
+    image: keinos/sqlite3:latest
+    container_name: forum-db
+    command: ["tail", "-f", "/dev/null"]
+    volumes:
+      - forum_db:/data
+    healthcheck:
+      test: ["CMD", "sqlite3", "/data/forum.db", ".databases"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - forum-net
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: forum-backend
+    environment:
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8080
+      DB_PATH: /data/forum.db
+      DB_MAX_CONNECTIONS: 10
+      FRONTEND_BASE_URL: http://frontend:3000
+      BACKEND_BASE_URL: http://backend:8080
+      ALLOWED_ORIGINS: http://localhost:3000,http://frontend:3000
+    volumes:
+      - forum_db:/data
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - forum-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: forum-frontend
+    environment:
+      FRONTEND_PORT: 3000
+      API_BASE_URL: http://backend:8080/api
+      FRONTEND_BASE_URL: http://frontend:3000
+      TEMPLATES_DIR: ./web/templates
+      STATIC_DIR: ./web/static
+      SESSION_NAME: forum_session
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - forum-net
+
+volumes:
+  forum_db:
+
+networks:
+  forum-net:

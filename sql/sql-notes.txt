@@ -1,0 +1,7 @@
+here add the notes for possible problems and bug !!! 
+
+1. 
+
+  ----- this command adds a lot of post in database !
+  
+ sqlite3 ./api/DBPath/forum.db < create-posts.sql

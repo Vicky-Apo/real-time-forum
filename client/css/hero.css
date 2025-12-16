@@ -1,0 +1,112 @@
+/* ===============================================
+   HERO SECTION - Modern Cherry Design
+   =============================================== */
+
+.hero-section {
+  position: relative;
+  padding: var(--space-5xl) var(--space-2xl);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 3px solid var(--color-primary); /* Pink border */
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/images/hero-background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(10px);
+  -webkit-filter: blur(10px);
+  transform: scale(1.1); /* Slight scale to avoid blur edges */
+  z-index: 0;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(151, 24, 26, 0.4); /* Red overlay for better text readability */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: var(--font-weight-bold);
+  color: #ffffff; /* White text */
+  margin-bottom: var(--space-md);
+  line-height: 1.2;
+  animation: fadeInUp 0.8s ease-out;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #ffffff; /* White text */
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+  opacity: 0.95;
+  animation: fadeInUp 1s ease-out;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .hero-section {
+    padding: var(--space-4xl) var(--space-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .hero-section {
+    padding: var(--space-3xl) var(--space-lg);
+  }
+}
