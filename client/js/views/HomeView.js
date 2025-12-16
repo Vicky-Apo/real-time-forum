@@ -114,15 +114,8 @@ export default {
             `<span class="category-tag">${cat.category_name || cat.name}</span>`
         ).join(' ') || '';
 
-        const netVotes = (post.likes || 0) - (post.dislikes || 0);
-
         return `
             <article class="post-card" onclick="window.router.navigate('/post/${post.post_id}')" data-post-id="${post.post_id}">
-                <div class="post-vote">
-                    <button class="vote-btn upvote" onclick="event.stopPropagation(); window.handleHomeVote('${post.post_id}', 1)" title="Like this post">▲</button>
-                    <span class="vote-count" title="Net votes (likes - dislikes)">${netVotes}</span>
-                    <button class="vote-btn downvote" onclick="event.stopPropagation(); window.handleHomeVote('${post.post_id}', 2)" title="Dislike this post">▼</button>
-                </div>
                 <div class="post-main">
                     <div class="post-meta">
                         <span class="author-info">${post.username || 'Anonymous'}</span>
@@ -133,8 +126,20 @@ export default {
                     <div class="post-content">
                         ${post.content}
                     </div>
-                    <div class="post-stats">
-                        <span>💬 ${post.comment_count || 0} comments</span>
+                    <div class="post-footer">
+                        <div class="post-stats">
+                            <span>💬 ${post.comment_count || 0} comments</span>
+                        </div>
+                        <div class="post-reactions">
+                            <button class="reaction-btn like-btn" onclick="event.stopPropagation(); window.handleHomeVote('${post.post_id}', 1)" title="Like this post">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span class="like-count">${post.likes || 0}</span>
+                            </button>
+                            <button class="reaction-btn dislike-btn" onclick="event.stopPropagation(); window.handleHomeVote('${post.post_id}', 2)" title="Dislike this post">
+                                <i class="fas fa-thumbs-down"></i>
+                                <span class="dislike-count">${post.dislikes || 0}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </article>
@@ -153,13 +158,16 @@ export default {
             const response = await apiClient.get(`/posts/view/${postId}`);
             const updatedPost = response.data || response;
 
-            // Find the post card and update vote count
+            // Find the post card and update like/dislike counts
             const postCard = document.querySelector(`[data-post-id="${postId}"]`);
             if (postCard) {
-                const netVotes = (updatedPost.likes || 0) - (updatedPost.dislikes || 0);
-                const voteCountElement = postCard.querySelector('.vote-count');
-                if (voteCountElement) {
-                    voteCountElement.textContent = netVotes;
+                const likeCountElement = postCard.querySelector('.like-count');
+                const dislikeCountElement = postCard.querySelector('.dislike-count');
+                if (likeCountElement) {
+                    likeCountElement.textContent = updatedPost.likes || 0;
+                }
+                if (dislikeCountElement) {
+                    dislikeCountElement.textContent = updatedPost.dislikes || 0;
                 }
             }
 
