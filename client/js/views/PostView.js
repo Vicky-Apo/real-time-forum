@@ -184,6 +184,14 @@ export default {
                     <h3>💬 Comments (${post.comment_count || 0})</h3>
                 </div>
 
+                <!-- Comments List -->
+                <div id="comments-list" class="comments-list">
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Loading comments...</p>
+                    </div>
+                </div>
+
                 <!-- Add Comment Form -->
                 ${currentUser ? `
                     <div class="add-comment">
@@ -209,14 +217,6 @@ export default {
                         <a href="/login" data-link>Login</a> to post a comment
                     </div>
                 `}
-
-                <!-- Comments List -->
-                <div id="comments-list" class="comments-list">
-                    <div class="loading-container">
-                        <div class="loading-spinner"></div>
-                        <p>Loading comments...</p>
-                    </div>
-                </div>
             </div>
         `;
     },
@@ -325,6 +325,8 @@ export default {
 
             // Reload post to update reaction counts
             await this.loadPost();
+            // Reload comments since loadPost() re-renders the comments section with loading state
+            await this.loadComments();
             this.showToast(`Reaction recorded!`, 'success');
         } catch (error) {
             console.error('[PostView] Error reacting to post:', error);

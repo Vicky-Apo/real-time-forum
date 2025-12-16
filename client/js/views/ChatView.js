@@ -182,8 +182,8 @@ export default {
         const chatContent = document.getElementById('chat-content');
 
         try {
-            // Load more messages initially (50 instead of default 10)
-            const response = await apiClient.get(`/messages/${userId}?limit=50`);
+            // Load messages with limit of 10 (as per audit requirements)
+            const response = await apiClient.get(`/messages/${userId}?limit=10`);
             const data = response.data || response;
             // Reverse messages so oldest appears first (backend sends newest first)
             this.messages = (data.messages || []).reverse();
@@ -465,6 +465,11 @@ export default {
                 return;
             }
 
+            // If we got fewer messages than requested, there are no more messages to load
+            if (olderMessages.length < 10) {
+                this.hasMoreMessages = false;
+            }
+
             // Update oldest message timestamp
             this.oldestMessageTimestamp = olderMessages[0]?.created_at;
 
@@ -527,21 +532,29 @@ export default {
             input.value = '';
             input.style.height = 'auto';
 
-            // Add sent message to UI instead of reloading all messages
-            const sentMessage = response.data || response;
-            if (sentMessage && sentMessage.message_id) {
-                // Normalize the sent message
-                const normalizedMessage = {
-                    sender_id: this.currentUser.user_id,
-                    sender_username: this.currentUser.username,
-                    content: sentMessage.content || content,
-                    created_at: sentMessage.created_at || new Date().toISOString(),
-                    message_id: sentMessage.message_id,
-                    images: sentMessage.images || []
-                };
-                this.messages.push(normalizedMessage);
-                this.addMessageToUI(normalizedMessage);
+            // If sending an image, reload all messages to ensure images are displayed correctly
+            // Otherwise, add message to UI optimistically
+            if (imageFile) {
+                await this.loadMessages(this.currentConversation.user_id);
+            } else {
+                const sentMessage = response.data || response;
+                if (sentMessage && sentMessage.message_id) {
+                    // Normalize the sent message
+                    const normalizedMessage = {
+                        sender_id: this.currentUser.user_id,
+                        sender_username: this.currentUser.username,
+                        content: sentMessage.content || content,
+                        created_at: sentMessage.created_at || new Date().toISOString(),
+                        message_id: sentMessage.message_id,
+                        images: sentMessage.images || []
+                    };
+                    this.messages.push(normalizedMessage);
+                    this.addMessageToUI(normalizedMessage);
+                }
             }
+
+            // Reload conversations to update order and last message preview
+            await this.loadConversations();
 
         } catch (error) {
             console.error('[ChatView] Error sending message:', error);
@@ -551,7 +564,7 @@ export default {
 
     setupWebSocketListeners() {
         // Listen for new messages
-        state.on('message:received', (message) => {
+        state.on('message:received', async (message) => {
 
             // Normalize WebSocket payload to match database format
             const normalizedMessage = {
@@ -562,10 +575,15 @@ export default {
                 images: message.images || []
             };
 
-            // If message is for current conversation, add it
+            // If message is for current conversation, add it or reload if it has images
             if (this.currentConversation &&
                 (message.sender_id === this.currentConversation.user_id)) {
-                this.addMessageToUI(normalizedMessage);
+                // If message has images, reload all messages to ensure proper display
+                if (message.images && message.images.length > 0) {
+                    await this.loadMessages(this.currentConversation.user_id);
+                } else {
+                    this.addMessageToUI(normalizedMessage);
+                }
             }
 
             // Reload conversations to update preview
@@ -619,8 +637,10 @@ export default {
     showTypingIndicator() {
         const indicator = document.getElementById('typing-indicator');
         if (indicator && !indicator.querySelector('.typing-indicator')) {
+            const username = this.currentConversation ? this.currentConversation.username : 'User';
             indicator.innerHTML = `
                 <div class="typing-indicator">
+                    <span class="typing-username">${username} is typing</span>
                     <div class="typing-dots">
                         <div class="typing-dot"></div>
                         <div class="typing-dot"></div>

@@ -146,12 +146,11 @@ class State {
     // ============= Utility =============
 
     clear() {
-        this.user = null;
+        this.setUser(null);  // This will emit 'user:changed' event
         this.wsConnected = false;
         this.onlineUsers = [];
         this.unreadCount = 0;
         this.unreadMessageCount = 0;
-        localStorage.removeItem('user');
     }
 }
 
