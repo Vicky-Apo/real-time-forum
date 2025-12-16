@@ -1,95 +1,119 @@
+/* Error.css - Modern Cherry Design */
 .error-page {
-    max-width: 600px;
-    margin: 100px auto;
-    text-align: center;
-    padding: 40px 20px;
-    background: var(--color-bg-secondary);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4xl);
+    background: var(--color-coal);
 }
 
-.error-icon {
-    font-size: 4rem;
-    color: var(--color-danger);
-    margin-bottom: 20px;
+.error-container {
+    max-width: 600px;
+    text-align: center;
+    background: var(--color-bg-secondary);
+    padding: var(--space-5xl);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    border: 3px solid var(--color-secondary);
+}
+
+.error-code {
+    font-size: 120px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    margin: 0;
+    line-height: 1;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .error-title {
-    color: var(--color-danger);
-    margin-bottom: 15px;
-    font-size: 2rem;
+    font-size: var(--font-size-h2);
+    color: var(--color-text-primary);
+    margin: var(--space-3xl) 0 var(--space-xl) 0;
+    font-weight: var(--font-weight-bold);
 }
 
 .error-message {
+    font-size: var(--font-size-lg);
     color: var(--color-text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 30px;
-    line-height: 1.6;
+    margin-bottom: var(--space-4xl);
+    line-height: var(--line-height-relaxed);
 }
 
-.home-btn {
-    background: var(--gradient-primary);
-    color: var(--color-text-inverse);
-    padding: 12px 30px;
+.error-actions {
+    display: flex;
+    gap: var(--space-xl);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.error-btn {
+    padding: var(--space-xl) var(--space-3xl);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
     text-decoration: none;
-    border-radius: 6px;
-    font-size: 1.1rem;
-    display: inline-block;
     transition: var(--transition-all);
-    box-shadow: var(--shadow-btn-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-md);
+    border: 2px solid transparent;
+    cursor: pointer;
 }
 
-.home-btn:hover {
-    background: var(--gradient-secondary);
+.error-btn-primary {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border-color: var(--color-primary-dark);
+}
+
+.error-btn-primary:hover {
+    background: var(--color-primary-light);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 20px rgba(235, 199, 213, 0.4);
 }
 
+.error-btn-primary:active {
+    background: var(--color-primary-dark);
+    transform: translateY(0);
+}
 
-/* Error  auth Page Styles */
-.error-page {
-    max-width: 600px;
-    margin: 100px auto;
-    text-align: center;
-    padding: 40px 20px;
-    background: var(--color-bg-secondary);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
+.error-btn-secondary {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.error-btn-secondary:hover {
+    background: var(--color-bg-primary);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.error-btn-secondary:active {
+    transform: translateY(0);
 }
 
 .error-icon {
-    font-size: 4rem;
-    color: var(--color-danger);
-    margin-bottom: 20px;
+    font-size: 80px;
+    margin-bottom: var(--space-3xl);
+    opacity: 0.8;
 }
 
-.error-title {
-    color: var(--color-danger);
-    margin-bottom: 15px;
-    font-size: 2rem;
+@media (max-width: 768px) {
+    .error-container {
+        padding: var(--space-4xl) var(--space-3xl);
 }
 
-.error-message {
-    color: var(--color-text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 30px;
-    line-height: 1.6;
+    .error-code {
+        font-size: 80px;
 }
 
-.login-btn {
-    background: var(--gradient-primary);
-    color: var(--color-text-inverse);
-    padding: 12px 30px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-size: 1.1rem;
-    display: inline-block;
-    transition: var(--transition-all);
-    box-shadow: var(--shadow-btn-primary);
+    .error-actions {
+        flex-direction: column;
+        align-items: stretch;
 }
 
-.login-btn:hover {
-    background: var(--gradient-secondary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    .error-btn {
+        justify-content: center;
+}
 }

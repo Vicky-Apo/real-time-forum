@@ -1,6 +1,6 @@
 /* ===============================================
-   ENHANCED AUTH CSS - FORUM404NOTFOUND DESIGN SYSTEM
-   Updated with new 8-color palette and black text
+   ENHANCED AUTH CSS - MODERN CHERRY DESIGN
+   NO gradients, NO border-radius, WITH active states
    =============================================== */
 
 /* ===============================================
@@ -19,43 +19,42 @@
   animation: fadeIn 0.6s ease-out;
 }
 
-/* Auth Card - Dark glassmorphic container */
+/* Auth Card */
 .auth-card {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.05) 100%) !important;
-  backdrop-filter: blur(15px) !important;
-  padding: var(--space-5xl) !important;
-  border-radius: var(--radius-xl) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+  background: var(--color-bg-secondary);
+  backdrop-filter: blur(15px);
+  padding: var(--space-5xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--color-primary);
   width: 100%;
 }
 
 .auth-card h1 {
-  color: white !important;
+  color: white;
   text-align: center;
   margin-bottom: var(--space-md);
   font-size: var(--font-size-h2);
 }
 
 .auth-subtitle {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: rgba(255, 255, 255, 0.8);
   text-align: center;
   margin-bottom: var(--space-4xl);
 }
 
-/* Form Groups - spacing container */
+/* Form Groups */
 .form-group {
   margin-bottom: var(--space-2xl);
 }
 
 .form-group label {
   display: block;
-  color: #e5e7eb !important;
+  color: #e5e7eb;
   font-weight: var(--font-weight-semibold);
   margin-bottom: var(--space-sm);
 }
 
-/* All inputs in auth forms - dark theme */
+/* All inputs in auth forms */
 .auth-form input[type="text"],
 .auth-form input[type="email"],
 .auth-form input[type="password"],
@@ -66,34 +65,32 @@
 .form-group input[type="password"],
 .form-group input[type="number"],
 .form-group select {
-  width: 100% !important;
-  padding: var(--space-xl) var(--space-2xl) !important;
-  border: 2px solid rgba(59, 130, 246, 0.3) !important;
-  border-radius: var(--radius-md) !important;
-  font-family: inherit !important;
-  font-size: var(--font-size-lg) !important;
-  background: rgba(42, 42, 42, 0.8) !important;
-  backdrop-filter: blur(10px) !important;
-  color: #e5e7eb !important;
-  transition: var(--transition-all) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  width: 100%;
+  padding: var(--space-xl) var(--space-2xl);
+  border: 2px solid var(--color-border);
+  font-family: inherit;
+  font-size: var(--font-size-lg);
+  background: rgba(42, 42, 42, 0.8);
+  backdrop-filter: blur(10px);
+  color: #e5e7eb;
+  transition: var(--transition-all);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Select dropdown - style the options too */
 .auth-form select option,
 .form-group select option {
-  background: rgba(42, 42, 42, 0.95) !important;
-  color: #e5e7eb !important;
-  padding: var(--space-md) !important;
+  background: rgba(42, 42, 42, 0.95);
+  color: #e5e7eb;
+  padding: var(--space-md);
 }
 
 .auth-form input:focus,
 .auth-form select:focus,
 .form-group input:focus,
 .form-group select:focus {
-  outline: none !important;
-  border-color: var(--color-success) !important;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(235, 199, 213, 0.3);
 }
 
 /* ===============================================
@@ -104,45 +101,12 @@
   text-align: center;
   margin-bottom: var(--space-4xl);
   padding: var(--space-4xl) var(--space-2xl);
-  background: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-accent-indigo) 50%, var(--color-accent-lavender) 100%);
-  border-radius: var(--radius-xl);
+  background: var(--color-secondary);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   color: white;
   position: relative;
   overflow: hidden;
-}
-
-.auth-header::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: floatAuth 15s ease-in-out infinite;
-}
-
-.auth-header::after {
-  content: '';
-  position: absolute;
-  bottom: -30%;
-  left: -10%;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: floatAuth 12s ease-in-out infinite reverse;
-}
-
-@keyframes floatAuth {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(20px, -20px) scale(1.1);
-  }
+  border: 3px solid var(--color-primary);
 }
 
 .auth-header h1 {
@@ -185,12 +149,11 @@
    =============================================== */
 
 .form-container {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.05) 100%) !important;
-  backdrop-filter: blur(15px) !important;
+  background: var(--color-bg-secondary);
+  backdrop-filter: blur(15px);
   padding: var(--space-5xl);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--color-primary);
   position: relative;
   overflow: hidden;
 }
@@ -202,7 +165,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(135deg, var(--color-accent-coral) 0%, var(--color-accent-lavender) 100%);
+  background: var(--color-primary);
 }
 
 /* ===============================================
@@ -211,20 +174,20 @@
 
 .auth-alert {
   padding: var(--space-xl) var(--space-2xl);
-  border-radius: var(--radius-md);
   margin-bottom: var(--space-3xl);
   display: flex;
   align-items: center;
   gap: var(--space-lg);
   font-weight: var(--font-weight-medium);
   animation: slideInUp 0.3s ease-out;
+  border: 2px solid transparent;
 }
 
 .auth-alert.error {
-  background: rgba(231, 76, 60, 0.1);
-  color: #e74c3c;
-  border: 2px solid rgba(231, 76, 60, 0.2);
-  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1);
+  background: rgba(151, 24, 26, 0.1);
+  color: #ff6b6b;
+  border-color: var(--color-secondary);
+  box-shadow: 0 4px 15px rgba(151, 24, 26, 0.1);
 }
 
 .auth-alert.error::before {
@@ -233,10 +196,10 @@
 }
 
 .auth-alert.success {
-  background: rgba(39, 174, 96, 0.1);
-  color: #27ae60;
-  border: 2px solid rgba(39, 174, 96, 0.2);
-  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.1);
+  background: rgba(235, 199, 213, 0.1);
+  color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 15px rgba(235, 199, 213, 0.1);
 }
 
 .auth-alert.success::before {
@@ -287,23 +250,26 @@
 .auth-input {
   width: 100%;
   padding: var(--space-xl) var(--space-2xl);
-  border: 2px solid rgba(59, 130, 246, 0.3) !important;
-  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
   font-family: inherit;
   font-size: var(--font-size-lg);
   line-height: var(--line-height-normal);
-  background: rgba(42, 42, 42, 0.8) !important;
+  background: rgba(42, 42, 42, 0.8);
   backdrop-filter: blur(10px);
-  color: #e5e7eb !important;
+  color: #e5e7eb;
   transition: var(--transition-all);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .auth-input:focus {
   outline: none;
-  border-color: var(--color-palette-6);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(235, 199, 213, 0.3);
   transform: translateY(-1px);
+}
+
+.auth-input:active {
+  transform: translateY(0);
 }
 
 .auth-input::placeholder {
@@ -313,13 +279,13 @@
 
 /* Input validation states */
 .auth-input.valid {
-  border-color: #27ae60;
-  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(235, 199, 213, 0.1);
 }
 
 .auth-input.invalid {
-  border-color: #e74c3c;
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(151, 24, 26, 0.1);
 }
 
 /* ===============================================
@@ -334,10 +300,9 @@
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-sm) var(--space-md);
-  background: rgba(59, 130, 246, 0.08);
+  background: rgba(235, 199, 213, 0.08);
   backdrop-filter: blur(5px);
-  border-radius: var(--radius-sm);
-  border-left: 3px solid rgba(59, 130, 246, 0.4);
+  border-left: 3px solid var(--color-primary);
 }
 
 .help-text::before {
@@ -351,17 +316,17 @@
   font-weight: var(--font-weight-medium);
   margin-top: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   gap: var(--space-sm);
   animation: slideInUp 0.2s ease-out;
+  border: 2px solid transparent;
 }
 
 .validation-message.error {
-  color: #e74c3c;
-  background: rgba(231, 76, 60, 0.1);
-  border: 1px solid rgba(231, 76, 60, 0.2);
+  color: #ff6b6b;
+  background: rgba(151, 24, 26, 0.1);
+  border-color: var(--color-secondary);
 }
 
 .validation-message.error::before {
@@ -369,9 +334,9 @@
 }
 
 .validation-message.success {
-  color: #27ae60;
-  background: rgba(39, 174, 96, 0.1);
-  border: 1px solid rgba(39, 174, 96, 0.2);
+  color: var(--color-primary-light);
+  background: rgba(235, 199, 213, 0.1);
+  border-color: var(--color-primary);
 }
 
 .validation-message.success::before {
@@ -385,8 +350,7 @@
 .auth-btn {
   width: 100%;
   padding: var(--space-xl) var(--space-2xl);
-  border: none;
-  border-radius: var(--radius-md);
+  border: 2px solid transparent;
   font-family: inherit;
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
@@ -402,18 +366,20 @@
 }
 
 .auth-btn-primary {
-  background: linear-gradient(135deg, var(--color-palette-6) 0%, var(--color-palette-3) 100%);
-  color: var(--color-text-primary);
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: 0 4px 15px rgba(235, 199, 213, 0.4);
+  border-color: var(--color-primary-dark);
 }
 
 .auth-btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--color-palette-8) 0%, var(--color-palette-7) 100%);
+  background: var(--color-primary-light);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 6px 20px rgba(235, 199, 213, 0.4);
 }
 
-.auth-btn-primary:active {
+.auth-btn-primary:active:not(:disabled) {
+  background: var(--color-primary-dark);
   transform: translateY(0);
 }
 
@@ -435,10 +401,9 @@
   text-align: center;
   margin-top: var(--space-4xl);
   padding: var(--space-3xl);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.06) 0%, rgba(37, 99, 235, 0.04) 100%);
+  background: var(--color-bg-secondary);
   backdrop-filter: blur(10px);
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(59, 130, 246, 0.15);
+  border: 2px solid var(--color-border);
 }
 
 .auth-links p {
@@ -452,22 +417,26 @@
   text-decoration: none;
   font-weight: var(--font-weight-semibold);
   padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-sm);
   transition: var(--transition-all);
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
   margin: 0 var(--space-sm);
-  background: rgba(59, 130, 246, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.4);
+  background: rgba(235, 199, 213, 0.2);
+  border: 2px solid var(--color-primary);
 }
 
 .auth-links a:hover {
-  background: var(--color-palette-6);
-  color: var(--color-text-primary);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
   transform: translateY(-1px);
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 12px rgba(235, 199, 213, 0.4);
+}
+
+.auth-links a:active {
+  transform: translateY(0);
+  background: var(--color-primary-dark);
 }
 
 /* Link icons */
@@ -482,10 +451,9 @@
 .password-strength {
   margin-top: var(--space-md);
   padding: var(--space-md);
-  background: rgba(59, 130, 246, 0.08);
+  background: rgba(235, 199, 213, 0.08);
   backdrop-filter: blur(8px);
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 2px solid var(--color-primary);
 }
 
 .password-strength-title {
@@ -511,7 +479,7 @@
 }
 
 .requirement.met {
-  color: #27ae60;
+  color: var(--color-primary);
 }
 
 .requirement::before {
@@ -521,7 +489,7 @@
 
 .requirement.met::before {
   content: "✓";
-  color: #27ae60;
+  color: var(--color-primary);
 }
 
 /* ===============================================
@@ -543,9 +511,149 @@
   margin-left: -10px;
   margin-top: -10px;
   border: 2px solid transparent;
-  border-top-color: var(--color-text-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-text-inverse);
   animation: spin 1s linear infinite;
+}
+
+/* ===============================================
+   OAUTH SECTION
+   =============================================== */
+
+.oauth-section {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.oauth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    border: 2px solid transparent;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 48px;
+    position: relative;
+    overflow: hidden;
+}
+
+.github-btn {
+    background-color: #24292e;
+    color: white;
+    border-color: #24292e;
+}
+
+.github-btn:hover {
+    background-color: #2f363d;
+    border-color: #2f363d;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(36, 41, 46, 0.3);
+}
+
+.github-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(36, 41, 46, 0.3);
+}
+
+.oauth-btn i {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.oauth-btn span {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.github-btn i {
+    color: white;
+}
+
+.oauth-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.oauth-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    animation: oauth-spin 1s linear infinite;
+}
+
+.auth-divider {
+    position: relative;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.auth-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--color-border);
+    z-index: 1;
+}
+
+.auth-divider span {
+    background: var(--color-bg-secondary);
+    padding: 0 1rem;
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+}
+
+@media (max-width: 480px) {
+    .oauth-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        gap: 0.5rem;
+    }
+    
+    .oauth-btn i {
+        font-size: 1.125rem;
+    }
+    
+    .auth-divider {
+        margin: 1.25rem 0;
+        font-size: 0.8rem;
+    }
+}
+
+@keyframes oauth-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.oauth-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(235, 199, 213, 0.5);
+}
+
+.github-btn:focus {
+    box-shadow: 0 0 0 3px rgba(36, 41, 46, 0.3);
 }
 
 /* ===============================================
@@ -622,15 +730,13 @@
    ACCESSIBILITY ENHANCEMENTS
    =============================================== */
 
-/* Focus indicators for keyboard navigation */
 .auth-input:focus,
 .auth-btn:focus,
 .auth-links a:focus {
-  outline: 2px solid var(--color-palette-6);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* Reduced motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   .auth-container,
   .auth-alert,
@@ -642,18 +748,6 @@
   .auth-btn:hover,
   .auth-links a:hover {
     transform: none;
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .auth-input {
-    border-width: 3px;
-  }
-  
-  .auth-btn-primary {
-    background: var(--color-palette-6);
-    border: 2px solid var(--color-palette-8);
   }
 }
 
@@ -688,204 +782,109 @@
   100% { transform: rotate(360deg); }
 }
 
-/* ================================
-   OAUTH AUTHENTICATION STYLES
-   ================================ */
+/* ===============================================
+   OAUTH BUTTONS - GitHub & Google (Modern Glassmorphic Style)
+   =============================================== */
 
-/* OAuth Section Container */
-.oauth-section {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+.oauth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-top: var(--space-3xl);
 }
 
-/* OAuth Button Base Styles */
-.oauth-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1.5rem;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    min-height: 48px;
-    position: relative;
-    overflow: hidden;
+.btn-github,
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-2xl);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  border: 2px solid;
+  cursor: pointer;
+  transition: var(--transition-all);
+  text-decoration: none;
+  width: 100%;
+  backdrop-filter: blur(10px);
 }
 
-/* GitHub OAuth Button */
-.github-btn {
-    background-color: #24292e;
-    color: white;
-    border-color: #24292e;
+.btn-github {
+  background: rgba(36, 41, 46, 0.85);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
-.github-btn:hover {
-    background-color: #2f363d;
-    border-color: #2f363d;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(36, 41, 46, 0.3);
+.btn-github:hover {
+  background: rgba(36, 41, 46, 0.95);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(36, 41, 46, 0.5);
 }
 
-.github-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(36, 41, 46, 0.3);
+.btn-github i {
+  font-size: 1.4em;
 }
 
-/* OAuth Button Icons */
-.oauth-btn i {
-    font-size: 1.25rem;
-    flex-shrink: 0;
+.btn-google {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border-color: rgba(66, 133, 244, 0.5);
 }
 
-.oauth-btn span {
-    flex-grow: 1;
-    text-align: center;
+.btn-google:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(66, 133, 244, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(66, 133, 244, 0.3);
 }
 
-/* GitHub Icon Specific */
-.github-btn i {
-    color: white;
+.btn-google i {
+  font-size: 1.4em;
+  color: #4285f4;
 }
 
-/* OAuth Button Loading State */
-.oauth-btn.loading {
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-.oauth-btn.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid transparent;
-    border-top-color: currentColor;
-    border-radius: 50%;
-    animation: oauth-spin 1s linear infinite;
-}
-
-/* Auth Divider */
 .auth-divider {
-    position: relative;
-    text-align: center;
-    margin: 1.5rem 0;
-    color: #6b7280;
-    font-size: 0.875rem;
-    font-weight: 500;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: var(--space-3xl) 0;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.auth-divider::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, #e5e7eb 20%, #e5e7eb 80%, transparent);
-    z-index: 1;
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .auth-divider span {
-    background: var(--color-bg-secondary);
-    padding: 0 1rem;
-    position: relative;
-    z-index: 2;
-    display: inline-block;
+  padding: 0 var(--space-lg);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-    .auth-divider span {
-        background: var(--color-bg-secondary);
-    }
-    
-    .auth-divider::before {
-        background: linear-gradient(to right, transparent, var(--color-border) 20%, var(--color-border) 80%, transparent);
-    }
+/* Auth Footer - "Don't have an account? Create one" */
+.auth-footer {
+  text-align: center;
+  margin-top: var(--space-3xl);
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: var(--font-size-base);
 }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-    .oauth-btn {
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        gap: 0.5rem;
-    }
-    
-    .oauth-btn i {
-        font-size: 1.125rem;
-    }
-    
-    .auth-divider {
-        margin: 1.25rem 0;
-        font-size: 0.8rem;
-    }
+.auth-footer .auth-link,
+.auth-link {
+  color: #60a5fa !important;
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  transition: var(--transition-colors);
+  margin-left: var(--space-sm);
 }
 
-/* Animation for Loading Spinner */
-@keyframes oauth-spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Focus States for Accessibility */
-.oauth-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
-}
-
-.github-btn:focus {
-    box-shadow: 0 0 0 3px rgba(36, 41, 46, 0.3);
-}
-
-/* Alternative GitHub Button Style (if you prefer lighter) */
-.github-btn.light {
-    background-color: white;
-    color: #24292e;
-    border-color: #d1d5db;
-}
-
-.github-btn.light:hover {
-    background-color: #f9fafb;
-    border-color: #9ca3af;
-}
-
-.github-btn.light i {
-    color: #24292e;
-}
-
-/* Success State (for after OAuth completion) */
-.oauth-btn.success {
-    background-color: #10b981;
-    border-color: #10b981;
-    color: white;
-}
-
-.oauth-btn.success i {
-    color: white;
-}
-
-/* Error State */
-.oauth-btn.error {
-    background-color: #ef4444;
-    border-color: #ef4444;
-    color: white;
-}
-
-.oauth-btn.error i {
-    color: white;
+.auth-footer .auth-link:hover,
+.auth-link:hover {
+  color: var(--color-success) !important;
+  text-decoration: underline;
 }

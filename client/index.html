@@ -6,6 +6,14 @@
     <meta name="description" content="Real-Time Forum - A modern forum with real-time messaging">
     <title>Real-Time Forum</title>
 
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <!-- CSS Files -->
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/hero.css">
@@ -21,8 +29,8 @@
     <!-- Hero Section (shown only on home page) -->
     <div id="hero-section" class="hero-section" style="display: none;">
         <div class="hero-content">
-            <h1 class="hero-title">Welcome to Real-Time Forum</h1>
-            <p class="hero-subtitle">Connect, share, and discuss in real-time!</p>
+            <h1 class="hero-title">Real-Time Forum</h1>
+            <p class="hero-subtitle">Share ideas. Get instant feedback. Build community.</p>
         </div>
     </div>
 
@@ -43,6 +51,26 @@
 
     <!-- Toast Notifications Container -->
     <div id="toast-container" class="toast-container"></div>
+
+    <!-- Footer -->
+    <footer id="footer" class="footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                © 2025 Real-Time Forum. All rights reserved.
+            </div>
+            <div class="footer-links">
+                <a href="/" class="footer-link" data-link>
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="/profile" class="footer-link" data-link>
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="/chat" class="footer-link" data-link>
+                    <i class="fas fa-comments"></i> Chat
+                </a>
+            </div>
+        </div>
+    </footer>
 
     <!-- Application Entry Point (ES6 Module) -->
     <script type="module" src="/js/main.js"></script>

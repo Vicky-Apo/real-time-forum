@@ -32,25 +32,35 @@ export default {
 
                         <!-- Profile stats -->
                         <div class="profile-stats">
+                            <div class="stats-grid">
                             <div class="stat-card">
-                                <div class="stat-icon">📝</div>
-                                <div class="stat-value" id="stat-posts">0</div>
+                                    <div class="stat-icon"><i class="fas fa-file-alt" style="color: var(--color-primary);"></i></div>
+                                    <div class="stat-details">
+                                        <div class="stat-number" id="stat-posts">0</div>
                                 <div class="stat-label">Posts</div>
+                                    </div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-icon">💬</div>
-                                <div class="stat-value" id="stat-comments">0</div>
+                                    <div class="stat-icon"><i class="fas fa-comments" style="color: var(--color-primary);"></i></div>
+                                    <div class="stat-details">
+                                        <div class="stat-number" id="stat-comments">0</div>
                                 <div class="stat-label">Comments</div>
+                                    </div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-icon">👍</div>
-                                <div class="stat-value" id="stat-likes-received">0</div>
+                                    <div class="stat-icon"><i class="fas fa-thumbs-up" style="color: var(--color-primary);"></i></div>
+                                    <div class="stat-details">
+                                        <div class="stat-number" id="stat-likes-received">0</div>
                                 <div class="stat-label">Likes Received</div>
+                                    </div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-icon">❤️</div>
-                                <div class="stat-value" id="stat-posts-liked">0</div>
+                                    <div class="stat-icon"><i class="fas fa-heart" style="color: var(--color-primary);"></i></div>
+                                    <div class="stat-details">
+                                        <div class="stat-number" id="stat-posts-liked">0</div>
                                 <div class="stat-label">Posts Liked</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -241,27 +251,41 @@ export default {
     renderPostCard(post) {
         const date = new Date(post.created_at).toLocaleDateString();
         const categories = (post.categories || []).map(cat =>
-            `<span class="category-tag">${cat.category_name || cat.name}</span>`
+            `<a href="/category/${cat.category_id}" data-link class="category-tag">${cat.category_name || cat.name}</a>`
         ).join('');
 
         return `
-            <div class="post-card" onclick="window.router.navigate('/post/${post.id}')">
-                <div class="post-card-header">
-                    <div class="post-card-meta">
-                        <span class="post-author">${post.username}</span>
-                        <span class="post-date">${date}</span>
+            <article class="profile-post-card" onclick="window.router.navigate('/post/${post.id}')">
+                <div class="profile-post-header">
+                    <div class="profile-post-meta">
+                        <span class="profile-post-author">${post.username || 'Anonymous'}</span>
+                        <span class="meta-separator">•</span>
+                        <span class="profile-post-date">${date}</span>
                     </div>
                 </div>
-                <div class="post-card-content">
+                <div class="profile-post-content">
                     ${post.content.substring(0, 200)}${post.content.length > 200 ? '...' : ''}
                 </div>
-                ${categories ? `<div class="post-card-categories">${categories}</div>` : ''}
-                <div class="post-card-stats">
-                    <span>👍 ${post.like_count || 0}</span>
-                    <span>👎 ${post.dislike_count || 0}</span>
-                    <span>💬 ${post.comment_count || 0}</span>
+                ${categories ? `
+                    <div class="profile-post-categories">
+                        ${categories}
+                    </div>
+                ` : ''}
+                <div class="profile-post-stats">
+                    <span class="stat-item">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>${post.like_count || 0}</span>
+                    </span>
+                    <span class="stat-item">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span>${post.dislike_count || 0}</span>
+                    </span>
+                    <span class="stat-item">
+                        <i class="fas fa-comments"></i>
+                        <span>${post.comment_count || 0}</span>
+                    </span>
                 </div>
-            </div>
+            </article>
         `;
     }
 };

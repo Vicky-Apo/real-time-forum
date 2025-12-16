@@ -15,7 +15,6 @@ export default {
 
                     <form id="create-post-form" class="create-post-form">
                         <div class="form-group">
-                            <label for="post-content">What's on your mind?</label>
                             <textarea
                                 id="post-content"
                                 name="content"
@@ -82,12 +81,48 @@ export default {
                 return;
             }
 
-            container.innerHTML = categories.map(cat => `
+            // Helper function to get icon for category
+            const getCategoryIcon = (categoryName) => {
+                const icons = {
+                    'General Discussion': 'fa-comments',
+                    'Programming': 'fa-code',
+                    'Web Development': 'fa-globe',
+                    'Networking': 'fa-network-wired',
+                    'Game Development': 'fa-gamepad',
+                    'Database Management': 'fa-database',
+                    'DevOps': 'fa-server',
+                    'Cloud Computing': 'fa-cloud',
+                    'Mobile Development': 'fa-mobile-alt',
+                    'Machine Learning': 'fa-brain',
+                    'Cybersecurity': 'fa-shield-alt',
+                    'AI & Data Science': 'fa-robot'
+                };
+                return icons[categoryName] || 'fa-tag';
+            };
+
+            container.innerHTML = categories.map(cat => {
+                const catName = cat.category_name || cat.name;
+                const icon = getCategoryIcon(catName);
+                return `
                 <label class="category-checkbox">
-                    <input type="checkbox" name="categories[]" value="${cat.category_name || cat.name}">
-                    <span>${cat.category_name || cat.name}</span>
+                        <input type="checkbox" name="categories[]" value="${catName}">
+                        <i class="fas ${icon}"></i>
+                        <span>${catName}</span>
                 </label>
-            `).join('');
+                `;
+            }).join('');
+
+            // Add event listeners for checkbox state changes
+            container.querySelectorAll('.category-checkbox input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const label = this.closest('.category-checkbox');
+                    if (this.checked) {
+                        label.classList.add('checked');
+                    } else {
+                        label.classList.remove('checked');
+                    }
+                });
+            });
 
         } catch (error) {
             console.error('[CreatePostView] Error loading categories:', error);

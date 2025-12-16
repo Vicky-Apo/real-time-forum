@@ -4,6 +4,7 @@ import Router from './router.js';
 import state from './state.js';
 import wsManager from './websocket/WebSocketManager.js';
 import { renderNavbar } from './components/Navbar.js';
+import { renderFooter } from './components/Footer.js';
 import apiClient from './api/client.js';
 
 // Import views (lazy loaded by router)
@@ -127,6 +128,14 @@ async function initApp() {
             // Continue even if navbar fails
         }
 
+        // Render footer
+        try {
+            renderFooter();
+        } catch (error) {
+            console.error('[App] Error rendering footer:', error);
+            // Continue even if footer fails
+        }
+
         // Connect WebSocket if we have an authenticated user (from API or localStorage)
         // Use setTimeout to ensure this doesn't block page rendering
         const user = state.getUser();
@@ -204,6 +213,7 @@ function showError(message) {
 state.on('user:changed', (user) => {
     console.log('[App] User state changed:', user ? user.username : 'logged out');
     renderNavbar();
+    renderFooter();
 
     if (user && !state.wsConnected) {
         // User logged in, connect WebSocket (non-blocking)
