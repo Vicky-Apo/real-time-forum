@@ -133,11 +133,11 @@ export default {
                         <div class="post-reactions">
                             <button class="reaction-btn like-btn" onclick="event.stopPropagation(); window.handleHomeVote('${post.post_id}', 1)" title="Like this post">
                                 <i class="fas fa-thumbs-up"></i>
-                                <span class="like-count">${post.likes || 0}</span>
+                                <span class="like-count">${post.like_count || 0}</span>
                             </button>
                             <button class="reaction-btn dislike-btn" onclick="event.stopPropagation(); window.handleHomeVote('${post.post_id}', 2)" title="Dislike this post">
                                 <i class="fas fa-thumbs-down"></i>
-                                <span class="dislike-count">${post.dislikes || 0}</span>
+                                <span class="dislike-count">${post.dislike_count || 0}</span>
                             </button>
                         </div>
                     </div>
@@ -164,10 +164,10 @@ export default {
                 const likeCountElement = postCard.querySelector('.like-count');
                 const dislikeCountElement = postCard.querySelector('.dislike-count');
                 if (likeCountElement) {
-                    likeCountElement.textContent = updatedPost.likes || 0;
+                    likeCountElement.textContent = updatedPost.like_count || 0;
                 }
                 if (dislikeCountElement) {
-                    dislikeCountElement.textContent = updatedPost.dislikes || 0;
+                    dislikeCountElement.textContent = updatedPost.dislike_count || 0;
                 }
             }
 

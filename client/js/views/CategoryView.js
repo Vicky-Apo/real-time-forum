@@ -89,7 +89,7 @@ export default {
             `<span class="category-tag">${cat.category_name || cat.name}</span>`
         ).join(' ') || '';
 
-        const netVotes = (post.likes || 0) - (post.dislikes || 0);
+        const netVotes = (post.like_count || 0) - (post.dislike_count || 0);
 
         return `
             <article class="post-card" data-post-id="${post.post_id}" onclick="window.router.navigate('/post/${post.post_id}')">
@@ -154,7 +154,7 @@ export default {
             // Find the post card and update vote count
             const postCard = document.querySelector(`[data-post-id="${postId}"]`);
             if (postCard) {
-                const netVotes = (updatedPost.likes || 0) - (updatedPost.dislikes || 0);
+                const netVotes = (updatedPost.like_count || 0) - (updatedPost.dislike_count || 0);
                 const voteCountElement = postCard.querySelector('.vote-count');
                 if (voteCountElement) {
                     voteCountElement.textContent = netVotes;

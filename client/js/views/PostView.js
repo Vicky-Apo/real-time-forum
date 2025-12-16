@@ -104,7 +104,7 @@ export default {
         const isAuthor = post.is_owner !== undefined 
             ? post.is_owner 
             : (currentUser && currentUser.user_id && post.user_id && currentUser.user_id === post.user_id);
-        const netVotes = (post.likes || 0) - (post.dislikes || 0);
+        const netVotes = (post.like_count || 0) - (post.dislike_count || 0);
 
         // Render images if available
         let imagesHTML = '';
@@ -155,10 +155,10 @@ export default {
                 <div class="post-reactions-actions">
                     <div class="reaction-buttons">
                         <button class="reaction-btn like-btn" onclick="handlePostReaction('${post.post_id}', 'like')">
-                            <i class="fas fa-thumbs-up"></i> Like (${post.likes || 0})
+                            <i class="fas fa-thumbs-up"></i> Like (${post.like_count || 0})
                         </button>
                         <button class="reaction-btn dislike-btn" onclick="handlePostReaction('${post.post_id}', 'dislike')">
-                            <i class="fas fa-thumbs-down"></i> Dislike (${post.dislikes || 0})
+                            <i class="fas fa-thumbs-down"></i> Dislike (${post.dislike_count || 0})
                         </button>
                         <span class="net-votes">
                             Net: ${netVotes}
@@ -247,11 +247,11 @@ export default {
                     <div class="comment-reaction-buttons">
                         <button class="reaction-btn like-btn btn-sm" onclick="handleCommentReaction('${comment.comment_id}', 'like')">
                             <i class="fas fa-thumbs-up"></i>
-                            <span>${comment.likes || 0}</span>
+                            <span>${comment.like_count || 0}</span>
                         </button>
                         <button class="reaction-btn dislike-btn btn-sm" onclick="handleCommentReaction('${comment.comment_id}', 'dislike')">
                             <i class="fas fa-thumbs-down"></i>
-                            <span>${comment.dislikes || 0}</span>
+                            <span>${comment.dislike_count || 0}</span>
                         </button>
                     </div>
 
