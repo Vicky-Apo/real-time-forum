@@ -12,9 +12,9 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-const (
-	PORT        = ":3000"
-	BACKEND_URL = "http://localhost:8080"
+var (
+    PORT        = getEnv("PORT", ":3000")
+    BACKEND_URL = getEnv("BACKEND_URL", "http://localhost:8080")
 )
 
 func main() {
@@ -193,4 +193,11 @@ func main() {
 	log.Printf("🔄 Proxying /api/* and /ws to %s", BACKEND_URL)
 	log.Printf("📁 Serving static files from: ./client")
 	log.Fatal(http.ListenAndServe(PORT, nil))
+}
+
+func getEnv(key, fallback string) string {
+    if value := os.Getenv(key); value != "" {
+        return value
+    }
+    return fallback
 }

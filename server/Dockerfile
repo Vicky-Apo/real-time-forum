@@ -22,7 +22,7 @@ COPY . .
 # Build the application
 # CGO_ENABLED=1 is required for SQLite driver
 # Static linking for security
-RUN CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o server .
+RUN CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o server ./cmd
 
 # Stage 2: Runtime
 FROM alpine:latest
@@ -64,10 +64,6 @@ EXPOSE 8080
 
 # Create volume for database persistence
 VOLUME ["/app/DBPath"]
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/health || exit 1
 
 # Run the application
 CMD ["./server"]
