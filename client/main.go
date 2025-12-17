@@ -13,8 +13,8 @@ import (
 )
 
 var (
-    PORT        = getEnv("PORT", ":3000")
-    BACKEND_URL = getEnv("BACKEND_URL", "http://localhost:8080")
+	PORT        = getEnv("PORT", ":3000")
+	BACKEND_URL = getEnv("BACKEND_URL", "http://localhost:8080")
 )
 
 func main() {
@@ -64,11 +64,10 @@ func main() {
 		if r.Header.Get("Upgrade") == "websocket" {
 			log.Printf("Proxying WebSocket: %s %s", r.Method, r.URL.Path)
 
-			// Determine backend WebSocket URL
-			backendWSURL := "ws://localhost:8080/ws"
-			if strings.HasPrefix(BACKEND_URL, "https://") {
-				backendWSURL = "wss://localhost:8080/ws"
-			}
+			// Determine backend WebSocket URL from BACKEND_URL
+			backendWSURL := strings.Replace(BACKEND_URL, "http://", "ws://", 1)
+			backendWSURL = strings.Replace(backendWSURL, "https://", "wss://", 1)
+			backendWSURL = backendWSURL + "/ws"
 
 			// Upgrade client connection
 			clientConn, err := upgrader.Upgrade(w, r, nil)
@@ -81,12 +80,12 @@ func main() {
 			// Prepare headers for backend connection (forward auth headers)
 			// Create a clean header set to avoid duplicates
 			backendHeaders := make(http.Header)
-			
+
 			// Forward authentication headers
 			if cookie := r.Header.Get("Cookie"); cookie != "" {
 				backendHeaders.Set("Cookie", cookie)
 			}
-			
+
 			// DO NOT forward Sec-WebSocket-* headers - the Dialer adds them automatically
 			// Forwarding them causes "duplicate header not allowed" errors
 			// Only forward Origin header if needed
@@ -157,7 +156,7 @@ func main() {
 		// Proxy API, WebSocket, and uploads requests to backend
 		if strings.HasPrefix(r.URL.Path, "/api/") || r.URL.Path == "/ws" || strings.HasPrefix(r.URL.Path, "/uploads/") {
 			log.Printf("Proxying: %s %s", r.Method, r.URL.Path)
-			
+
 			// Special handling for WebSocket
 			if r.URL.Path == "/ws" {
 				wsProxy(w, r)
@@ -196,8 +195,8 @@ func main() {
 }
 
 func getEnv(key, fallback string) string {
-    if value := os.Getenv(key); value != "" {
-        return value
-    }
-    return fallback
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return fallback
 }

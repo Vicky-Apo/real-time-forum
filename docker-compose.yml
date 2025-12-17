@@ -7,11 +7,6 @@ services:
     command: ["tail", "-f", "/dev/null"]
     volumes:
       - forum_db:/data
-    healthcheck:
-      test: ["CMD", "sqlite3", "/data/forum.db", ".databases"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
     networks:
       - forum-net
 
@@ -23,16 +18,15 @@ services:
     environment:
       SERVER_HOST: 0.0.0.0
       SERVER_PORT: 8080
-      DB_PATH: /data/forum.db
+      DB_PATH: ./DBPath/forum.db
       DB_MAX_CONNECTIONS: 10
       FRONTEND_BASE_URL: http://frontend:3000
       BACKEND_BASE_URL: http://backend:8080
       ALLOWED_ORIGINS: http://localhost:3000,http://frontend:3000
     volumes:
-      - forum_db:/data
+      - forum_db:/app/DBPath
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     ports:
       - "8080:8080"
     restart: unless-stopped
