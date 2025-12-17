@@ -6,8 +6,8 @@ import wsManager from './websocket/WebSocketManager.js';
 import { renderNavbar } from './components/Navbar.js';
 import { renderFooter } from './components/Footer.js';
 import apiClient from './api/client.js';
-
-// Import views (lazy loaded by router)
+import logger from './utils/logger.js';
+import CONSTANTS from './utils/constants.js';
 import LoginView from './views/LoginView.js';
 import RegisterView from './views/RegisterView.js';
 import HomeView from './views/HomeView.js';
@@ -75,7 +75,7 @@ const routes = [
 
 // Initialize application
 async function initApp() {
-    console.log('[App] Initializing application...');
+    logger.log('[App] Initializing...');
 
     try {
         // Check if user is already logged in
@@ -140,7 +140,7 @@ async function initApp() {
         // Use setTimeout to ensure this doesn't block page rendering
         const user = state.getUser();
         if (user) {
-            console.log('[App] User authenticated, connecting WebSocket...');
+            logger.log('[App] User authenticated, connecting WebSocket...');
             // Connect WebSocket asynchronously to not block page load
             setTimeout(() => {
                 try {
@@ -149,7 +149,7 @@ async function initApp() {
                     console.error('[App] WebSocket connection failed, but continuing:', error);
                     // Don't let WebSocket errors prevent the app from loading
                 }
-            }, 100);
+            }, CONSTANTS.WEBSOCKET_CONNECT_DELAY_MS);
         }
 
         // Handle initial route
@@ -172,7 +172,7 @@ async function initApp() {
             }
         }
 
-        console.log('[App] Application initialized successfully');
+        logger.log('[App] Application initialized successfully');
     } catch (error) {
         console.error('[App] Initialization failed:', error);
         // Try to show error, but don't fail completely
@@ -211,7 +211,7 @@ function showError(message) {
 
 // Listen for state changes
 state.on('user:changed', (user) => {
-    console.log('[App] User state changed:', user ? user.username : 'logged out');
+    logger.log('[App] User state changed:', user ? user.username : 'logged out');
     renderNavbar();
     renderFooter();
 
@@ -223,7 +223,7 @@ state.on('user:changed', (user) => {
             } catch (error) {
                 console.error('[App] WebSocket connection failed:', error);
             }
-        }, 100);
+        }, CONSTANTS.WEBSOCKET_CONNECT_DELAY_MS);
     } else if (!user && state.wsConnected) {
         // User logged out, disconnect WebSocket
         try {
@@ -237,9 +237,21 @@ state.on('user:changed', (user) => {
 // Handle browser notification permissions
 if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission().then(permission => {
-        console.log('[App] Notification permission:', permission);
+        logger.log('[App] Notification permission:', permission);
     });
 }
+
+// Global error handlers
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('[Global] Unhandled promise rejection:', event.reason);
+    // Don't show toast to avoid spamming user
+    event.preventDefault();
+});
+
+window.addEventListener('error', (event) => {
+    console.error('[Global] Uncaught error:', event.error);
+    event.preventDefault();
+});
 
 // Start the application when DOM is ready
 if (document.readyState === 'loading') {

@@ -64,7 +64,11 @@ export function renderNavbar() {
 
             <div class="navbar-user">
                 <div class="user-menu">
-                    <button class="user-menu-btn" id="user-menu-btn">
+                   <button class="user-menu-btn" 
+                        id="user-menu-btn" 
+                        aria-label="User menu"
+                        aria-expanded="false"
+                        aria-haspopup="true">
                         <div class="user-avatar">
                             ${getInitials(user.username)}
                         </div>
@@ -104,13 +108,30 @@ export function renderNavbar() {
     // Toggle dropdown
     userMenuBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        userDropdown.classList.toggle('show');
+        const isExpanded = userDropdown.classList.toggle('show');
+        userMenuBtn.setAttribute('aria-expanded', isExpanded);
     });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', () => {
+    // Add keyboard support
+userMenuBtn?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
         userDropdown?.classList.remove('show');
-    });
+        userMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        userMenuBtn.click();
+    }
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', () => {
+    const wasShown = userDropdown?.classList.contains('show');
+    userDropdown?.classList.remove('show');
+    if (wasShown) {
+        userMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+});
 
     // Logout
     logoutBtn?.addEventListener('click', async (e) => {

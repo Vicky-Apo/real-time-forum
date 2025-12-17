@@ -386,14 +386,34 @@
     gap: var(--space-md);
     padding: var(--space-md) var(--space-lg);
     background: var(--color-bg-secondary);
-    max-width: 80px;
+    max-width: fit-content;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.typing-username {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
 }
 
 .typing-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--color-gray-light);
+    width: 6px;
+    height: 6px;
+    background: var(--color-primary);
+    border-radius: 50%;
     animation: typingBounce 1.4s infinite ease-in-out;
+    box-shadow: 0 0 8px rgba(235, 199, 213, 0.6);
+}
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;  /* Staggered animation */
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
 }
 
 @keyframes typingBounce {
@@ -468,4 +488,20 @@
     color: var(--color-text-secondary);
     margin: 0;
     max-width: 400px;
+}
+
+.message-image {
+    max-width: 200px;
+    border-radius: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.message-image:hover {
+    transform: scale(1.05);
+}
+
+#image-upload {
+    display: none;
 }

@@ -1,18 +1,18 @@
-// websocket/WebSocketManager.js - WebSocket Connection Manager
-
 import state from '../state.js';
+import logger from '../utils/logger.js';
+import CONSTANTS from '../utils/constants.js';
+import config from '../config.js';
 
 class WebSocketManager {
     constructor() {
         // Connect to WebSocket through the same origin (will be proxied to backend)
         // This ensures cookies and CORS work correctly
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const host = window.location.host; // includes port
-        this.url = `${protocol}//${host}/ws`;
+        logger.log('[WS] Connecting to', config.wsUrl);
+        this.url = config.wsUrl;
         this.ws = null;
         this.reconnectAttempts = 0;
-        this.maxReconnectAttempts = 10;
-        this.reconnectDelay = 1000;
+        this.maxReconnectAttempts = CONSTANTS.WS_RECONNECT_MAX_ATTEMPTS;
+        this.reconnectDelay = CONSTANTS.WS_RECONNECT_BASE_DELAY_MS;
         this.isConnecting = false;
         this.shouldReconnect = true;
     }
@@ -24,7 +24,7 @@ class WebSocketManager {
 
         // Don't block if WebSocket is not supported
         if (typeof WebSocket === 'undefined') {
-            console.warn('[WS] WebSocket not supported in this browser');
+            logger.warn('[WS] WebSocket not supported in this browser');
             return;
         }
 
@@ -53,10 +53,10 @@ class WebSocketManager {
     }
 
     onOpen() {
-        console.log('[WS] Connected successfully');
+        logger.log('[WS] Connected successfully');
         this.isConnecting = false;
         this.reconnectAttempts = 0;
-        this.reconnectDelay = 1000;
+        this.reconnectDelay = CONSTANTS.WS_RECONNECT_BASE_DELAY_MS;
 
         state.setWsConnected(true);
         state.emit('ws:connected');
@@ -116,7 +116,7 @@ class WebSocketManager {
                 break;
 
             default:
-                console.warn('[WS] Unknown message type:', type);
+                logger.warn('[WS] Unknown message type:', type);
         }
     }
 
@@ -127,7 +127,7 @@ class WebSocketManager {
     }
 
     onClose(event) {
-        console.log('[WS] Disconnected -', event.code, event.reason);
+        logger.log('[WS] Disconnected -', event.code, event.reason);
         this.isConnecting = false;
         this.ws = null;
 
@@ -149,7 +149,7 @@ class WebSocketManager {
         this.reconnectAttempts++;
         const delay = Math.min(
             this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1),
-            30000
+            CONSTANTS.WS_RECONNECT_MAX_DELAY_MS
         );
 
         setTimeout(() => {
@@ -163,7 +163,7 @@ class WebSocketManager {
             const message = JSON.stringify({ event: type, payload });
             this.ws.send(message);
         } else {
-            console.warn('[WS] Cannot send, not connected');
+            logger.warn('[WS] Cannot send, not connected');
         }
     }
 
