@@ -2,6 +2,7 @@
 
 import state from './state.js';
 import logger from './utils/logger.js';
+import apiClient from './api/client.js';
 
 class Router {
     constructor(routes) {
@@ -44,9 +45,23 @@ class Router {
         }
 
         // Check authentication
-        if (route.requiresAuth && !state.getUser()) {
-            this.navigate('/login');
-            return;
+        if (route.requiresAuth) {
+            const user = state.getUser();
+            if (!user) {
+                // Try to verify auth status before redirecting
+                try {
+                    const response = await apiClient.post('/auth/me');
+                    if (response.user) {
+                        state.setUser(response.user);
+                    } else {
+                        this.navigate('/login');
+                        return;
+                    }
+                } catch (error) {
+                    this.navigate('/login');
+                    return;
+                }
+            }
         }
 
         // If logged in and trying to access login/register, redirect to home

@@ -15,6 +15,11 @@ export default {
     isLoadingOlderMessages: false,
     hasMoreMessages: true,
     oldestMessageTimestamp: null,
+    messageReceivedListener: null,
+    typingStartListener: null,
+    typingStopListener: null,
+    userOnlineListener: null,
+    userOfflineListener: null,
 
     async render() {
         return `
@@ -566,56 +571,63 @@ export default {
     },
 
     setupWebSocketListeners() {
-        // Listen for new messages
-        state.on('message:received', async (message) => {
-
-            // Normalize WebSocket payload to match database format
+        // Remove old listeners first
+        if (this.messageReceivedListener) {
+            state.off('message:received', this.messageReceivedListener);
+            state.off('typing:start', this.typingStartListener);
+            state.off('typing:stop', this.typingStopListener);
+            state.off('ws:user_online', this.userOnlineListener);
+            state.off('ws:user_offline', this.userOfflineListener);
+        }
+    
+        // Create listener functions
+        this.messageReceivedListener = async (message) => {
             const normalizedMessage = {
                 sender_id: message.sender_id,
-                sender_username: message.sender_name,  // WebSocket uses sender_name
+                sender_username: message.sender_name,
                 content: message.content,
-                created_at: message.sent_at,  // WebSocket uses sent_at
+                created_at: message.sent_at,
                 images: message.images || []
             };
-
-            // If message is for current conversation, add it or reload if it has images
-            if (this.currentConversation &&
-                (message.sender_id === this.currentConversation.user_id)) {
-                // If message has images, reload all messages to ensure proper display
+    
+            if (this.currentConversation && (message.sender_id === this.currentConversation.user_id)) {
                 if (message.images && message.images.length > 0) {
                     await this.loadMessages(this.currentConversation.user_id);
                 } else {
                     this.addMessageToUI(normalizedMessage);
                 }
             }
-
-            // Reload conversations to update preview
             this.loadConversations();
-        });
-
-        // Listen for typing indicators
-        state.on('typing:start', (data) => {
+        };
+    
+        this.typingStartListener = (data) => {
             if (this.currentConversation && data.user_id === this.currentConversation.user_id) {
                 this.showTypingIndicator();
             }
-        });
-
-        state.on('typing:stop', (data) => {
+        };
+    
+        this.typingStopListener = (data) => {
             if (this.currentConversation && data.user_id === this.currentConversation.user_id) {
                 this.hideTypingIndicator();
             }
-        });
-
-        // Listen for online/offline status
-        state.on('ws:user_online', (data) => {
+        };
+    
+        this.userOnlineListener = (data) => {
             this.onlineUsers.add(data.user_id);
             this.updateOnlineStatus();
-        });
-
-        state.on('ws:user_offline', (data) => {
+        };
+    
+        this.userOfflineListener = (data) => {
             this.onlineUsers.delete(data.user_id);
             this.updateOnlineStatus();
-        });
+        };
+    
+        // Register listeners
+        state.on('message:received', this.messageReceivedListener);
+        state.on('typing:start', this.typingStartListener);
+        state.on('typing:stop', this.typingStopListener);
+        state.on('ws:user_online', this.userOnlineListener);
+        state.on('ws:user_offline', this.userOfflineListener);
     },
 
     addMessageToUI(message) {
