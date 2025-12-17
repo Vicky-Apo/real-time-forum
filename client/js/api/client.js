@@ -1,9 +1,13 @@
-// api/client.js - HTTP Client for Backend API
+/**
+ * HTTP Client for Backend API
+ */
+
+import config from '../config.js';
 
 class APIClient {
     constructor(baseURL = '') {
         // Use relative URLs (will work with Nginx proxy)
-        this.baseURL = baseURL || '/api';
+        this.baseURL = baseURL || config.apiBaseURL;
     }
 
     async request(endpoint, options = {}) {

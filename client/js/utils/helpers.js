@@ -1,5 +1,4 @@
-// utils/helpers.js - Shared Utility Functions
-
+import CONSTANTS from './constants.js';
 /**
  * Get user initials from username
  * @param {string} username - The username
@@ -48,7 +47,7 @@ export function showToast(message, type = 'info') {
     setTimeout(() => {
         toast.style.opacity = '0';
         setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, CONSTANTS.TOAST_DURATION_MS);
 }
 
 /**

@@ -1,9 +1,9 @@
-// views/ChatView.js - Chat/Messaging Page with Real-time Support
-
 import apiClient from '../api/client.js';
 import state from '../state.js';
 import wsManager from '../websocket/WebSocketManager.js';
 import { getInitials, showImageLightbox, showToast, formatTime, throttle } from '../utils/helpers.js';
+import { sanitizeUsername, sanitizeContent } from '../utils/sanitize.js';
+import CONSTANTS from '../utils/constants.js';
 
 export default {
     conversations: [],
@@ -136,8 +136,8 @@ export default {
             const prefix = conversation.last_message.is_from_me ? 'You: ' : '';
             lastMessageText = prefix + conversation.last_message.content;
             // Truncate if too long
-            if (lastMessageText.length > 50) {
-                lastMessageText = lastMessageText.substring(0, 50) + '...';
+            if (lastMessageText.length > CONSTANTS.MAX_MESSAGE_PREVIEW_LENGTH) {
+                lastMessageText = lastMessageText.substring(0, CONSTANTS.MAX_MESSAGE_PREVIEW_LENGTH) + '...';
             }
         }
 
@@ -146,7 +146,7 @@ export default {
                 <div class="conversation-avatar">${initials}</div>
                 <div class="conversation-info">
                     <div class="conversation-name">
-                        ${conversation.username}
+                        ${sanitizeUsername(conversation.username)}
                         <span class="${isOnline ? 'online-indicator' : 'offline-indicator'}"></span>
                     </div>
                     <div class="conversation-preview">
@@ -197,7 +197,7 @@ export default {
                             ${getInitials(this.currentConversation.username)}
                         </div>
                         <div class="chat-header-details">
-                            <h3>${this.currentConversation.username}</h3>
+                            <h3>${sanitizeUsername(this.currentConversation.username)}</h3>
                             <div class="chat-header-status">
                                 <span class="${isOnline ? 'online-indicator' : 'offline-indicator'}"></span>
                                 ${isOnline ? 'Online' : 'Offline'}
@@ -225,14 +225,17 @@ export default {
                                 rows="1"
                             ></textarea>
                             </div>
-                            <button type="submit" class="btn btn-send">Send</button>
+                            <button type="submit" class="btn btn-send" aria-label="Send message">Send</button>
                         </div>
                         <div class="message-actions">
                             <label class="btn-upload-image" for="image-upload">
                                 <span class="upload-icon"><i class="fas fa-camera"></i></span>
                                 Upload Image
                             </label>
-                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            <input type="file" 
+                                id="image-upload" 
+                                accept="image/*" 
+                                aria-label="Upload image">
                         </div>
                     </form>
                 </div>
@@ -267,7 +270,7 @@ export default {
                             ${getInitials(this.currentConversation.username)}
                         </div>
                         <div class="chat-header-details">
-                            <h3>${this.currentConversation.username}</h3>
+                            <h3>${sanitizeUsername(this.currentConversation.username)}</h3>
                             <div class="chat-header-status">
                                 <span class="${isOnline ? 'online-indicator' : 'offline-indicator'}"></span>
                                 ${isOnline ? 'Online' : 'Offline'}
@@ -294,14 +297,17 @@ export default {
                                 rows="1"
                             ></textarea>
                             </div>
-                            <button type="submit" class="btn btn-send">Send</button>
+                            <button type="submit" class="btn btn-send" aria-label="Send message">Send</button>
                         </div>
                         <div class="message-actions">
                             <label class="btn-upload-image" for="image-upload">
                                 <span class="upload-icon"><i class="fas fa-camera"></i></span>
                                 Upload Image
                             </label>
-                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            <input type="file" 
+                                id="image-upload" 
+                                accept="image/*" 
+                                aria-label="Upload image">
                         </div>
                     </form>
                 </div>
@@ -314,7 +320,6 @@ export default {
     },
 
     renderMessage(message) {
-        // Debug logging for every message to understand the issue
         const isSent = message.sender_id === this.currentUser.user_id;
         const time = formatTime(message.created_at);
 
@@ -336,11 +341,9 @@ export default {
         if (message.images && message.images.length > 0) {
             imageHTML = message.images.map(img => `
                 <img src="${img.image_url}"
-                     alt="Message image"
-                     class="message-image"
-                     onclick="showImageLightbox('${img.image_url}')"
-                     style="max-width: 200px; border-radius: 8px; margin-top: 8px; cursor: pointer;"
-                >
+                    alt="Message image"
+                    class="message-image"
+                    onclick="showImageLightbox('${img.image_url}')">
             `).join('');
         }
 
@@ -349,7 +352,7 @@ export default {
                 <div class="message-avatar">${initials}</div>
                 <div class="message-content-wrapper">
                     <div class="message-content">
-                        ${message.content}
+                        ${sanitizeContent(message.content)}
                         ${imageHTML}
                     </div>
                     <div class="message-time">${time}</div>
@@ -418,7 +421,7 @@ export default {
                     wsManager.send('typing_stop', {
                         recipient_id: this.currentConversation.user_id
                     });
-                }, 2000);
+                }, CONSTANTS.TYPING_TIMEOUT_MS);
             }
         });
     },
@@ -433,12 +436,12 @@ export default {
         // This ensures loadOlderMessages is called at most once every 500ms
         const throttledScrollHandler = throttle(async () => {
             // Check if scrolled near top (within 50px threshold for easier triggering)
-            const isNearTop = messagesArea.scrollTop < 50;
+            const isNearTop = messagesArea.scrollTop < CONSTANTS.NEAR_TOP_THRESHOLD_PX;
 
             if (isNearTop && !this.isLoadingOlderMessages && this.hasMoreMessages) {
                 await this.loadOlderMessages();
             }
-        }, 500); // 500ms throttle delay to prevent scroll event spam
+        }, CONSTANTS.SCROLL_THROTTLE_MS); // 500ms throttle delay to prevent scroll event spam
 
         messagesArea.addEventListener('scroll', throttledScrollHandler);
     },
@@ -495,7 +498,7 @@ export default {
             messagesArea.scrollTop = newScrollHeight - previousScrollHeight;
 
         } catch (error) {
-            console.error('[ChatView] Error loading older messages:', error);
+            console.error('[ChatView] Er${this.currentConversation.username}ror loading older messages:', error);
         } finally {
             this.isLoadingOlderMessages = false;
         }
@@ -640,7 +643,7 @@ export default {
             const username = this.currentConversation ? this.currentConversation.username : 'User';
             indicator.innerHTML = `
                 <div class="typing-indicator">
-                    <span class="typing-username">${username} is typing</span>
+                    <span class="typing-username">${sanitizeUsername(username)} is typing</span>
                     <div class="typing-dots">
                         <div class="typing-dot"></div>
                         <div class="typing-dot"></div>
@@ -682,7 +685,7 @@ export default {
             if (messagesArea) {
                 messagesArea.scrollTop = messagesArea.scrollHeight;
             }
-        }, 100);
+        }, CONSTANTS.SCROLL_TO_BOTTOM_DELAY_MS);
     },
 
     async updateUnreadCount() {

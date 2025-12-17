@@ -1,6 +1,7 @@
 // router.js - Client-Side Router using History API
 
 import state from './state.js';
+import logger from './utils/logger.js';
 
 class Router {
     constructor(routes) {
@@ -36,7 +37,7 @@ class Router {
         const route = this.matchRoute(path);
 
         if (!route) {
-            console.warn('[Router] No route found for:', path);
+            logger.warn('[Router] No route found for:', path);
             // Redirect to home
             this.navigate('/');
             return;
