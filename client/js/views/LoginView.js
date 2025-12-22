@@ -44,21 +44,6 @@ export default {
                         </button>
                     </form>
 
-                    <div class="auth-divider">
-                        <span>OR</span>
-                    </div>
-
-                    <div class="oauth-buttons">
-                        <a href="http://localhost:8080/api/auth/github/login" class="btn btn-github btn-block">
-                            <i class="fab fa-github"></i>
-                            Continue with GitHub
-                        </a>
-                        <a href="http://localhost:8080/api/auth/google/login" class="btn btn-google btn-block">
-                            <i class="fab fa-google"></i>
-                            Continue with Google
-                        </a>
-                    </div>
-
                     <p class="auth-footer">
                         Don't have an account?
                         <a href="/register" data-link class="auth-link">Create one</a>
