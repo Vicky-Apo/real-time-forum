@@ -535,8 +535,6 @@ This project was built as part of the Zone01 Athens curriculum.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-This project was created as part of the Zone01 Athens curriculum.
-
 ## 🎓 Learning Outcomes
 
 This project demonstrates:
