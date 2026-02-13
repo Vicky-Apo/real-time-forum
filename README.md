@@ -2,6 +2,8 @@
 
 A modern, full-stack real-time forum application built with Go (backend) and vanilla JavaScript SPA (frontend), featuring WebSocket-based live chat, user authentication, posts, comments, reactions, and OAuth integration.
 
+> **Built by:** Vicky Apostolou, Kostas Apostolou, Dilhan Aslamaci
+
 ## ✨ Key Features
 
 ### Core Functionality
